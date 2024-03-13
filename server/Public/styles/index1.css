@@ -1,0 +1,119 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh; /* Ensure full height of the viewport */
+}
+
+#nav_bar {
+    height: 8vh;
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    background-color: #a0a017;
+    padding: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    z-index: 10;
+}
+
+.website{
+    display: flex;
+    width: 15rem;
+}
+
+.logo1 {
+    width: 30px; /* Adjust the size as needed */
+    height: 30px;
+    border-radius: 25%;
+    margin: 10px;
+}
+
+#nav_list {
+    list-style: none;
+    display: flex;
+}
+
+.nav-item {
+    margin: 0 15px;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+#name{
+    margin-top: 15px;
+    /* width: 100px; */
+}
+
+.nav-item:hover {
+    color: #ffcc00; /* Change to your desired hover color */
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* margin-top: 10%;  */
+}
+
+.card {
+     /* Adjust the max-width as needed */
+    min-width: 150px;
+    min-height: 50px; /* Adjust the height as needed */
+    text-overflow: ellipsis;
+    margin: 20px;
+    margin-top: 10%;
+    border: 2px solid black;
+    text-align: center;
+    padding: 5%;
+    background-color: #99b0e3; /* Background color */
+    /* box-shadow: 0 0 10px rgb(216, 216, 106);  */
+    box-shadow: 5px 5px 0px #dede6b;
+    border-radius: 14px;
+    position: relative;
+    opacity: 0.7;
+}
+
+/* .card1{
+    margin-left: 30%;
+}
+
+.card2{
+    margin-right: 30%;
+} */
+
+.card:hover{
+    transform: scale(1.05);
+    transition: 0.3s ease-in-out;
+}
+
+.card1:hover{
+    opacity: 1;
+    z-index: 2;
+}
+
+.card2:hover{
+    opacity: 1;
+    z-index: 2;
+}
+
+.feed{
+    border: 2px solid black;
+    width: 100vw;
+    min-height: 20%;
+    padding: 5px;
+    margin-top: 10%;
+    z-index: 0;
+}
+
+.about{
+    text-underline-position: below;
+    margin-top: 5%;
+}

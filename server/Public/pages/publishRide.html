@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Publish a ride</title>
+  <link rel="stylesheet" href="../styles/publishRide.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
+    rel="stylesheet" />
+</head>
+
+<body>
+  <header>
+    <div class="left">
+      <img src="../assets/logos/logo3.svg" alt="logo" height="40" />
+      <h1>Ride Buddy</h1>
+    </div>
+
+    <nav class="right">
+      <ul class="nav_links">
+        <li><a href="./" id="indexLink">Home</a></li>
+        <li><a href="./publishRide" id="publishRideLink">Publish Ride</a></li>
+        <li><a href="./searchRide" id="searchRideLink">Search Ride</a></li>
+        <li><a href="./about" id="aboutLink">About</a></li>
+      </ul>
+    </nav>
+    <a href="./profile" id="profileLink" class="cta">
+      <img class="profile" src="../assets/logos/user-profile-svgrepo-com.svg" alt="logo" height="40" />
+    </a>
+  </header>
+  <div class="img-container">
+    <img src="../assets/images/undraw_navigator_a479.svg" alt="image" height="280" width="1200" />
+  </div>
+  <div class="sec1">
+    <div class="car-movement">
+      <div class="car">🚕</div>
+    </div>
+    <hr />
+    <h1 class="Ride lato-bold">
+      Become a Ride-Buddy driver and save on travel costs <br />by sharing
+      your ride with passengers.
+    </h1>
+  </div>
+
+  <h2>Publish Your Carpool Ride</h2>
+  <div class="outer">
+    <div class="publish">
+      <div class="container">
+        <form id="rideForm" action="/submitRide" method="post">
+          <div class="form-group">
+            <label for="start" class="label">Starting Point:</label>
+            <input type="text" id="start" name="start_location" class="input" placeholder="Enter your starting location"
+              required />
+          </div>
+          <div class="form-group">
+            <label for="destination" class="label">Destination:</label>
+            <input type="text" id="destination" name="destination" class="input" placeholder="Enter your destination"
+              required />
+          </div>
+          <div class="form-group">
+            <label for="leaving_time" class="label">Leaving Time:</label>
+            <input type="datetime-local" id="leaving_time" name="leaving_time" class="input" required />
+          </div>
+          <div class="form-group">
+            <label for="charges" class="label">Charges per Seat (Optional):</label>
+            <input type="number" id="charges" name="charges" class="input"
+              placeholder="Enter amount (leave blank if free)" />
+          </div>
+          <div class="form-group">
+            <label for="seats" class="label">Number of Seats Available:</label>
+            <input type="number" id="seats" name="seats" class="input" min="1" required />
+          </div>
+          <div class="form-group">
+            <label for="preferences" class="label">Car Preferences (Optional):</label>
+            <select id="preferences" name="preference" class="input">
+              <option value="">No preference</option>
+              <option value="quiet">Quiet ride, no loud music</option>
+              <option value="music">Music welcome, open to suggestions</option>
+              <option value="pets">Pet-friendly car (well-behaved pets only)</option>
+            </select>
+          </div>
+          <button type="submit" class="button">Publish Ride</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- <script src="../script/publishRide.js"></script> -->
+</body>
+
+</html>

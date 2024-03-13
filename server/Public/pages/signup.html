@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/login_new.css">
+    <title>Sign Up</title>
+    <!-- Ensure you have the FontAwesome script for icons if you're using it -->
+    <script src="https://kit.fontawesome.com/9e5ba2e3f5.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="form-container sign-up">
+            <form action="/signup" method="POST">
+                <h2>Sign Up</h2>
+                <div class="form-group">
+                    <input type="text" name="username" required>
+                    <i class="fas fa-user"></i>
+                    <label>Username</label>
+                </div>
+                <div class="form-group">
+                    <input type="email" name="email" required>
+                    <i class="fas fa-at"></i>
+                    <label>Email</label>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="password" required>
+                    <i class="fas fa-lock"></i>
+                    <label>Password</label>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="confirmPassword" required>
+                    <i class="fas fa-lock"></i>
+                    <label>Confirm Password</label>
+                </div>
+                <button type="submit" class="btn">Sign Up</button>
+                <div class="link">
+                    <p>You already have an account?<a href="./login" class="signin-link"> Sign in</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="../scripts/login_new.js"></script>
+</body>
+</html>

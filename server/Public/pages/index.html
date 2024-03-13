@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Website</title>
+    <link rel="stylesheet" href="../styles/index.css">
+</head>
+
+<body>
+    <header>
+        <div class="left">
+            <img src="../assets/logos/logo3.svg" alt="logo" height="40" />
+            <h1>Ride Buddy</h1>
+        </div>
+
+        <nav class="right">
+            <ul class="nav_links">
+                <li><a href="./" id="indexLink" class = "active">Home</a></li>
+                <li><a href="./publishRide" id="publishRideLink">Publish Ride</a></li>
+                <li><a href="./searchRide" id="searchRideLink">Search Ride</a></li>
+                <li><a href="./about" id="aboutLink">About</a></li>
+            </ul>
+        </nav>
+        <a href="./profile" id="profileLink"><button>Profile</button></a>
+    </header>
+
+    <script>
+        // Include HTML content using JavaScript
+        document.getElementById("navbar-container").innerHTML =
+            '<object type="text/html" data="html/navbar.html"></object>';
+    </script>
+
+    <!-- Main content of your homepage -->
+    <div class="main-content">
+        <h1>Welcome to Our Website</h1>
+        <p>This is a placeholder for the home page content.</p>
+    </div>
+    <script src="../script/index.js"></script>
+</body>
+
+</html>

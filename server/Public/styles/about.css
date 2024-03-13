@@ -1,0 +1,121 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* background-color: #24252a; */
+}
+
+body {
+    background-color: #fafafa;
+    height: 1000px;
+}
+
+h1 {
+    color: #edf0f1;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+li,
+a,
+button {
+    font-family: sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    color: #edf0f1;
+}
+
+header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 20px 5% 20px 1%;
+    background-color: rgb(137, 98, 98);
+    height : 10vh;
+    background: linear-gradient(-45deg, #23a6d5, #5af1ce);
+    /* border-bottom: 2px solid whitesmoke; */
+}
+
+.left {
+    display: flex;
+    justify-content: space-evenly;
+    width: 300px;
+    cursor: pointer;
+    margin-right: auto;
+}
+
+.nav_links {
+    list-style: none;
+}
+
+.nav_links li {
+    display: inline-block;
+    padding: 0px 20px;
+}
+
+ul li a {
+    color: whitesmoke;
+    transition: all 0.3s ease-in-out 0s;
+}
+
+ul li a:hover {
+    color: #09a5cb;
+}
+
+button {
+    padding: 9px 25px;
+    background-color: rgb(127, 89, 108);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out 0s;
+    margin-left: 20px;
+}
+
+button:hover {
+    background-color: rgba(132, 95, 114, 0.6);
+}
+
+.active{
+    background-color: #af1c1c;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 50px;
+}
+
+.main-content {
+    padding: 20px;
+}
+
+
+.about-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 20px;
+}
+
+.about-card {
+    text-align: center;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.about-card img {
+    border-radius: 50%;
+    max-width: 100px;
+    max-height: 100px;
+    margin-bottom: 10px;
+}
+
+.about-card h2 {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+}
+
+.about-card p {
+    margin: 5px;
+}

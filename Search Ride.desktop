@@ -1,0 +1,6 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Link to Search Ride
+Type=Link
+URL=http://localhost:3000/searchRide
+Icon=text-html

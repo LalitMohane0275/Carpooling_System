@@ -1,0 +1,132 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /* background-color: #24252a; */
+}
+
+body {
+    background-color: #fafafa;
+    height: 1000px;
+}
+
+h1 {
+    color: #edf0f1;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+li,
+a,
+button {
+    font-family: sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    color: #edf0f1;
+}
+
+header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 20px 5% 20px 1%;
+    background-color: rgb(53, 53, 53);
+    height: 10vh;
+    background: linear-gradient(-45deg, #427ce0, #918EF4);
+    position: sticky;
+    /* border-bottom: 2px solid whitesmoke; */
+}
+
+h1{
+    color: #246c85;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+.Ride{
+    margin: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+    padding: 30px;
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 35px;
+    color: rgb(255, 255, 255);
+    background-image: linear-gradient(to right top, #3fb39b, #00a8bc, #0096d3, #607cce, #9f5aa8);
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    margin-bottom: 30px;
+}
+.lato-bold {
+    font-family: "Lato", sans-serif;
+    font-weight: 700;
+    font-style: normal;
+}
+
+.img-container {
+    display: flex;
+    justify-content: center;
+}
+
+.left {
+    display: flex;
+    justify-content: space-evenly;
+    width: 300px;
+    cursor: pointer;
+    margin-right: auto;
+}
+
+.nav_links {
+    list-style: none;
+}
+
+.nav_links li {
+    display: inline-block;
+    padding: 0px 20px;
+}
+
+ul li a {
+    color: whitesmoke;
+    transition: all 0.3s ease-in-out 0.2s;
+    font-size: 1rem;
+}
+
+ul li a:hover {
+    color: #000;
+    font-size: 1.05rem;
+}
+
+.profile {
+    margin-top: 10px;
+    margin-left: 25px;
+}
+
+.container{
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    width: 100vw;
+
+}
+
+.card{
+    /* margin: 5px; */
+    padding: 10px;
+    /* width: 20vw; */
+    border: 2px  solid black;
+    border-radius: 20px;
+}
+
+.card h2, p{
+    padding: 5px;
+}
+
+.find-ride{
+    /* width: 45vw; */
+}
+
+.book-ride{
+    /* width: 45vw; */
+    border : 2px solid black;
+}

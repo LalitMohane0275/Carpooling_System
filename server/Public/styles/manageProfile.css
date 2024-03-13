@@ -1,0 +1,148 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  /* background-color: #24252a; */
+}
+body {
+    background-image: linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%);
+
+    height: 120vh;
+    margin-bottom: 30px;
+}
+h1 {
+  color: #edf0f1;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+}
+
+li,
+a,
+button {
+  font-family: sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+  color: #edf0f1;
+}
+
+header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 20px 5% 20px 1%;
+  background-color: rgb(53, 53, 53);
+  /* border-bottom: 2px solid whitesmoke; */
+  margin-bottom: 20px;
+}
+
+.left {
+  display: flex;
+  justify-content: space-evenly;
+  width: 300px;
+  cursor: pointer;
+  margin-right: auto;
+}
+
+.nav_links {
+  list-style: none;
+}
+
+.nav_links li {
+  display: inline-block;
+  padding: 0px 20px;
+}
+
+ul li a {
+  color: whitesmoke;
+  transition: all 0.3s ease-in-out 0.2s;
+  font-size: 1rem;
+}
+
+ul li a:hover {
+  color: #000;
+  font-size: 1.1rem;
+}
+
+.profile {
+  margin-top: 10px;
+  margin-left: 25px;
+}
+
+header {
+  background: linear-gradient(45deg, #00b4d8, #023e8a);
+}
+
+h1 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #000;
+}
+.container {
+  display: flex;
+  justify-content: space-around;
+}
+.profile-form-container {
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 5px;
+  /* background-color: white; */
+  background-image: linear-gradient(to top, #b9ceda 0%, #e2ebf0 100%);
+}
+
+.profile-form-container h2 {
+  margin: 0 0 10px 0;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  margin-bottom: 15px;
+}
+
+textarea {
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  margin-bottom: 15px;
+}
+
+input[type="file"] {
+  width: 100%;
+  padding: 5px;
+}
+
+button {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+#profile-form input {
+  width: 500px;
+}
+#bio {
+  min-width: 500px;
+  max-width: 500px;
+  max-height: 150px;
+}

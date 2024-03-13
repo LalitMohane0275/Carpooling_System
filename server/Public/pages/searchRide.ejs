@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Publish a ride</title>
+    <link rel="stylesheet" href="../styles/searchRide.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+    <header>
+        <div class="left">
+            <img src="../assets/logos/logo3.svg" alt="logo" height="40" />
+            <h1>Ride Buddy</h1>
+        </div>
+
+        <nav class="right">
+            <ul class="nav_links">
+                <li><a href="./" id="indexLink">Home</a></li>
+                <li><a href="./publishRide" id="publishRideLink">Publish Ride</a></li>
+                <li><a href="./searchRide" id="searchRideLink">Search Ride</a></li>
+                <li><a href="./about" id="aboutLink">About</a></li>
+            </ul>
+        </nav>
+        <a href="./profile" id="profileLink" class="cta">
+            <img class="profile" src="../assets/logos/user-profile-svgrepo-com.svg" alt="logo" height="40" />
+        </a>
+    </header>
+    <h1 class="Ride lato-bold">
+        Find your ride, share the journey - Connecting travelers, one shared seat at a time. Your destination awaits,
+        just a click away.
+    </h1>
+    <div class="container">
+        <div class="find-ride">
+            <% rides.forEach((ride) => { %>
+                <div class="card">
+                    <h2><%= ride.start_location %></h2>
+                    <h2><%= ride.destination %></h2>
+                    <p>Seats: <%= ride.seats %></p>
+                    <p>Charges: <%= ride.charges %></p>
+                    <p>Date: <%= ride.leaving_time.toISOString().split('T')[0] %></p>
+                    <p>Preference: <%= ride.preference %></p>
+                </div>
+            <% }) %>
+        </div>
+        <div class="book-ride">
+    
+        </div>
+    </div>
+    
+</body>
+
+</html>

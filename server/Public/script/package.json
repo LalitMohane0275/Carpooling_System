@@ -1,0 +1,20 @@
+{
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "esm": "^3.2.25",
+    "express": "^4.18.3",
+    "part": "^0.1.1",
+    "path": "^0.12.7",
+    "pg": "^8.11.3"
+  },
+  "name": "publish-ride",
+  "version": "1.0.0",
+  "description": "A user can publish a ride ",
+  "main": "publishRide.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "carpool",
+  "license": "ISC"
+}
