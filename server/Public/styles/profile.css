@@ -58,11 +58,11 @@
   
   ul li a:hover {
     color: #000;
-    font-size: 1.1rem;
+    /* font-size: 1.1rem; */
   }
   
   .profile {
-    margin-top: 10px;
+    /* margin-top: 10px; */
     margin-left: 25px;
   }
 

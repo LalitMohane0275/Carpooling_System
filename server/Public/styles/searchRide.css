@@ -7,7 +7,9 @@
 
 body {
     background-color: #fafafa;
-    height: 1000px;
+    /* max-height: 100vh; */
+    /* overflow: hidden; */
+    /* height: 100vh; */
 }
 
 h1 {
@@ -26,48 +28,26 @@ button {
 }
 
 header {
+    margin-top: 0px;
     display: flex;
     justify-content: flex-end;
     align-items: center;
     padding: 20px 5% 20px 1%;
     background-color: rgb(53, 53, 53);
     height: 10vh;
+    width: 100%;
     background: linear-gradient(-45deg, #427ce0, #918EF4);
-    position: sticky;
+    position: fixed;
+    top: 0;
+    left: 0;
     /* border-bottom: 2px solid whitesmoke; */
 }
 
-h1{
+h1 {
     color: #246c85;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
-.Ride{
-    margin: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    text-align: center;
-    padding: 30px;
-    font-family: sans-serif;
-    font-weight: bold;
-    font-size: 35px;
-    color: rgb(255, 255, 255);
-    background-image: linear-gradient(to right top, #3fb39b, #00a8bc, #0096d3, #607cce, #9f5aa8);
-    border-bottom-left-radius: 30px;
-    border-bottom-right-radius: 30px;
-    margin-bottom: 30px;
-}
-.lato-bold {
-    font-family: "Lato", sans-serif;
-    font-weight: 700;
-    font-style: normal;
-}
-
-.img-container {
-    display: flex;
-    justify-content: center;
-}
 
 .left {
     display: flex;
@@ -94,7 +74,7 @@ ul li a {
 
 ul li a:hover {
     color: #000;
-    font-size: 1.05rem;
+    /* font-size: 1.05rem; */
 }
 
 .profile {
@@ -102,31 +82,79 @@ ul li a:hover {
     margin-left: 25px;
 }
 
-.container{
+.container {
     padding: 10px;
     display: flex;
     justify-content: space-between;
-    width: 100vw;
-
+    max-width: 100vw;
+    max-height: 65vh;
+    /* overflow: hidden; */
+    /* Hide the content overflow for the entire container */
 }
 
-.card{
-    /* margin: 5px; */
+.Ride {
+    margin-top: 100px;
+    text-align: center;
+    padding: 20px;
+    background-image: linear-gradient(to right top, #3fb39b, #00a8bc, #0096d3, #607cce, #9f5aa8);
+    color: white;
+    font-weight: 700;
+    font-size: 35px;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    justify-content: space-around;
+    margin-top: 30px;
+    padding: 0 20px;
+}
+
+.card {
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+    transition: transform 0.2s ease-in-out;
+}
+
+/* .card:hover {
+    transform: scale(1.05);
+} */
+
+.book-ride-container {
+    width: 45vw;
+    padding: 20px;
+}
+
+.book-ride {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#bookingForm {
+    margin-top: 20px;
+}
+
+#bookingForm input[type=number], #bookingForm input[type=submit] {
     padding: 10px;
-    /* width: 20vw; */
-    border: 2px  solid black;
-    border-radius: 20px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
-.card h2, p{
-    padding: 5px;
+#bookingForm input[type=submit] {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
 }
 
-.find-ride{
-    /* width: 45vw; */
-}
-
-.book-ride{
-    /* width: 45vw; */
-    border : 2px solid black;
+#bookingForm input[type=submit]:hover {
+    background-color: #0056b3;
 }

@@ -7,7 +7,7 @@
 
 body {
     background-color: #fafafa;
-    height: 1000px;
+    height: 100vh;
 }
 
 h1 {
@@ -30,10 +30,15 @@ header {
     justify-content: flex-end;
     align-items: center;
     padding: 20px 5% 20px 1%;
-    background-color: rgb(137, 98, 98);
-    height : 10vh;
-    background: linear-gradient(-45deg, #23a6d5, #5af1ce);
+    background-color: rgb(53, 53, 53);
+    height: 10vh;
+    background: linear-gradient(-45deg, #427ce0, #918EF4);
     /* border-bottom: 2px solid whitesmoke; */
+}
+
+.img-container {
+    display: flex;
+    justify-content: center;
 }
 
 .left {
@@ -55,11 +60,18 @@ header {
 
 ul li a {
     color: whitesmoke;
-    transition: all 0.3s ease-in-out 0s;
+    transition: all 0.3s ease-in-out 0.2s;
+    font-size: 1rem;
 }
 
 ul li a:hover {
-    color: #09a5cb;
+    color: #000;
+    /* font-size: 1.05rem; */
+}
+
+.profile {
+    /* margin-top: 10px; */
+    margin-left: 25px;
 }
 
 button {

@@ -7,6 +7,7 @@
 body {
   background-color: #fafafa;
   height: 1000px;
+  font-family: Arial, sans-serif;
 }
 h1{
   color: #edf0f1;
@@ -30,11 +31,6 @@ header{
   height: 10vh;
   background: linear-gradient(-45deg, #427ce0, #918EF4);
   /* border-bottom: 2px solid whitesmoke; */
-}
-
-.img-container{
-  display: flex;
-  justify-content: center;
 }
 
 .left{
@@ -62,12 +58,18 @@ ul li a {
 
 ul li a:hover {
   color: #000;
-  font-size: 1.05rem;
+  /* font-size: 1.05rem; */
 }
 
 .profile {
-  margin-top: 10px;
+  /* margin-top: 10px; */
   margin-left: 25px;
+}
+
+.img-container{
+  margin: 5px; 
+  display: flex;
+  justify-content: center;
 }
 
 .car-movement {
@@ -125,38 +127,41 @@ ul li a:hover {
 }
 
 /* Publish ride */
-body {
-  font-family: Arial, sans-serif;
-  
-}
 h2{
   text-align: center;
 }
+
 .outer {
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 .publish {
   width: 50vw;
 }
+
 .container {
-  border: 1px solid #ddd;
+  /* border: 1px solid #f60202; */
   padding: 20px;
   border-radius: 5px;
-  
+  /* width: 70vh; */
 }
+
+
 .label {
   display: block;
   margin-bottom: 5px;
   font-weight: bold;
 }
+
 .input {
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 3px;
 }
+
 .button {
   margin-top: 2rem;
   background-color: #4CAF50;
@@ -166,6 +171,7 @@ h2{
   border-radius: 5px;
   cursor: pointer;
 }
+
 .button:hover {
   background-color: #45A049;
 }

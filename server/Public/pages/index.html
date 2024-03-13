@@ -2,10 +2,10 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My Website</title>
-    <link rel="stylesheet" href="../styles/index.css">
+    <link rel="stylesheet" href="../styles/index.css" />
 </head>
 
 <body>
@@ -14,27 +14,62 @@
             <img src="../assets/logos/logo3.svg" alt="logo" height="40" />
             <h1>Ride Buddy</h1>
         </div>
-
         <nav class="right">
             <ul class="nav_links">
-                <li><a href="./" id="indexLink" class = "active">Home</a></li>
+                <li><a href="./" id="indexLink">Home</a></li>
                 <li><a href="./publishRide" id="publishRideLink">Publish Ride</a></li>
                 <li><a href="./searchRide" id="searchRideLink">Search Ride</a></li>
                 <li><a href="./about" id="aboutLink">About</a></li>
             </ul>
         </nav>
-        <a href="./profile" id="profileLink"><button>Profile</button></a>
+        <a href="./profile" id="profileLink" class="cta">
+            <img class="profile" src="../assets/logos/user-profile-svgrepo-com.svg" alt="logo" height="40" />
+        </a>
     </header>
+    <div class="img-container">
+        <img src="../assets/images/undraw_navigator_a479.svg" alt="image" height="280" width="1200" />
+    </div>
+    <div class="quote">
+        <h1 class="Ride lato-bold">
+            Share the ride, share the cost.
+            <br />
+            Save money on your commute with carpooling!
+        </h1>
+    </div>
 
+    <div class="features">
+        <div class="f1">
+            <img src="../assets/logos/car1-svgrepo-com.svg" alt="" height="50" />
+            <h2>Find Your Perfect Match: Effortless Carpooling</h2>
+            <p>
+                Connect with riders or drivers going your way, in seconds.
+                <br />
+            </p>
+            <a href="./bookRide.html">Book Your Ride ></a>
+        </div>
+        <div class="f1">
+            <img src="../assets/logos/car1-svgrepo-com.svg" alt="" height="50" />
+            <h2>Share the Ride, Share the Cost</h2>
+            <p>
+                Reduce your environmental impact and gas expenses with carpooling.
+                <br />
+            </p>
+            <a href="./publishRide.html">Publish Your Ride ></a>
+        </div>
+        <div class="f1">
+            <img src="../assets/logos/car1-svgrepo-com.svg" alt="" height="50" />
+            <h2>Build Your Community: More Than Just a Ride</h2>
+            <p>
+                Carpool with like-minded people and make new connections.
+                <br/>
+            </p>
+            <a href="#">Contribute ></a>
+        </div>
+    </div>
     <script>
         document.getElementById("navbar-container").innerHTML =
             '<object type="text/html" data="html/navbar.html"></object>';
     </script>
-    <div class="main-content">
-        <h1>Welcome to Our Website</h1>
-        <p>This is a placeholder for the home page content.</p>
-    </div>
-    <script src="../script/index.js"></script>
 </body>
 
 </html>

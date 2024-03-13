@@ -8,7 +8,9 @@
     <link rel="stylesheet" href="../styles/searchRide.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
+        rel="stylesheet" />
 </head>
 
 <body>
@@ -36,22 +38,78 @@
     </h1>
     <div class="container">
         <div class="find-ride">
-            <% rides.forEach((ride) => { %>
+            <% rides.forEach((ride)=> { %>
                 <div class="card">
-                    <h2><%= ride.start_location %></h2>
-                    <h2><%= ride.destination %></h2>
-                    <p>Seats: <%= ride.seats %></p>
-                    <p>Charges: <%= ride.charges %></p>
-                    <p>Date: <%= ride.leaving_time.toISOString().split('T')[0] %></p>
-                    <p>Preference: <%= ride.preference %></p>
+                    <h2>
+                        <%= ride.start_location %>
+                    </h2>
+                    <h2>
+                        <%= ride.destination %>
+                    </h2>
+                    <p>Seats: <%= ride.seats %>
+                    </p>
+                    <p>Charges: <%= ride.charges %>
+                    </p>
+                    <p>Date: <%= ride.leaving_time.toISOString().split('T')[0] %>
+                    </p>
+                    <p>Preference: <%= ride.preference %>
+                    </p>
                 </div>
-            <% }) %>
+                <% }) %>
         </div>
-        <div class="book-ride">
-    
+        <div class="book-ride-container">
+            <div class="book-ride">
+                <h1>Book your Ride Now</h1>
+                <p>Start :- Palghar</p>
+                <p>Destination :- Pune</p>
+                <p>Seats :- 2</p>
+                <p>Charges :- 200</p>
+                <p>Date :- 20-12-24</p>
+                <p>Preference :- Lorem ipsum, dolor sit amet consectetur adipisicing elit. Harum laborum aliquid iure?
+                </p>
+                <form id="bookingForm">
+                    <label for="numPeople">Number of People:</label>
+                    <input type="number" id="numPeople" name="numPeople" min="1" max="4" required>
+                    <input type="submit" value="Book Ride">
+                </form>
+            </div>
         </div>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Get all card elements
+            var cards = document.querySelectorAll('.card');
     
+            // Get the book ride container
+            var bookRideContainer = document.querySelector('.book-ride');
+    
+            // Function to update book ride section with card values
+            function updateBookRide(card) {
+                var startLocation = card.querySelector('h2:nth-child(1)').textContent;
+                var destination = card.querySelector('h2:nth-child(2)').textContent;
+                var seats = card.querySelector('p:nth-child(3)').textContent.replace('Seats: ', '');
+                var charges = card.querySelector('p:nth-child(4)').textContent.replace('Charges: ', '');
+                var date = card.querySelector('p:nth-child(5)').textContent.replace('Date: ', '');
+                var description = card.querySelector('p:nth-child(6)').textContent.replace('Preference: ', '');
+    
+                // Update the book ride section
+                bookRideContainer.querySelector('p:nth-child(2)').textContent = 'Start :- ' + startLocation;
+                bookRideContainer.querySelector('p:nth-child(3)').textContent = 'Destination :- ' + destination;
+                bookRideContainer.querySelector('p:nth-child(4)').textContent = 'Seats :- ' + seats;
+                bookRideContainer.querySelector('p:nth-child(5)').textContent = 'Charges :- ' + charges;
+                bookRideContainer.querySelector('p:nth-child(6)').textContent = 'Date :- ' + date;
+                bookRideContainer.querySelector('p:nth-child(7)').textContent = 'Description :- ' + description;
+            }
+    
+            // Add click event listener to each card
+            cards.forEach(function (card) {
+                card.addEventListener('click', function () {
+                    // Update the book ride section with the clicked card values
+                    updateBookRide(card);
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

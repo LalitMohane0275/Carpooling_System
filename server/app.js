@@ -64,7 +64,6 @@ app.post('/login', async (req, res) => {
     }
 });
 
-
 app.get("/signup", (req, res) => {
     res.sendFile(path.join(__dirname, "Public/pages/signup.html"));
 });
@@ -74,7 +73,6 @@ app.post('/signup', async (req, res) => {
 
     try {
         const newUser = { username, email, password };
-
         await db.query('INSERT INTO users (username, email, password) VALUES ($1, $2, $3)', [
             newUser.username,
             newUser.email,
@@ -89,7 +87,6 @@ app.post('/signup', async (req, res) => {
             // Unique violation (duplicate key), handle accordingly
             res.status(400).send({ status: 400, message: 'Username or email already exists' });
         } else {
-            // Other errors
             res.status(500).send({ status: 500, message: 'Error creating the user' });
         }
     }
