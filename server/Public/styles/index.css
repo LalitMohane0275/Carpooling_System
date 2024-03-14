@@ -7,7 +7,7 @@
 
 body {
     background-color: #fafafa;
-    height: 100vh;
+    height: 1000px;
 }
 
 h1 {
@@ -32,18 +32,11 @@ header {
     align-items: center;
     padding: 20px 5% 20px 1%;
     background-color: rgb(53, 53, 53);
-    height: 10vh;
-    background: linear-gradient(-45deg, #427ce0, #918ef4);
-    position: sticky;
     /* border-bottom: 2px solid whitesmoke; */
+    background: linear-gradient(-45deg, #427ce0, #918ef4);
 }
 
-.img-container {
-    display: flex;
-    justify-content: center;
-}
-
-.left {
+.leftside {
     display: flex;
     justify-content: space-evenly;
     width: 300px;
@@ -68,20 +61,12 @@ ul li a {
 
 ul li a:hover {
     color: #000;
-    /* font-size: 1.05rem; */
+    font-size: 1.1rem;
 }
 
 .profile {
-    /* margin-top: 5px; */
+    margin-top: 10px;
     margin-left: 25px;
-}
-
-.img-container{
-    margin: 5px;
-    padding: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 .Ride {
@@ -133,6 +118,11 @@ ul li a:hover {
     /* background: linear-gradient(135deg, #ff9494, rgb(243, 222, 120)); */
 }
 
+.f1 h2 {
+    font-size: large;
+    font-weight: 500;
+}
+
 .f1 a {
     text-decoration: underline;
     color: #02b5fc;
@@ -153,4 +143,31 @@ ul li a:hover {
         height: 20rem;
         width: 40%;
     }
+}
+
+.footer {
+    width: 98%;
+}
+
+.something {
+    height: 100;
+    width: 100%;
+}
+
+.head {
+    position: fixed;
+    top: 0;
+    left: 0;
+    /* For left navbar, change to right: 0; for right navbar */
+    width: 100%;
+    /* Adjust width if needed */
+    z-index: 10;
+    /* margin-bottom: 120px; */
+}
+
+.img-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
 }
