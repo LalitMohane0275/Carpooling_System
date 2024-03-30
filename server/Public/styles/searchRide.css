@@ -125,9 +125,42 @@ ul li a:hover {
 /* .card:hover {
     transform: scale(1.05);
 } */
+.container-left{
+    overflow: auto;
+    max-height: 65vh;
+    width: 45vw;
+}
+
+.container-right{
+    width: 45vw;
+}
+
+.search-ride-container {
+    /* width: 45vw; */
+    padding: 20px;
+}
+
+.search-ride {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#searchRideForm label,
+#searchRideForm input[type="text"],
+#searchRideForm input[type="submit"] {
+    margin-bottom: 10px; 
+    width: 100%;
+    height: 40px;
+}
 
 .book-ride-container {
-    width: 45vw;
+    /* width: 45vw; */
     padding: 20px;
 }
 
@@ -136,6 +169,10 @@ ul li a:hover {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 #bookingForm {

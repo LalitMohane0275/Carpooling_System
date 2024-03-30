@@ -37,7 +37,7 @@
         just a click away.
     </h1>
     <div class="container">
-        <div class="find-ride">
+        <div class="container-left">
             <% rides.forEach((ride)=> { %>
                 <div class="card">
                     <h2>
@@ -57,21 +57,36 @@
                 </div>
                 <% }) %>
         </div>
-        <div class="book-ride-container">
-            <div class="book-ride">
-                <h1>Book your Ride Now</h1>
-                <p>Start :- Palghar</p>
-                <p>Destination :- Pune</p>
-                <p>Seats :- 2</p>
-                <p>Charges :- 200</p>
-                <p>Date :- 20-12-24</p>
-                <p>Preference :- Lorem ipsum, dolor sit amet consectetur adipisicing elit. Harum laborum aliquid iure?
-                </p>
-                <form id="bookingForm">
-                    <label for="numPeople">Number of People:</label>
-                    <input type="number" id="numPeople" name="numPeople" min="1" max="4" required>
-                    <input type="submit" value="Book Ride">
-                </form>
+        <div class="container-right">
+            <div class="search-ride-container">
+                <div class="search-ride">
+                    <h1>Search for a Ride</h1>
+                    <form id="searchRideForm" action="/searchRide" method="post">
+                        <label for="source">Source:</label>
+                        <input type="text" id="source" name="source" required>
+                        <label for="destination">Destination:</label>
+                        <input type="text" id="destination" name="destination" required>
+                        <input type="submit" value="Search">
+                    </form>
+                </div>
+            </div>
+            <div class="book-ride-container">
+                <div class="book-ride">
+                    <h1>Book your Ride Now</h1>
+                    <p>Start :- Palghar</p>
+                    <p>Destination :- Pune</p>
+                    <p>Seats :- 2</p>
+                    <p>Charges :- 200</p>
+                    <p>Date :- 20-12-24</p>
+                    <p>Preference :- Lorem ipsum, dolor sit amet consectetur adipisicing elit. Harum laborum aliquid
+                        iure?
+                    </p>
+                    <form id="bookingForm" action="/bookRide" method="post">
+                        <label for="numPeople">Number of People:</label>
+                        <input type="number" id="numPeople" name="numPeople" min="1" max="4" required>
+                        <input type="submit" value="Book Ride">
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -79,10 +94,10 @@
         document.addEventListener("DOMContentLoaded", function () {
             // Get all card elements
             var cards = document.querySelectorAll('.card');
-    
+
             // Get the book ride container
             var bookRideContainer = document.querySelector('.book-ride');
-    
+
             // Function to update book ride section with card values
             function updateBookRide(card) {
                 var startLocation = card.querySelector('h2:nth-child(1)').textContent;
@@ -91,7 +106,7 @@
                 var charges = card.querySelector('p:nth-child(4)').textContent.replace('Charges: ', '');
                 var date = card.querySelector('p:nth-child(5)').textContent.replace('Date: ', '');
                 var description = card.querySelector('p:nth-child(6)').textContent.replace('Preference: ', '');
-    
+
                 // Update the book ride section
                 bookRideContainer.querySelector('p:nth-child(2)').textContent = 'Start :- ' + startLocation;
                 bookRideContainer.querySelector('p:nth-child(3)').textContent = 'Destination :- ' + destination;
@@ -100,7 +115,7 @@
                 bookRideContainer.querySelector('p:nth-child(6)').textContent = 'Date :- ' + date;
                 bookRideContainer.querySelector('p:nth-child(7)').textContent = 'Description :- ' + description;
             }
-    
+
             // Add click event listener to each card
             cards.forEach(function (card) {
                 card.addEventListener('click', function () {
