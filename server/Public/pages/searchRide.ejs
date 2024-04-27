@@ -54,6 +54,8 @@
                     </p>
                     <p>Preference: <%= ride.preference %>
                     </p>
+                    <p>Ride No: <%= ride.id %>
+                    </p>
                 </div>
                 <% }) %>
         </div>
@@ -78,9 +80,9 @@
                     <p>Seats :- 2</p>
                     <p>Charges :- 200</p>
                     <p>Date :- 20-12-24</p>
-                    <p>Preference :- Lorem ipsum, dolor sit amet consectetur adipisicing elit. Harum laborum aliquid
-                        iure?
+                    <p>Preference :- Lorem ipsum, dolor sit amet consectetur adipisicing elit. Harum
                     </p>
+                    <p>Ride No :- jjhjkkh</p>
                     <form id="bookingForm" action="/bookRide" method="post">
                         <label for="numPeople">Number of People:</label>
                         <input type="number" id="numPeople" name="numPeople" min="1" max="4" required>
@@ -91,6 +93,15 @@
         </div>
     </div>
     <script>
+        // Check for success message query parameter in the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const successMessage = urlParams.get('success');
+
+        // Display an alert if the success message exists
+        if (successMessage) {
+            alert(successMessage);
+        }
+
         document.addEventListener("DOMContentLoaded", function () {
             // Get all card elements
             var cards = document.querySelectorAll('.card');
@@ -106,6 +117,7 @@
                 var charges = card.querySelector('p:nth-child(4)').textContent.replace('Charges: ', '');
                 var date = card.querySelector('p:nth-child(5)').textContent.replace('Date: ', '');
                 var description = card.querySelector('p:nth-child(6)').textContent.replace('Preference: ', '');
+                var no = card.querySelector('p:nth-child(7)').textContent.replace('Ride No: ', '');
 
                 // Update the book ride section
                 bookRideContainer.querySelector('p:nth-child(2)').textContent = 'Start :- ' + startLocation;
@@ -114,6 +126,7 @@
                 bookRideContainer.querySelector('p:nth-child(5)').textContent = 'Charges :- ' + charges;
                 bookRideContainer.querySelector('p:nth-child(6)').textContent = 'Date :- ' + date;
                 bookRideContainer.querySelector('p:nth-child(7)').textContent = 'Description :- ' + description;
+                bookRideContainer.querySelector('p:nth-child(8)').textContent = 'Ride No :- ' + no;
             }
 
             // Add click event listener to each card
@@ -124,7 +137,41 @@
                 });
             });
         });
+        document.getElementById('bookingForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+            var bookRideContainer = document.querySelector('.book-ride');
+            var no = bookRideContainer.querySelector('p:nth-child(8)').textContent.replace('Ride No :-', '');
+            var ride_no = parseInt(no);
+            var numPeople = document.getElementById('numPeople').value;
+            var seats = parseInt(numPeople);
+            
+            const requestData = {
+                id : ride_no,
+                seats : seats
+            };
+
+            // Send the data to Node.js server
+            fetch('/bookRide', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Response from server:', data);
+                // Do something with the response if needed
+            })
+            .catch(error => {
+                console.error('Error sending data to server:', error);
+            });
+        });
     </script>
 </body>
-
 </html>

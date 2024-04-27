@@ -27,7 +27,7 @@ db.connect();
 // functions to fectch the published rides from the database
 async function checkPublished() {
     try {
-        const result = await db.query("SELECT start_location, destination, leaving_time, charges, seats, preference FROM ride");
+        const result = await db.query("SELECT * FROM ride");
         return result.rows;
     } catch (error) {
         console.error("Error fetching data:", error);
@@ -37,14 +37,18 @@ async function checkPublished() {
 
 async function checkPublished1(start, destination) {
     try {
-        const result = await db.query("SELECT start_location, destination, leaving_time, charges, seats, preference FROM ride WHERE start_location = $1 and destination = $2", 
-        [start, destination]);
+        const result = await db.query("SELECT * FROM ride WHERE start_location = $1 and destination = $2",
+            [start, destination]);
         return result.rows;
     } catch (error) {
         console.error("Error fetching data:", error);
         return [];
     }
 }
+
+// var book_id = NULL;
+
+
 
 // to use ejs
 app.set("view engine", "ejs");
@@ -53,6 +57,8 @@ app.set("views", path.join(__dirname, "Public", "pages"));
 // static directory
 app.use("/", express.static(path.join(__dirname, '/Public')));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
 
 
 // get and post requests
@@ -109,7 +115,6 @@ app.post('/signup', async (req, res) => {
     }
 });
 
-
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/Public/pages/index.html");
 });
@@ -164,7 +169,6 @@ app.post("/submitRide", async (req, res) => {
     res.sendFile(path.join(__dirname, "Public/pages/publishRide.html"));
 });
 
-
 app.post("/searchRide", async (req, res) => {
     try {
         const { source, destination } = req.body;
@@ -176,38 +180,46 @@ app.post("/searchRide", async (req, res) => {
     }
 });
 
-// app.get("/bookRide", async (req, res) => {
-//     // Retrieve ride details from query parameters
-//     const { start_location, destination, leaving_time, charges, seats, preference } = req.query;
+app.post('/bookRide', (req, res) => {
+    const requestData = req.body;
+    const id = requestData.id;
+    const seats = requestData.seats;
 
-//     // You can render a page with a form where the user can confirm the booking details
-//     // Example:
-//     res.render("confirmBooking", { start_location, destination, leaving_time, charges, seats, preference });
-// });
+    // Construct the SQL query to select available seats for the given ride ID
+    const selectQuery = 'SELECT seats FROM ride WHERE id = $1';
 
-app.post("/bookRide", async (req, res) => {
-    const { start_location, destination, leaving_time, charges, seats, preference } = req.body;
-
-    try {
-        // Assuming you have a rides table in your database
-        // Update the database to decrease available seats for the selected ride
-        const updateResult = await db.query("UPDATE ride SET seats = seats - 1 WHERE start_location = $1 AND destination = $2 AND leaving_time = $3", [
-            start_location, destination, leaving_time
-        ]);
-
-        if (updateResult.rowCount === 0) {
-            // If no rows were affected, it means the ride wasn't found
-            return res.status(404).send("Ride not found or already fully booked.");
+    // Execute the select query to get the available seats
+    db.query(selectQuery, [id], (selectError, selectResults) => {
+        if (selectError) {
+            console.error('Error selecting available seats:', selectError);
+            return res.status(500).send('Error selecting available seats');
         }
 
-        // Perform any additional booking logic here, such as creating a new booking entry in your database
+        if (selectResults.rows.length === 0) {
+            console.error('No ride found with the provided ID');
+            return res.status(404).send('No ride found with the provided ID');
+        }
 
-        // Redirect to the searchRide page after successful booking
-        res.redirect("/searchRide");
-    } catch (error) {
-        console.error("Error booking ride:", error);
-        res.status(500).send("Error booking ride. Please try again later.");
-    }
+        const availableSeats = selectResults.rows[0].seats;
+
+        if (availableSeats < seats) {
+            console.error('Not enough available seats');
+            return res.status(400).send('Not enough available seats');
+        }
+
+        // Construct the SQL query to update the seats for the given ride ID
+        const updateQuery = 'UPDATE ride SET seats = seats - $1 WHERE id = $2';
+
+        // Execute the update query with the provided parameters
+        db.query(updateQuery, [seats, id], (updateError, updateResults) => {
+            if (updateError) {
+                console.error('Error updating database:', updateError);
+                return res.status(500).send('Error updating database');
+            }
+            console.log('Seats updated successfully');
+            res.redirect("/searchRide?success=Ride booked successfully");
+        });
+    });
 });
 
 app.listen(port, () => {
