@@ -12,7 +12,7 @@ function Navbar() {
                     <ul className='flex items-center justify-around'>
                         <li className='p-5 mx-5'><NavLink to="/home">Home</NavLink></li>
                         <li className='p-5 mx-5'><NavLink to="/about">About</NavLink></li>
-                        <li className='p-5 mx-5'><NavLink to="/book-ride">Book Ride</NavLink></li>
+                        <li className='p-5 mx-5'><NavLink to="/find-ride">Find a Ride</NavLink></li>
                         <li className='p-5 mx-5'><NavLink to="/create-ride">Create Ride</NavLink></li>
                     </ul>
                 </nav>

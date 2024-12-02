@@ -1,18 +1,47 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import 'react-toastify/dist/ReactToastify.css';
 
 function SignUpPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const navigate = useNavigate(); // Initialize navigate
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle sign-up logic here
+
     if (password !== confirmPassword) {
-      alert('Passwords do not match');
+      toast.error('Passwords do not match', {
+        position: "top-right",
+      });
       return;
     }
-    console.log('Signing up with', { email, password });
+
+    try {
+      const response = await axios.post('http://localhost:3000/api/v1/signup', {
+        email,
+        password,
+        confirmPassword,
+      });
+
+      if (response.status === 201) {
+        toast.success('Sign up successful! Redirecting to home...', {
+          position: "top-right",
+        });
+
+        // Redirect to the home page after a short delay
+        navigate('/home');
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || 'Something went wrong. Please try again.';
+      toast.error(errorMessage, {
+        position: "top-right",
+      });
+    }
   };
 
   return (
@@ -70,6 +99,8 @@ function SignUpPage() {
           Already have an account? <a href="/login" className="text-blue-600 hover:underline">Login</a>
         </p>
       </div>
+
+      <ToastContainer />
     </div>
   );
 }
