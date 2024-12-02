@@ -27,3 +27,39 @@ exports.getRides = async (req, res) => {
         });
     }
 };
+
+
+// Controller to get details of a specific ride by ID
+exports.getRide = async (req, res) => {
+    try {
+        const { id } = req.params; 
+
+        // Fetch ride by ID from the database
+        const ride = await Ride.findById(id);
+
+        // Check if ride exists
+        if (!ride) {
+            return res.status(404).json({ message: "Ride not found" });
+        }
+
+        // Send success response with ride data
+        res.status(200).json({
+            message: "Ride fetched successfully",
+            ride: ride,
+        });
+    } catch (err) {
+        console.error(err);
+
+        // Handle invalid IDs and other errors
+        if (err.kind === "ObjectId") {
+            return res.status(400).json({ message: "Invalid ride ID" });
+        }
+
+        // Send error response
+        res.status(500).json({
+            message: "Failed to fetch ride details",
+            error: err.message,
+        });
+    }
+};
+
