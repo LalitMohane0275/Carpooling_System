@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom"; // Import Link for navigation
+import SearchForm from "../components/SearchForm";
 
 function FindRides() {
   const [rides, setRides] = useState([]);
@@ -10,7 +11,7 @@ function FindRides() {
   useEffect(() => {
     const fetchRides = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/v1/find-ride");
+        const response = await axios.get("http://localhost:3000/api/v1/find-rides");
         setRides(response.data.rides);
         setLoading(false);
       } catch (err) {
@@ -64,6 +65,9 @@ function FindRides() {
           ))}
         </div>
       )}
+      <div>
+        <SearchForm/>
+      </div>
     </div>
   );
 }

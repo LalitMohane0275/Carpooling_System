@@ -63,3 +63,33 @@ exports.getRide = async (req, res) => {
     }
 };
 
+exports.searchRides = async (req, res) => {
+    const { source, destination, date } = req.body;
+
+    try {
+        // Validate input
+        if (!source || !destination || !date) {
+            return res.status(400).json({ message: 'All fields are required.' });
+        }
+
+        // Query the database for matching rides
+        const rides = await Ride.find({
+            start: { $regex: `^${source}`, $options: "i" }, // Matches the start with case-insensitive partial match
+            destination: { $regex: `^${destination}`, $options: "i" }, // Matches the destination with case-insensitive partial match
+            date: date, // Matches the date exactly
+          });
+          
+          
+
+        // Check if any rides are found
+        if (rides.length === 0) {
+            return res.status(404).json({ message: 'No rides found for the given criteria.' });
+        }
+
+        // Return the rides
+        res.status(200).json({ rides });
+    } catch (error) {
+        console.error('Error fetching rides:', error);
+        res.status(500).json({ message: 'Server error. Please try again later.' });
+    }
+};

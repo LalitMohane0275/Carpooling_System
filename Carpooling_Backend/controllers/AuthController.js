@@ -1,6 +1,9 @@
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const User = require('../models/UserModel'); // Adjust the path as per your directory structure
+const jwtConfig = require('../config/jwtConfig'); // Create this file to store JWT secret and expiry settings
 
+// Signup Function
 const signup = async (req, res) => {
   const { email, password, confirmPassword } = req.body;
 
@@ -41,8 +44,7 @@ const signup = async (req, res) => {
   }
 };
 
-
-
+// Login Function
 const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -53,9 +55,14 @@ const login = async (req, res) => {
     }
 
     // Check if the user exists
-    const user = await User.findOne({ email });
+    let user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: 'Invalid email or password.' });
+    }
+
+    const payload = {
+      email: user.email,
+      id: user._id,
     }
 
     // Compare password with the hashed password in the database
@@ -64,12 +71,31 @@ const login = async (req, res) => {
       return res.status(400).json({ message: 'Invalid email or password.' });
     }
 
-    // Respond with a success message
-    res.status(200).json({ message: 'Login successful.', userId: user._id });
+    // Generate a JWT
+    let token = jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "2h",
+      }
+    );
+
+    user = user.toObject();
+    user.token = token;
+    user.password = undefined;
+
+    // Respond with a success message and token
+    res.status(200).json({
+      success: true,
+      message: 'Login successful.',
+      token, 
+      user
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error. Please try again later.' });
   }
 };
+
 
 module.exports = { signup, login };
