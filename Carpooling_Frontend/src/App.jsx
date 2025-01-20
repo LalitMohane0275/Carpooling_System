@@ -12,12 +12,13 @@ import LoginPage from './pages/Login';
 import NotFound from './pages/NotFound';
 import BookRide from './components/BookRide';
 import Profile from './pages/Profile';
+import CreateProfile from './pages/CreateProfile';
 
 function App() {
   const isLoggedIn = window.localStorage.getItem('loggedIn');
   return (
     <div className="App">
-      <Navbar isLoggedIn={isLoggedIn} />
+      <Navbar isLoggedIn={isLoggedIn}/>
 
       <Routes>
         <Route path="/" element={<Landing />} />
@@ -27,6 +28,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/user/create-profile/:id" element={<CreateProfile />} />
         <Route path="/book-ride/:id" element={<BookRide />} />
         <Route path="/user/:id" element={<Profile />} />
         <Route path="*" element={<NotFound />} />

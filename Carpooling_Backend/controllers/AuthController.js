@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/UserModel'); // Adjust the path as per your directory structure
 const jwtConfig = require('../config/jwtConfig'); // Create this file to store JWT secret and expiry settings
+require('dotenv').config(); 
 
 // Signup Function
 const signup = async (req, res) => {
@@ -36,8 +37,15 @@ const signup = async (req, res) => {
 
     await newUser.save();
 
+    // Generate a JWT token
+    const token = jwt.sign(
+      { id: newUser._id, email: newUser.email },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
     // Respond to client
-    res.status(201).json({ message: 'User registered successfully.' });
+    res.status(201).json({ message: 'User registered successfully.' , token});
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error. Please try again later.' });

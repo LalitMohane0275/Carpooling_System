@@ -33,7 +33,7 @@ function SignUpPage() {
         });
 
         // Redirect to the home page after a short delay
-        navigate('/home');
+        navigate('/login');
       }
     } catch (error) {
       const errorMessage =

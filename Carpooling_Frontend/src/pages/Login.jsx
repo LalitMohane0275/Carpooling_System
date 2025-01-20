@@ -2,11 +2,19 @@ import React, { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { login } from '../features/user/userSlice';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleLogin = () => {
+    const userData = { name: 'John Doe', email: 'john@example.com' };
+    dispatch(login(userData)); // Dispatch the login action
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,6 +47,9 @@ function LoginPage() {
         });
         window.localStorage.setItem("token", data.data);
         window.localStorage.setItem("loggedIn", true);
+        const userData = { name: 'John Doe', email: 'john@example.com' };
+        dispatch(login(userData));
+        localStorage.setItem('token', data.token); 
         navigate('/home');
       } else {
         // If login failed, show error toast

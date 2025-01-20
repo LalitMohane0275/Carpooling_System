@@ -12,8 +12,25 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        minlength: 6, // Minimum password length
+        minlength: 6, 
     },
+    firstName:{
+        type: String,
+        trim: true,
+    },
+    lastName:{
+        type: String,
+        trim: true,
+    },
+    age: {
+        type: Number,
+        min: 18,
+        max: 150,
+    },
+    gender:{
+        type: String,
+        enum: ['Male', 'Female'],
+    }
 });
 
 const User = mongoose.model('User', userSchema);
