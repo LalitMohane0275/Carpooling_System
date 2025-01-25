@@ -4,6 +4,8 @@ import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { Mail, Lock, Car, Eye, EyeOff } from "lucide-react";
 import "react-toastify/dist/ReactToastify.css";
+import { useDispatch } from "react-redux";
+import { login } from "../store/authSlice";
 
 function SignUpPage() {
   const [email, setEmail] = useState("");
@@ -12,6 +14,7 @@ function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,6 +37,7 @@ function SignUpPage() {
         toast.success("Sign up successful! Redirecting to home...", {
           position: "top-right",
         });
+        dispatch(login());
         navigate("/home");
       }
     } catch (error) {

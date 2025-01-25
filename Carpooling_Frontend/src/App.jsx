@@ -14,10 +14,9 @@ import BookRide from "./components/BookRide";
 import ProfilePage from "./pages/Profile";
 
 function App() {
-  const isLoggedIn = true;
   return (
     <div className="App">
-      <Navbar isLoggedIn={isLoggedIn} />
+      <Navbar/>
 
       <Routes>
         <Route path="/" element={<Landing />} />

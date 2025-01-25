@@ -11,8 +11,13 @@ import {
   LogOut,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../store/authSlice";
 
-function Navbar({ isLoggedIn }) {
+function Navbar() {
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const dispatch = useDispatch();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const handleLogInNavigation = () => {
@@ -24,6 +29,11 @@ function Navbar({ isLoggedIn }) {
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/");
   };
 
   return (
@@ -84,9 +94,9 @@ function Navbar({ isLoggedIn }) {
                         Settings
                       </a>
                       <hr className="my-2 border-gray-100" />
-                      <button className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2">
+                      <button className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2" onClick={handleLogout}>
                         <LogOut className="h-4 w-4" />
-                        <span>Sign Out</span>
+                        <span>Log Out</span>
                       </button>
                     </div>
                   </div>
