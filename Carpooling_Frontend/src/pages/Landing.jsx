@@ -1,6 +1,10 @@
 import React from "react";
 import { Users, DollarSign, Leaf, ChevronRight } from "lucide-react";
-import { FeatureCard, TestimonialCard, StepCard } from "./LandingPageComp";
+import {
+  FeatureCard,
+  TestimonialCard,
+  StepCard,
+} from "../components/LandingPageComp";
 import carpool from "../assets/images/carpool.jpg";
 
 const LandingPage = () => {
