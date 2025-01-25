@@ -11,11 +11,13 @@ import SignUpPage from "./pages/SignUp";
 import LoginPage from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import BookRide from "./components/BookRide";
+import ProfilePage from "./pages/Profile";
 
 function App() {
+  const isLoggedIn = true;
   return (
     <div className="App">
-      <Navbar />
+      <Navbar isLoggedIn={isLoggedIn} />
 
       <Routes>
         <Route path="/" element={<Landing />} />
@@ -26,6 +28,7 @@ function App() {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/book-ride/:id" element={<BookRide />} />
+        <Route path="/profile" element={<ProfilePage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
