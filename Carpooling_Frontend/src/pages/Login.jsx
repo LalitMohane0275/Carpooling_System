@@ -3,16 +3,18 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { Mail, Lock, Car, Eye, EyeOff } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { login } from "../store/authSlice";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (email === "" || password === "") {
       toast.error("Please fill in all fields", {
         position: "top-right",
@@ -20,7 +22,6 @@ function LoginPage() {
       });
       return;
     }
-
     try {
       const response = await fetch("http://localhost:3000/api/v1/login", {
         method: "POST",
@@ -37,6 +38,7 @@ function LoginPage() {
           position: "top-right",
           autoClose: 3000,
         });
+        dispatch(login());
         navigate("/home");
       } else {
         toast.error(data.message || "Email or password is incorrect", {
