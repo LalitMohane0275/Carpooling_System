@@ -1,21 +1,21 @@
-import { Routes, Route } from 'react-router-dom';
-import './App.css';
-import Home from './pages/Home';
-import About from './components/About';
-import CreateRide from './components/CreateRide';
-import FindRides from './components/FindRides';
-import Landing from './components/Landing';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import SignUpPage from './pages/SignUp';
-import LoginPage from './pages/Login';
-import NotFound from './pages/NotFound';
-import BookRide from './components/BookRide';
+import { Routes, Route } from "react-router-dom";
+import "./App.css";
+import Home from "./pages/Home";
+import About from "./components/About";
+import CreateRide from "./pages/CreateRide";
+import FindRides from "./components/FindRides";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import Landing from "./pages/Landing";
+import SignUpPage from "./pages/SignUp";
+import LoginPage from "./pages/Login";
+import NotFound from "./pages/NotFound";
+import BookRide from "./components/BookRide";
 
 function App() {
   return (
     <div className="App">
-      <Navbar/>
+      <Navbar />
 
       <Routes>
         <Route path="/" element={<Landing />} />
@@ -28,7 +28,7 @@ function App() {
         <Route path="/book-ride/:id" element={<BookRide />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      <Footer/>
+      <Footer />
     </div>
   );
 }
