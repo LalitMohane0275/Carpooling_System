@@ -34,11 +34,14 @@ function SignUpPage() {
       });
 
       if (response.status === 201) {
-        toast.success("Sign up successful! Redirecting to home...", {
+        toast.success("Account created successfully!", {
           position: "top-right",
         });
         dispatch(login());
-        navigate("/home");
+
+        setTimeout(() => {
+          navigate("/profile-form");
+        }, 2000);
       }
     } catch (error) {
       const errorMessage =
