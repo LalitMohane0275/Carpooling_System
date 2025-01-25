@@ -6,8 +6,13 @@ import {
   StepCard,
 } from "../components/LandingPageComp";
 import carpool from "../assets/images/carpool.jpg";
+import { useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
+  const navigate = useNavigate();
+  function handleNavigation() {
+    navigate("/signup");
+  }
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <main className="flex-grow">
@@ -26,7 +31,10 @@ const LandingPage = () => {
               <p className="text-xl mb-8 text-blue-100">
                 Join RideBuddy today and experience a smarter way to commute!
               </p>
-              <button className="px-8 py-4 bg-white text-blue-600 rounded-full font-semibold flex items-center hover:bg-blue-50 transform hover:scale-105 transition-all shadow-lg">
+              <button
+                className="px-8 py-4 bg-white text-blue-600 rounded-full font-semibold flex items-center hover:bg-blue-50 transform hover:scale-105 transition-all shadow-lg"
+                onClick={handleNavigation}
+              >
                 Get Started <ChevronRight className="ml-2 w-5 h-5" />
               </button>
             </div>
