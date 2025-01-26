@@ -36,10 +36,11 @@ function LoginPage() {
       if (response.ok) {
         toast.success("Login successful!", {
           position: "top-right",
-          autoClose: 3000,
         });
         dispatch(login());
-        navigate("/home");
+        setTimeout(() => {
+          navigate("/home");
+        }, 2000);
       } else {
         toast.error(data.message || "Email or password is incorrect", {
           position: "top-right",
