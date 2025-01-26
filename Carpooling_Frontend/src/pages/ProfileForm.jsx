@@ -84,14 +84,15 @@ function ProfileForm() {
         }
       );
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         toast.success("Profile updated successfully!", {
           position: "top-right",
         });
 
+        // Wait for toast to show up before navigating
         setTimeout(() => {
           navigate("/home");
-        }, 2000);
+        }, 2000); // Delay for toast visibility
       }
     } catch (error) {
       toast.error("Failed to update profile. Please try again.", {

@@ -1,29 +1,31 @@
-const express = require('express');
-const carpool = require('./routes/carpool');
+const express = require("express");
+const carpool = require("./routes/carpool");
+const profile = require("./routes/profile"); // Import profile routes
 const cors = require("cors");
+const dbConnect = require("./config/database");
+require("dotenv").config();
 
 const app = express();
-
-require("dotenv").config();
 const PORT = process.env.PORT || 4000;
 
+// Middleware
 app.use(cors());
-// middleware 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // To handle form submissions
 
-
-// mount 
-app.use("/api/v1",carpool);
-
-const dbConnect = require('./config/database');
+// Database Connection
 dbConnect();
 
-// Start Server 
-app.listen(PORT,()=>{
-    console.log("App is Running at the",PORT);
-})
+// Mount Routes
+app.use("/api/v1", carpool);
+app.use("/api/v1/profile", profile); // Mount profile routes
 
-// Default Route 
-app.get('/', (req,res) => {
-    res.send(`<h1>HomePage</h1>`)
-})
+// Default Route
+app.get("/", (req, res) => {
+  res.send(`<h1>HomePage</h1>`);
+});
+
+// Start Server
+app.listen(PORT, () => {
+  console.log(`App is running at PORT ${PORT}`);
+});
