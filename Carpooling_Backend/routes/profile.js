@@ -10,6 +10,6 @@ const upload = require("../utils/multer"); // For handling file uploads
 router.post("/", upload.single("profilePicture"), uploadProfile);
 
 // Route to fetch profile data (optional, if needed)
-router.get("/:id", getProfile);
+router.get("/get-profile/:userName", getProfile);
 
 module.exports = router;

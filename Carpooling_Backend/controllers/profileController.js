@@ -26,6 +26,23 @@ exports.uploadProfile = async (req, res) => {
       preferences,
     } = req.body;
 
+    // Split name into first and last name
+    const [firstName, lastName] = name.split(" ");
+
+    // Generate a unique username
+    let userName = `${firstName}_${lastName}_${Math.floor(1000 + Math.random() * 9000)}`; // Random 4-digit number
+
+    // Ensure username is unique in the database
+    let isUnique = false;
+    while (!isUnique) {
+      const existingUser = await Profile.findOne({ where: { userName } });
+      if (existingUser) {
+        userName = `${firstName}_${lastName}_${Math.floor(1000 + Math.random() * 9000)}`;
+      } else {
+        isUnique = true;
+      }
+    }
+
     // Upload image to Cloudinary
     let profilePictureUrl = null;
     if (req.file) {
@@ -44,6 +61,7 @@ exports.uploadProfile = async (req, res) => {
       vehicleDetails: JSON.parse(vehicleDetails),
       preferences: JSON.parse(preferences),
       profilePicture: profilePictureUrl,
+      userName, 
     });
 
     res.status(201).json({
@@ -64,8 +82,10 @@ exports.uploadProfile = async (req, res) => {
 // Get profile data (optional)
 exports.getProfile = async (req, res) => {
   try {
-    const { id } = req.params;
-    const profile = await Profile.findById(id);
+    const { userName } = req.params; // Get userName from the URL
+
+    // Find the profile by userName
+    const profile = await Profile.findOne({ userName });
 
     if (!profile) {
       return res.status(404).json({
@@ -74,6 +94,7 @@ exports.getProfile = async (req, res) => {
       });
     }
 
+    // Return the profile data
     res.status(200).json({
       success: true,
       data: profile,

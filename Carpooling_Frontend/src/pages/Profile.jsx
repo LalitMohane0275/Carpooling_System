@@ -1,25 +1,34 @@
-import React, { useState } from "react";
-import {
-  User,
-  Mail,
-  Phone,
-  MapPin,
-  Car,
-  Star,
-  Edit2,
-  Camera,
-  LogOut,
-  Calendar,
-  Clock,
-  Users,
-} from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { User, Mail, Phone, MapPin, Car, Star, Edit2, Camera, LogOut, Calendar, Clock, Users, Music, CookingPot as Smoking, Dog } from "lucide-react";
+import { getProfile } from '../api/profileApi';
 
 const ProfilePage = () => {
+  const { userName } = useParams();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
   const [user, setUser] = useState({
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+1 (555) 123-4567",
-    location: "San Francisco, CA",
+    // API data
+    name: "",
+    userName: "",
+    phoneNumber: "",
+    address: "",
+    hasVehicle: false,
+    profilePicture: "",
+    vehicleDetails: {
+      make: "",
+      model: "",
+      year: "",
+      licensePlate: ""
+    },
+    preferences: {
+      smokingAllowed: false,
+      petsAllowed: false,
+      musicAllowed: true
+    },
+    createdAt: "",
+    // Hardcoded data
     bio: "Passionate about carpooling and reducing carbon footprint. Love to meet new people during my commutes!",
     rating: 4.8,
     ridesGiven: 87,
@@ -28,17 +37,47 @@ const ProfilePage = () => {
 
   const [isEditing, setIsEditing] = useState(false);
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        setIsLoading(true);
+        const response = await getProfile(userName);
+        if (response.success) {
+          setUser(prevUser => ({
+            ...prevUser,
+            ...response.data,
+            // Add hardcoded data that's not from API
+            bio: "Passionate about carpooling and reducing carbon footprint. Love to meet new people during my commutes!",
+            rating: 4.8,
+            ridesGiven: 87,
+            ridesTaken: 52,
+          }));
+        }
+      } catch (err) {
+        setError(err.message);
+        console.error('Failed to fetch profile:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [userName]);
+
   const handleEdit = () => {
     setIsEditing(true);
   };
 
   const handleSave = () => {
-    // Here you would typically send the updated user data to your backend
     setIsEditing(false);
   };
 
   const handleChange = (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setUser(prevUser => ({
+      ...prevUser,
+      [name]: value
+    }));
   };
 
   // Mock data for rides offered and taken
@@ -80,6 +119,22 @@ const ProfilePage = () => {
     },
   ];
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-red-500">Error loading profile: {error}</div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
@@ -89,9 +144,9 @@ const ProfilePage = () => {
             <div className="absolute bottom-0 left-0 right-0 flex justify-center">
               <div className="relative">
                 <img
-                  src={`https://api.dicebear.com/6.x/initials/svg?seed=${user.name}`}
+                  src={user.profilePicture}
                   alt={user.name}
-                  className="w-32 h-32 rounded-full border-4 border-white shadow-lg"
+                  className="w-32 h-32 rounded-full border-4 border-white shadow-lg object-cover"
                 />
                 <button className="absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors">
                   <Camera size={20} />
@@ -104,6 +159,7 @@ const ProfilePage = () => {
           <div className="p-8 pt-16">
             <div className="text-center mb-6">
               <h1 className="text-3xl font-bold text-gray-800">{user.name}</h1>
+              <p className="text-gray-600">@{user.userName}</p>
               <div className="flex items-center justify-center mt-2">
                 <Star className="text-yellow-400 mr-1" size={20} />
                 <span className="text-gray-600">
@@ -117,16 +173,30 @@ const ProfilePage = () => {
               {/* User Details */}
               <div className="space-y-4">
                 <div className="flex items-center space-x-3">
-                  <Mail className="text-blue-500" size={20} />
-                  <span className="text-gray-700">{user.email}</span>
-                </div>
-                <div className="flex items-center space-x-3">
                   <Phone className="text-blue-500" size={20} />
-                  <span className="text-gray-700">{user.phone}</span>
+                  <span className="text-gray-700">{user.phoneNumber}</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <MapPin className="text-blue-500" size={20} />
-                  <span className="text-gray-700">{user.location}</span>
+                  <span className="text-gray-700">{user.address}</span>
+                </div>
+                {/* Preferences */}
+                <div className="mt-4 space-y-2">
+                  <h3 className="text-lg font-semibold text-gray-800">Ride Preferences</h3>
+                  <div className="flex items-center space-x-4">
+                    <div className={`flex items-center space-x-2 ${user.preferences.musicAllowed ? 'text-green-600' : 'text-gray-400'}`}>
+                      <Music size={20} />
+                      <span>{user.preferences.musicAllowed ? 'Music allowed' : 'No music'}</span>
+                    </div>
+                    <div className={`flex items-center space-x-2 ${user.preferences.smokingAllowed ? 'text-green-600' : 'text-gray-400'}`}>
+                      <Smoking size={20} />
+                      <span>{user.preferences.smokingAllowed ? 'Smoking allowed' : 'No smoking'}</span>
+                    </div>
+                    <div className={`flex items-center space-x-2 ${user.preferences.petsAllowed ? 'text-green-600' : 'text-gray-400'}`}>
+                      <Dog size={20} />
+                      <span>{user.preferences.petsAllowed ? 'Pets allowed' : 'No pets'}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -148,6 +218,23 @@ const ProfilePage = () => {
                 )}
               </div>
             </div>
+
+            {/* Vehicle Details */}
+            {user.hasVehicle && (
+              <div className="mt-8 bg-gray-50 p-4 rounded-lg">
+                <h2 className="text-xl font-semibold text-gray-800 mb-4">Vehicle Details</h2>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-gray-600">Make: {user.vehicleDetails.make}</p>
+                    <p className="text-gray-600">Model: {user.vehicleDetails.model}</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600">Year: {user.vehicleDetails.year}</p>
+                    <p className="text-gray-600">License Plate: {user.vehicleDetails.licensePlate}</p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Edit Profile Button */}
             <div className="mt-8 flex justify-center">
@@ -199,7 +286,7 @@ const ProfilePage = () => {
             <div className="flex items-center space-x-2">
               <Car className="text-blue-500" size={24} />
               <span className="text-gray-600 font-medium">
-                RideBuddy Member since 2023
+                RideBuddy Member since {new Date(user.createdAt).getFullYear()}
               </span>
             </div>
             <button className="flex items-center space-x-2 text-red-500 hover:text-red-600 transition-colors">

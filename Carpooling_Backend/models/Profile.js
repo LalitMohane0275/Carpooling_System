@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const ProfileSchema = new mongoose.Schema({
     name: { type: String, required: true },
+    userName:{ type: String, required: true },
     phoneNumber: { type: String, required: true },
     address: { type: String, required: true },
     hasVehicle: { type: Boolean, default: false },
