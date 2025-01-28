@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import Home from "./pages/Home";
 import About from "./components/About";
@@ -14,10 +14,12 @@ import BookRide from "./components/BookRide";
 import ProfilePage from "./pages/Profile";
 
 function App() {
+  // Extract the username from localStorage
+  const userName = localStorage.getItem("userName");
+
   return (
     <div className="App">
       <Navbar />
-
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/home" element={<Home />} />
@@ -27,6 +29,12 @@ function App() {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/book-ride/:id" element={<BookRide />} />
+        {/* Add dynamic routing for the profile */}
+        {userName ? (
+          <Route path="/profile" element={<Navigate to={`/profile/${userName}`} />} />
+        ) : (
+          <Route path="/profile" element={<Navigate to="/login" />} />
+        )}
         <Route path="/profile/:userName" element={<ProfilePage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

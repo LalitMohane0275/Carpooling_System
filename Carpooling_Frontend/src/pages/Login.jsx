@@ -37,7 +37,7 @@ function LoginPage() {
         toast.success("Login successful!", {
           position: "top-right",
         });
-        dispatch(login());
+        dispatch(login({email, username:data.username}));
         setTimeout(() => {
           navigate("/home");
         }, 2000);

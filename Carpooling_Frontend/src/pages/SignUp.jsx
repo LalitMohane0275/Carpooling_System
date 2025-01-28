@@ -113,7 +113,7 @@ function SignUp() {
 
       if (response.status === 201) {
         toast.success("Account created successfully!");
-        dispatch(login());
+        dispatch(login({email:formData.email, username:formData.username}));
         setTimeout(() => {
           navigate("/home");
         }, 2000);
