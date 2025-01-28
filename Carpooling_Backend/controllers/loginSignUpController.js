@@ -132,8 +132,13 @@ const login = async (req, res) => {
       return res.status(400).json({ message: 'Invalid email or password.' });
     }
 
+    const profile = await Profile.findOne({email: user.email});
+    if(!profile){
+      return res.status(404).json({ message: 'Profile not found.' });
+    }
+
     // Respond with a success message
-    res.status(200).json({ message: 'Login successful.', userId: user._id });
+    res.status(200).json({ message: 'Login successful.', userId: user._id , username: profile.userName });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error. Please try again later.' });

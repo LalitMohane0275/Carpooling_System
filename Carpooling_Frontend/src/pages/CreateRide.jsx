@@ -26,6 +26,8 @@ function CreateRide() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const email = localStorage.getItem('email');
+      ride.email = email;
       console.log("Ride Object:", ride);
       const response = await axios.post(
         "http://localhost:3000/api/v1/create-ride",

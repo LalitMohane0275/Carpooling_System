@@ -26,6 +26,11 @@ const RideSchema = new mongoose.Schema({
         required: true,
         min: 1,
     },
+    driver: {
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "User",
+        required: true,
+    }
 }, { timestamps: true }); // Add timestamps to track creation and update time
 
 // Export 

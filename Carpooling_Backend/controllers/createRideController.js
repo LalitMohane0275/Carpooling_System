@@ -1,17 +1,27 @@
 // Import model 
 const Ride = require("../models/RideModel");
 const PassengerRide = require("../models/PassengerRideModel");
+const User = require("../models/UserModel");
 
 // Business Logic
 exports.createRide = async (req, res) => {
     try {
         // Fetch data from request body
-        const { start, destination, time, date, seats } = req.body;
+        const { email, start, destination, time, date, seats } = req.body;
 
         // Validate required fields
-        if (!start || !destination || !time || !date || !seats) {
+        if (! email || !start || !destination || !time || !date || !seats) {
             return res.status(400).json({ message: "All fields are required" });
         }
+        
+        // fetch user details from userprofile
+        const user = await User.findOne({ email });
+        
+        // Check if user is authenticated
+        
+        // Check if user has vehicle and vehicle details
+        
+
 
         // Create a new ride object
         const newRide = new Ride({
@@ -20,6 +30,7 @@ exports.createRide = async (req, res) => {
             time,
             date,
             seats,
+            driver: user._id,
         });
 
         // Save the ride to MongoDB
