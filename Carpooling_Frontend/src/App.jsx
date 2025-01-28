@@ -12,7 +12,6 @@ import LoginPage from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import BookRide from "./components/BookRide";
 import ProfilePage from "./pages/Profile";
-import ProfileForm from "./pages/ProfileForm";
 
 function App() {
   return (
@@ -29,7 +28,6 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/book-ride/:id" element={<BookRide />} />
         <Route path="/profile/:userName" element={<ProfilePage />} />
-        <Route path="/profile-form" element={<ProfileForm />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
