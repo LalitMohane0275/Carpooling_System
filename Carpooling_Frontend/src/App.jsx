@@ -3,14 +3,14 @@ import "./App.css";
 import Home from "./pages/Home";
 import About from "./components/About";
 import CreateRide from "./pages/CreateRide";
-import FindRides from "./components/FindRides";
+import FindRides from "./pages/FindRides";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Landing from "./pages/Landing";
 import SignUpPage from "./pages/SignUp";
 import LoginPage from "./pages/Login";
 import NotFound from "./pages/NotFound";
-import BookRide from "./components/BookRide";
+import BookRide from "./pages/BookRide";
 import ProfilePage from "./pages/Profile";
 
 function App() {
@@ -31,7 +31,10 @@ function App() {
         <Route path="/book-ride/:id" element={<BookRide />} />
         {/* Add dynamic routing for the profile */}
         {userName ? (
-          <Route path="/profile" element={<Navigate to={`/profile/${userName}`} />} />
+          <Route
+            path="/profile"
+            element={<Navigate to={`/profile/${userName}`} />}
+          />
         ) : (
           <Route path="/profile" element={<Navigate to="/login" />} />
         )}
