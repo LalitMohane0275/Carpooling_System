@@ -111,14 +111,26 @@ function SignUp() {
         }
       );
 
-      if (response.status === 201) {
-        toast.success("Account created successfully!");
-        dispatch(login({email:formData.email, username:formData.username}));
+      // const data = await response.json();
+
+      if (response.data) {
+        toast.success("Account created successfully!", {
+          position: "top-right",
+        });
+        console.log(response);
+        dispatch(
+          login({
+            email: response.data.email,
+            username: response.data.userName,
+          })
+        );
+
         setTimeout(() => {
           navigate("/home");
         }, 2000);
       }
     } catch (error) {
+      console.error(error);
       const errorMessage =
         error.response?.data?.message ||
         "Something went wrong. Please try again.";

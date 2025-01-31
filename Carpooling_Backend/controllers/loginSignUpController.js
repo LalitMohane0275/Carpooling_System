@@ -97,6 +97,8 @@ const signup = async (req, res) => {
       success: true,
       message: "Signup successful",
       data: profile,
+      userId: newUser._id,
+      userName: userName,
     });
   } catch (error) {
     console.error(error);
