@@ -1,6 +1,7 @@
-const bcrypt = require('bcrypt');
-const User = require('../models/UserModel'); 
-const Profile = require('../models/Profile');
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const User = require("../models/UserModel");
+const Profile = require("../models/Profile");
 const cloudinary = require("cloudinary").v2;
 
 // });
@@ -23,24 +24,33 @@ const signup = async (req, res) => {
       hasVehicle,
       vehicleDetails,
       preferences,
-      email, 
-      password, 
-      confirmPassword 
+      email,
+      password,
+      confirmPassword,
     } = req.body;
 
-    if(!email || !password  || ! confirmPassword || !firstName || !lastName ||!phoneNumber || !address || !preferences){
+    if (
+      !email ||
+      !password ||
+      !confirmPassword ||
+      !firstName ||
+      !lastName ||
+      !phoneNumber ||
+      !address ||
+      !preferences
+    ) {
       return res.status(400).json({ message: "Required data missing" });
     }
 
-     // Check if passwords match
-     if (password !== confirmPassword) {
-      return res.status(400).json({ message: 'Passwords do not match.' });
+    // Check if passwords match
+    if (password !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match." });
     }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists.' });
+      return res.status(400).json({ message: "User already exists." });
     }
 
     // Hash the password
@@ -56,14 +66,18 @@ const signup = async (req, res) => {
     await newUser.save();
 
     // Generate a unique username
-    let userName = `${firstName}_${lastName}_${Math.floor(1000 + Math.random() * 9000)}`; 
+    let userName = `${firstName}_${lastName}_${Math.floor(
+      1000 + Math.random() * 9000
+    )}`;
 
     // Ensure username is unique in the database
     let isUnique = false;
     while (!isUnique) {
       const existingUser = await Profile.findOne({ where: { userName } });
       if (existingUser) {
-        userName = `${firstName}_${lastName}_${Math.floor(1000 + Math.random() * 9000)}`;
+        userName = `${firstName}_${lastName}_${Math.floor(
+          1000 + Math.random() * 9000
+        )}`;
       } else {
         isUnique = true;
       }
@@ -90,7 +104,7 @@ const signup = async (req, res) => {
       vehicleDetails: JSON.parse(vehicleDetails),
       preferences: JSON.parse(preferences),
       profilePicture: profilePictureUrl,
-      userName, 
+      userName,
     });
 
     res.status(201).json({
@@ -110,40 +124,53 @@ const signup = async (req, res) => {
   }
 };
 
-
-
-
 const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
     // Validate input fields
     if (!email || !password) {
-      return res.status(400).json({ message: 'Email and password are required.' });
+      return res
+        .status(400)
+        .json({ message: "Email and password are required." });
     }
 
     // Check if the user exists
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: 'Invalid email or password.' });
+      return res.status(400).json({ message: "Invalid email or password." });
     }
 
     // Compare password with the hashed password in the database
     const isPasswordMatch = await bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
-      return res.status(400).json({ message: 'Invalid email or password.' });
+      return res.status(400).json({ message: "Invalid email or password." });
     }
 
-    const profile = await Profile.findOne({email: user.email});
-    if(!profile){
-      return res.status(404).json({ message: 'Profile not found.' });
+    const profile = await Profile.findOne({ email: user.email });
+    if (!profile) {
+      return res.status(404).json({ message: "Profile not found." });
     }
+
+    const accessToken = jwt.sign(
+      {
+        userId: user._id,
+        email: user.email,
+      },
+      process.env.JWT_SECRET_KEY,
+      { expiresIn: "30m" }
+    );
+    console.log(accessToken);
 
     // Respond with a success message
-    res.status(200).json({ message: 'Login successful.', userId: user._id , username: profile.userName });
+    res.status(200).json({
+      message: "Login successful.",
+      userId: user._id,
+      username: profile.userName,
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server error. Please try again later.' });
+    res.status(500).json({ message: "Server error. Please try again later." });
   }
 };
 
