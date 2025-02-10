@@ -167,6 +167,7 @@ const login = async (req, res) => {
       message: "Login successful.",
       userId: user._id,
       username: profile.userName,
+      token : accessToken,
     });
   } catch (error) {
     console.error(error);

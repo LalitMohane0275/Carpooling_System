@@ -1,6 +1,8 @@
 const express = require("express");
 const carpool = require("./routes/carpool");
-const profile = require("./routes/profile"); // Import profile routes
+const profile = require("./routes/profile"); 
+const auth = require("./routes/auth");
+
 const cors = require("cors");
 const dbConnect = require("./config/database");
 require("dotenv").config();
@@ -18,7 +20,8 @@ dbConnect();
 
 // Mount Routes
 app.use("/api/v1", carpool);
-app.use("/api/v1/profile", profile); // Mount profile routes
+app.use("/api/v1/profile", profile); 
+app.use("/api/v1/auth", auth);
 
 // Default Route
 app.get("/", (req, res) => {

@@ -102,7 +102,7 @@ function SignUp() {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/v1/signup",
+        "http://localhost:3000/api/v1/auth/signup",
         formDataToSubmit,
         {
           headers: {
@@ -126,7 +126,7 @@ function SignUp() {
         );
 
         setTimeout(() => {
-          navigate("/home");
+          navigate("/login");
         }, 2000);
       }
     } catch (error) {
