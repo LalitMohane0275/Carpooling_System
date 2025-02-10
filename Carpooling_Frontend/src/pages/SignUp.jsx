@@ -102,7 +102,7 @@ function SignUp() {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/v1/signup",
+        "http://localhost:3000/api/v1/auth/signup",
         formDataToSubmit,
         {
           headers: {
@@ -111,14 +111,26 @@ function SignUp() {
         }
       );
 
-      if (response.status === 201) {
-        toast.success("Account created successfully!");
-        dispatch(login({email:formData.email, username:formData.username}));
+      // const data = await response.json();
+
+      if (response.data) {
+        toast.success("Account created successfully!", {
+          position: "top-right",
+        });
+        console.log(response);
+        dispatch(
+          login({
+            email: response.data.email,
+            username: response.data.userName,
+          })
+        );
+
         setTimeout(() => {
-          navigate("/home");
+          navigate("/login");
         }, 2000);
       }
     } catch (error) {
+      console.error(error);
       const errorMessage =
         error.response?.data?.message ||
         "Something went wrong. Please try again.";
