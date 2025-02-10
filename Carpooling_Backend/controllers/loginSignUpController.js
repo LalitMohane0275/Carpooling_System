@@ -1,16 +1,7 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/UserModel");
-const Profile = require("../models/Profile");
-const cloudinary = require("cloudinary").v2;
-
-// });
-
-cloudinary.config({
-  cloud_name: "dxuxjltav",
-  api_key: 288955458792195,
-  api_secret: "36rFQxqeibmumXWfGOCCFCle7T4",
-});
+const cloudinary = require("../config/cloudinary");
 
 // Upload profile data
 const signup = async (req, res) => {
@@ -57,44 +48,22 @@ const signup = async (req, res) => {
     const saltRounds = 10; // Adjust the salt rounds as necessary
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Save user to database
-    const newUser = new User({
-      email,
-      password: hashedPassword,
-    });
-
-    await newUser.save();
-
-    // Generate a unique username
-    let userName = `${firstName}_${lastName}_${Math.floor(
-      1000 + Math.random() * 9000
-    )}`;
-
-    // Ensure username is unique in the database
-    let isUnique = false;
-    while (!isUnique) {
-      const existingUser = await Profile.findOne({ where: { userName } });
-      if (existingUser) {
-        userName = `${firstName}_${lastName}_${Math.floor(
-          1000 + Math.random() * 9000
-        )}`;
-      } else {
-        isUnique = true;
-      }
-    }
-
     // Upload image to Cloudinary
-    let profilePictureUrl = null;
+    let profilePicture = null;
     if (req.file) {
       const uploadResult = await cloudinary.uploader.upload(req.file.path, {
         folder: "profile_pictures",
       });
-      profilePictureUrl = uploadResult.secure_url;
+      profilePicture = {
+        url : uploadResult.secure_url,
+        publicId: uploadResult.public_id,
+      };
     }
 
-    // Save profile to the database
-    const profile = await Profile.create({
+    // Save user to the database
+    const newUser = await User.create({
       email,
+      password: hashedPassword,
       firstName,
       middleName,
       lastName,
@@ -103,16 +72,14 @@ const signup = async (req, res) => {
       hasVehicle: JSON.parse(hasVehicle),
       vehicleDetails: JSON.parse(vehicleDetails),
       preferences: JSON.parse(preferences),
-      profilePicture: profilePictureUrl,
-      userName,
+      profilePictureUrl: profilePicture?.url,
     });
 
     res.status(201).json({
       success: true,
       message: "Signup successful",
-      data: profile,
-      userId: newUser._id,
-      userName: userName,
+      data: newUser,
+      publicId: profilePicture?.publicId,
     });
   } catch (error) {
     console.error(error);
@@ -147,10 +114,6 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password." });
     }
 
-    const profile = await Profile.findOne({ email: user.email });
-    if (!profile) {
-      return res.status(404).json({ message: "Profile not found." });
-    }
 
     const accessToken = jwt.sign(
       {
@@ -166,7 +129,6 @@ const login = async (req, res) => {
     res.status(200).json({
       message: "Login successful.",
       userId: user._id,
-      username: profile.userName,
       token : accessToken,
     });
   } catch (error) {
