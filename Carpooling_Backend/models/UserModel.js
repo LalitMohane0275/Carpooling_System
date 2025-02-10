@@ -17,7 +17,6 @@ const userSchema = new mongoose.Schema({
     firstName: { type: String, required: true },
     middleName: { type: String, default: '' },
     lastName: { type: String, required: true },
-    userName: { type: String, required: true, unique: true },
     phoneNumber: { type: String, required: true },
     address: { type: String, required: true },
     hasVehicle: { type: Boolean, default: false },
