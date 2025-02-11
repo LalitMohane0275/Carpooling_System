@@ -26,13 +26,18 @@ function CreateRide() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const email = localStorage.getItem('email');
-      ride.email = email;
+      const token = localStorage.getItem("token");
+      // fetch user id from token
+      const userId = JSON.parse(atob(token.split(".")[1])).userId;
+      ride.user_id = userId;
       console.log("Ride Object:", ride);
       const response = await axios.post(
         "http://localhost:3000/api/v1/create-ride",
-        ride
-      );
+        ride, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Pass the token here
+        },
+      });
       console.log("Ride Created Successfully:", response.data);
       toast.success("Ride created successfully!");
       setRide(initialState);

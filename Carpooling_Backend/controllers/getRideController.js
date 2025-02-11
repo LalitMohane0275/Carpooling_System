@@ -13,6 +13,7 @@ exports.getRides = async (req, res) => {
         }
 
         // Send success response with rides data
+
         res.status(200).json({
             message: "Rides fetched successfully",
             rides: rides,
@@ -32,7 +33,7 @@ exports.getRides = async (req, res) => {
 // Controller to get details of a specific ride by ID
 exports.getRide = async (req, res) => {
     try {
-        const { id } = req.params; 
+        const { id } = req.params;
 
         // Fetch ride by ID from the database
         const ride = await Ride.findById(id);

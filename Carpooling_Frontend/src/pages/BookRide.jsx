@@ -33,9 +33,13 @@ function BookRide() {
   useEffect(() => {
     const fetchRideDetails = async () => {
       try {
+        const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:3000/api/v1/book-ride/${id}`
-        );
+          `http://localhost:3000/api/v1/book-ride/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setRide(response.data.ride);
         setLoading(false);
       } catch (err) {
@@ -60,10 +64,14 @@ function BookRide() {
         ...formData,
         seats: parseInt(formData.seats, 10),
       };
+      const token = localStorage.getItem("token");
       const response = await axios.post(
-        `http://localhost:3000/api/v1/create-passengerRide/${id}`,
-        formDataToSend
-      );
+        `http://localhost:3000/api/v1/create-passenger-ride/${id}`,
+        formDataToSend, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Pass the token here
+        },
+      });
 
       toast.success("Ride booked successfully!", {
         position: "top-right",
@@ -77,7 +85,12 @@ function BookRide() {
         seats: "",
       });
       setSubmitted(true);
-      navigate("/home");
+      toast.success("Ride Booked Successfully!", {
+        position: "top-right",
+      });
+      setTimeout(() => {
+        navigate("/find-ride");
+      }, 2000);
     } catch (err) {
       toast.error("Failed to book the ride. Please try again.", {
         position: "top-right",

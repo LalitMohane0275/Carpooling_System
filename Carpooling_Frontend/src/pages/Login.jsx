@@ -32,12 +32,12 @@ function LoginPage() {
       });
 
       const data = await response.json();
-      console.log(data)
+      console.log(data);
       if (response.ok) {
         toast.success("Login successful!", {
           position: "top-right",
         });
-        dispatch(login({email, username:data.username}));
+        dispatch(login({token: data.token}));
         setTimeout(() => {
           navigate("/home");
         }, 2000);

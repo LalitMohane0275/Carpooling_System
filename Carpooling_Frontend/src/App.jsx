@@ -14,8 +14,18 @@ import BookRide from "./pages/BookRide";
 import ProfilePage from "./pages/Profile";
 
 function App() {
-  // Extract the username from localStorage
-  const userName = localStorage.getItem("userName");
+  let user_id = null;
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      user_id = payload.user_id; 
+      console.log(`User ${user_id}`);
+    } catch (error) {
+      console.error("Invalid token:", error, user_id);
+    }
+  }
 
   return (
     <div className="App">
@@ -29,16 +39,15 @@ function App() {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/book-ride/:id" element={<BookRide />} />
-        {/* Add dynamic routing for the profile */}
-        {userName ? (
+        {user_id ? (
           <Route
             path="/profile"
-            element={<Navigate to={`/profile/${userName}`} />}
+            element={<Navigate to={`/profile/${user_id}`} />}
           />
         ) : (
           <Route path="/profile" element={<Navigate to="/login" />} />
         )}
-        <Route path="/profile/:userName" element={<ProfilePage />} />
+        <Route path="/profile/:user_id" element={<ProfilePage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />

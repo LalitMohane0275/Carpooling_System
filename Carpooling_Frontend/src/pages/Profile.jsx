@@ -4,14 +4,14 @@ import { User, Mail, Phone, MapPin, Car, Star, Edit2, Camera, LogOut, Calendar, 
 import { getProfile } from '../api/profileApi';
 
 const ProfilePage = () => {
-  const { userName } = useParams();
+  let {user_id} = useParams();
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   
   const [user, setUser] = useState({
     // API data
     name: "",
-    userName: "",
     phoneNumber: "",
     address: "",
     hasVehicle: false,
@@ -41,7 +41,8 @@ const ProfilePage = () => {
     const fetchProfile = async () => {
       try {
         setIsLoading(true);
-        const response = await getProfile(userName);
+
+        const response = await getProfile(user_id);
         if (response.success) {
           setUser(prevUser => ({
             ...prevUser,
@@ -62,7 +63,7 @@ const ProfilePage = () => {
     };
 
     fetchProfile();
-  }, [userName]);
+  }, [user_id]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -159,7 +160,7 @@ const ProfilePage = () => {
           <div className="p-8 pt-16">
             <div className="text-center mb-6">
               <h1 className="text-3xl font-bold text-gray-800">{user.name}</h1>
-              <p className="text-gray-600">@{user.userName}</p>
+              <p className="text-gray-600">@{user.firstName}</p>
               <div className="flex items-center justify-center mt-2">
                 <Star className="text-yellow-400 mr-1" size={20} />
                 <span className="text-gray-600">

@@ -13,19 +13,15 @@ const authSlice = createSlice({
   reducers: {
     login(state, action) {
       state.isLoggedIn = true;
-      state.email = action.payload.email; 
-      state.username = action.payload.username;
+      state.token = action.payload.token; 
       localStorage.setItem("isLoggedIn", true);
-      localStorage.setItem("email", action.payload.email); 
-      localStorage.setItem("userName", action.payload.username);  
+      localStorage.setItem("token", action.payload.token);
     },
     logout(state) {
       state.isLoggedIn = false;
-      state.email = null; // Clear the email
-      state.username = null; // Clear the username
+      state.token = null; // Clear the token
       localStorage.removeItem("isLoggedIn");
-      localStorage.removeItem("email"); // Remove email from localStorage
-      localStorage.removeItem("userName"); // Remove username from localStorage
+      localStorage.removeItem("token"); // Remove token from localStorage
     },
   },
 });

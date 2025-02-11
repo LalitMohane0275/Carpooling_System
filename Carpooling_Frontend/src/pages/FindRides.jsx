@@ -11,9 +11,12 @@ function FindRides() {
   useEffect(() => {
     const fetchRides = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:3000/api/v1/find-ride"
-        );
+        const token = localStorage.getItem("token");
+        const response = await axios.get("http://localhost:3000/api/v1/find-ride", {
+          headers: {
+            Authorization: `Bearer ${token}`, // Pass the token here
+          },
+        });
         setRides(response.data.rides);
         setLoading(false);
       } catch (err) {
