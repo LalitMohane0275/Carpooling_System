@@ -20,7 +20,7 @@ dbConnect();
 
 // Mount Routes
 app.use("/api/v1", carpool);
-// app.use("/api/v1/profile", profile); 
+app.use("/api/v1/profile", profile); 
 app.use("/api/v1/auth", auth);
 
 // Default Route

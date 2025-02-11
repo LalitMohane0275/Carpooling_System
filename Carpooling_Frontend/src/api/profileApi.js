@@ -7,27 +7,19 @@ const api = axios.create({
   baseURL: BASE_URL,
   headers: {
     'Content-Type': 'application/json',
-    // Add authorization header if needed
-    // 'Authorization': `Bearer ${token}`
   },
 });
 
-export const getProfile = async (userName) => {
+export const getProfile = async (user_id) => {
   try {
-    const response = await api.get(`/get-profile/${userName}`);
+    const response = await api.get(`/get-profile/${user_id}`,{
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
     return response.data;
   } catch (error) {
     console.error('Error fetching profile:', error);
     throw error;
   }
 };
-
-// export const updateProfile = async (profileData) => {
-//   try {
-//     const response = await api.put('/profile', profileData);
-//     return response.data;
-//   } catch (error) {
-//     console.error('Error updating profile:', error);
-//     throw error;
-//   }
-// };

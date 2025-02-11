@@ -120,8 +120,7 @@ function SignUp() {
         console.log(response);
         dispatch(
           login({
-            email: response.data.email,
-            username: response.data.userName,
+            user_id: response.data.user_id,
           })
         );
 

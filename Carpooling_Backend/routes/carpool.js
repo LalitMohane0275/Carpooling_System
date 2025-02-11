@@ -10,7 +10,7 @@ const {getRide, getRides} = require("../controllers/getRideController");
 
 // Mapping Create
 router.post("/create-ride", authMiddleware, createRide);
-router.post("/create-passengerRide/:id", authMiddleware, createPassengerRide);
+router.post("/create-passenger-ride/:id", authMiddleware, createPassengerRide);
 router.get("/find-ride", authMiddleware, getRides);
 router.get("/book-ride/:id", authMiddleware, getRide);
 
