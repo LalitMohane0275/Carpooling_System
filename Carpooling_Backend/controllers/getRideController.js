@@ -1,5 +1,6 @@
 // Import the Ride model
 const Ride = require("../models/RideModel");
+const PassengerRide = require("../models/PassengerRideModel");
 
 // Controller to get all rides
 exports.getRides = async (req, res) => {
@@ -64,3 +65,72 @@ exports.getRide = async (req, res) => {
     }
 };
 
+
+// Controller to get details of a specific ride by ID
+exports.getRidesByDriverId = async (req, res) => {
+    try {
+        const { driver } = req.params;
+
+        // Fetch ride by ID from the database
+        const rides = await Ride.findOne({driver});
+
+        // Check if ride exists
+        if (!rides) {
+            return res.status(404).json({ message: "Rides of user not found" });
+        }
+
+        // Send success response with ride data
+        res.status(200).json({
+            message: "Rides fetched successfully",
+            rides: rides,
+        });
+    } catch (err) {
+        console.error(err);
+
+        // Handle invalid IDs and other errors
+        if (err.kind === "ObjectId") {
+            return res.status(400).json({ message: "Invalid ride ID" });
+        }
+
+        // Send error response
+        res.status(500).json({
+            message: "Failed to fetch ride details of user",
+            error: err.message,
+        });
+    }
+};
+
+
+// Controller to get details of a specific ride by ID
+exports.getPassengerRidesByDriverId = async (req, res) => {
+    try {
+        const { driver } = req.params;
+
+        // Fetch ride by ID from the database
+        const rides = await PassengerRide.findOne({driver});
+
+        // Check if ride exists
+        if (!rides) {
+            return res.status(404).json({ message: "Rides of user not found" });
+        }
+
+        // Send success response with ride data
+        res.status(200).json({
+            message: "Rides fetched successfully",
+            rides: rides,
+        });
+    } catch (err) {
+        console.error(err);
+
+        // Handle invalid IDs and other errors
+        if (err.kind === "ObjectId") {
+            return res.status(400).json({ message: "Invalid ride ID" });
+        }
+
+        // Send error response
+        res.status(500).json({
+            message: "Failed to fetch ride details of driver",
+            error: err.message,
+        });
+    }
+};
