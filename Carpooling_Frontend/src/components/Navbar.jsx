@@ -35,15 +35,15 @@ function Navbar() {
     dispatch(logout());
     navigate("/");
   };
-  let user_id = null;
+  let userId = null;
   const token = localStorage.getItem("token");
   if (token) {
     try {
       const payload = JSON.parse(atob(token.split(".")[1]));
-      user_id = payload.user_id;
-      console.log(`User ${user_id}`);
+      userId = payload.userId;
+      console.log(`User ${userId}`);
     } catch (error) {
-      console.error("Invalid token:", error, user_id);
+      console.error("Invalid token:", error, userId);
     }
   } else {
     console.log("no token found");
@@ -96,7 +96,7 @@ function Navbar() {
                     </button>
                     <div className="absolute right-0 w-48 mt-2 py-2 bg-white rounded-lg shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                       <a
-                        href={`/profile/${user_id}`}
+                        href={`/profile/${userId}`}
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
                       >
                         View Profile

@@ -4,7 +4,7 @@ import { User, Mail, Phone, MapPin, Car, Star, Edit2, Camera, LogOut, Calendar, 
 import { getProfile } from '../api/profileApi';
 
 const ProfilePage = () => {
-  let {user_id} = useParams();
+  let {userId} = useParams();
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -42,7 +42,7 @@ const ProfilePage = () => {
       try {
         setIsLoading(true);
 
-        const response = await getProfile(user_id);
+        const response = await getProfile(userId);
         if (response.success) {
           setUser(prevUser => ({
             ...prevUser,
@@ -63,7 +63,7 @@ const ProfilePage = () => {
     };
 
     fetchProfile();
-  }, [user_id]);
+  }, [userId]);
 
   const handleEdit = () => {
     setIsEditing(true);

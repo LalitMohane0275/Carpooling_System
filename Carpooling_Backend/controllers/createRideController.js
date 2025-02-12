@@ -7,15 +7,15 @@ const User = require("../models/UserModel");
 exports.createRide = async (req, res) => {
     try {
         // Fetch data from request body
-        const { user_id, start, destination, time, date, seats } = req.body;
+        const { userId, start, destination, time, date, seats } = req.body;
 
         // Validate required fields
-        if (! user_id || !start || !destination || !time || !date || !seats) {
+        if (! userId || !start || !destination || !time || !date || !seats) {
             return res.status(400).json({ message: "All fields are required" });
         }
         
         // fetch user details from userprofile
-        // const user = await User.findOne({ user_id });
+        // const user = await User.findOne({ userId });
         
         // Check if user is authenticated
         
@@ -30,7 +30,7 @@ exports.createRide = async (req, res) => {
             time,
             date,
             seats,
-            driver: user_id,
+            driver: userId,
         });
 
         // Save the ride to MongoDB

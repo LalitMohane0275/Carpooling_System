@@ -6,6 +6,6 @@ const { getProfile } = require("../controllers/profileController");
 
 
 // Route to fetch profile data 
-router.get("/get-profile/:user_id", authMiddleware, getProfile);
+router.get("/get-profile/:userId", authMiddleware, getProfile);
 
 module.exports = router;

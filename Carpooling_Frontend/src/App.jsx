@@ -14,16 +14,16 @@ import BookRide from "./pages/BookRide";
 import ProfilePage from "./pages/Profile";
 
 function App() {
-  let user_id = null;
+  let userId = null;
   const token = localStorage.getItem("token");
 
   if (token) {
     try {
       const payload = JSON.parse(atob(token.split(".")[1]));
-      user_id = payload.user_id; 
-      console.log(`User ${user_id}`);
+      userId = payload.userId; 
+      console.log(`User ${userId}`);
     } catch (error) {
-      console.error("Invalid token:", error, user_id);
+      console.error("Invalid token:", error, userId);
     }
   }
 
@@ -39,15 +39,15 @@ function App() {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/book-ride/:id" element={<BookRide />} />
-        {user_id ? (
+        {userId ? (
           <Route
             path="/profile"
-            element={<Navigate to={`/profile/${user_id}`} />}
+            element={<Navigate to={`/profile/${userId}`} />}
           />
         ) : (
           <Route path="/profile" element={<Navigate to="/login" />} />
         )}
-        <Route path="/profile/:user_id" element={<ProfilePage />} />
+        <Route path="/profile/:userId" element={<ProfilePage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />

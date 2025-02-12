@@ -29,7 +29,7 @@ function CreateRide() {
       const token = localStorage.getItem("token");
       // fetch user id from token
       const userId = JSON.parse(atob(token.split(".")[1])).userId;
-      ride.user_id = userId;
+      ride.userID = userId;
       console.log("Ride Object:", ride);
       const response = await axios.post(
         "http://localhost:3000/api/v1/create-ride",

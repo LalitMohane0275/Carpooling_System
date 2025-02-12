@@ -10,9 +10,9 @@ const api = axios.create({
   },
 });
 
-export const getProfile = async (user_id) => {
+export const getProfile = async (userId) => {
   try {
-    const response = await api.get(`/get-profile/${user_id}`,{
+    const response = await api.get(`/get-profile/${userId}`,{
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },

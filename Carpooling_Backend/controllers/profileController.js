@@ -3,11 +3,11 @@ const User = require("../models/UserModel");
 
 exports.getProfile = async (req, res) => {
   try {
-    const { user_id } = req.params; 
+    const { userId } = req.params; 
     // console.log("Request Parameters:", req.params);
 
-    // Check if `user_id` is a valid ObjectId
-    if (!mongoose.Types.ObjectId.isValid(user_id)) {
+    // Check if `userId` is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({
         success: false,
         message: "Invalid user ID",
@@ -15,7 +15,7 @@ exports.getProfile = async (req, res) => {
     }
 
     // Find the profile by `_id`
-    const user = await User.findOne({ _id: user_id });
+    const user = await User.findOne({ _id: userId });
     if (!user) {
       return res.status(404).json({
         success: false,
