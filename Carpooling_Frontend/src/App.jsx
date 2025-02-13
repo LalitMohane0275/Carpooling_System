@@ -1,17 +1,17 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 import Home from "./pages/Home";
-import About from "./components/About";
+import About from "./pages/About";
 import CreateRide from "./pages/CreateRide";
 import FindRides from "./pages/FindRides";
 import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
 import Landing from "./pages/Landing";
 import SignUpPage from "./pages/SignUp";
 import LoginPage from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import BookRide from "./pages/BookRide";
 import ProfilePage from "./pages/Profile";
+import Footer from "./components/Footer";
 
 function App() {
   // Extract the username from localStorage
