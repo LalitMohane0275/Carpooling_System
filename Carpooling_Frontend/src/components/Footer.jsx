@@ -10,7 +10,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 
-function Navbar() {
+function Footer() {
   return (
     <div>
       {/* Footer */}
@@ -145,4 +145,4 @@ function Navbar() {
   );
 }
 
-export default Navbar;
+export default Footer;
