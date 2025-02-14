@@ -13,6 +13,7 @@ import BookRide from "./pages/BookRide";
 import ProfilePage from "./pages/Profile";
 import Footer from "./components/Footer";
 import ProtectedRoutes from "./components/ProtectedRoutes";
+import Reviews from "./pages/Reviews";
 
 function App() {
   let userId = null;
@@ -69,6 +70,7 @@ function App() {
           <Route path="/profile" element={<Navigate to="/login" />} />
         )}
         <Route path="/profile/:userId" element={<ProfilePage />} />
+        <Route path="/reviews" element={<Reviews/>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
