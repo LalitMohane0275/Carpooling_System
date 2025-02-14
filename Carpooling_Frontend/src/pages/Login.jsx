@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { Mail, Lock, Car, Eye, EyeOff } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { login } from "../store/authSlice";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "../firebase-config";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -13,6 +15,17 @@ function LoginPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const handleGoogleLogin = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      console.log("User Info:", user);
+    } catch (error) {
+      console.error("Error during sign-in:", error);
+    }
+  };
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (email === "" || password === "") {
@@ -125,6 +138,18 @@ function LoginPage() {
             className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-blue-700 transform hover:scale-[1.02] transition-all duration-200 shadow-md hover:shadow-lg"
           >
             Log In
+          </button>
+
+          <button
+            onClick={handleGoogleLogin}
+            className="w-full bg-white text-gray-700 py-3 rounded-xl font-semibold border border-gray-300 hover:bg-gray-100 transform hover:scale-[1.02] transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+          >
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"
+              alt="Google Logo"
+              className="h-5 w-5"
+            />
+            Sign in with Google
           </button>
 
           {/* Sign Up Link */}
