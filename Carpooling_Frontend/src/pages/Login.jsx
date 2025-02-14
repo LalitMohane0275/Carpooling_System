@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { login } from "../store/authSlice";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../firebase-config";
+import googleIcon from "../assets/google-icon.svg";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -16,15 +17,32 @@ function LoginPage() {
   const dispatch = useDispatch();
 
   const handleGoogleLogin = async () => {
-    const provider = new GoogleAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      console.log("User Info:", user);
-    } catch (error) {
-      console.error("Error during sign-in:", error);
-    }
-  };
+  const provider = new GoogleAuthProvider();
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    console.log("Access Token:", user.accessToken);
+    console.log("User Info:", user);
+    
+    // Display success toast
+    toast.success("Google login successful!", {
+      position: "top-right",
+      autoClose: 3000,
+    });
+
+    // Redirect to home after a short delay
+    setTimeout(() => {
+      navigate("/home");
+    }, 2000);
+  } catch (error) {
+    toast.error("Error during Google login. Please try again.", {
+      position: "top-right",
+      autoClose: 3000,
+    });
+    console.error("Error during sign-in:", error);
+  }
+};
+
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -145,7 +163,7 @@ function LoginPage() {
             className="w-full bg-white text-gray-700 py-3 rounded-xl font-semibold border border-gray-300 hover:bg-gray-100 transform hover:scale-[1.02] transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
           >
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"
+              src={googleIcon}
               alt="Google Logo"
               className="h-5 w-5"
             />

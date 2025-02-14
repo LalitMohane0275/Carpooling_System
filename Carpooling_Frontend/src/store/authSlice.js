@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 // Initial state for authentication
 const initialState = {
   isLoggedIn: JSON.parse(localStorage.getItem("isLoggedIn")) || false,
-  email: localStorage.getItem("email") || null,
+  token: localStorage.getItem("token") || null,
 };
 
 // Create a slice for authentication

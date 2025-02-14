@@ -13,7 +13,9 @@ import BookRide from "./pages/BookRide";
 import ProfilePage from "./pages/Profile";
 import Footer from "./components/Footer";
 import ProtectedRoutes from "./components/ProtectedRoutes";
-import Reviews from "./pages/Reviews";
+
+import Reviews from "./pages/Reviews"
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   let userId = null;
@@ -35,9 +37,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/home" element={
-          <ProtectedRoutes>
+          <PrivateRoute>
             <Home />
-          </ProtectedRoutes>
+          </PrivateRoute>
         } />
         <Route path="/find-ride" element={
           <ProtectedRoutes>
