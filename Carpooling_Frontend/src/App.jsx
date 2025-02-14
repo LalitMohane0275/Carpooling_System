@@ -12,6 +12,7 @@ import NotFound from "./pages/NotFound";
 import BookRide from "./pages/BookRide";
 import ProfilePage from "./pages/Profile";
 import Footer from "./components/Footer";
+import ProtectedRoutes from "./components/ProtectedRoutes";
 
 function App() {
   let userId = null;
@@ -32,13 +33,33 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/find-ride" element={<FindRides />} />
-        <Route path="/create-ride" element={<CreateRide />} />
-        <Route path="/about" element={<About />} />
+        <Route path="/home" element={
+          <ProtectedRoutes>
+            <Home />
+          </ProtectedRoutes>
+        } />
+        <Route path="/find-ride" element={
+          <ProtectedRoutes>
+            <FindRides />
+          </ProtectedRoutes>
+        } />
+        <Route path="/create-ride" element={
+          <ProtectedRoutes>
+            <CreateRide />
+          </ProtectedRoutes>
+        } />
+        <Route path="/about" element={
+         <ProtectedRoutes>
+            <About />
+          </ProtectedRoutes>
+        } />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/book-ride/:id" element={<BookRide />} />
+        <Route path="/book-ride/:id" element={
+          <ProtectedRoutes>
+            <BookRide />
+          </ProtectedRoutes>
+        } />
         {userId ? (
           <Route
             path="/profile"
