@@ -13,9 +13,10 @@ import BookRide from "./pages/BookRide";
 import ProfilePage from "./pages/Profile";
 import Footer from "./components/Footer";
 import ProtectedRoutes from "./components/ProtectedRoutes";
-
 import Reviews from "./pages/Reviews"
 import PrivateRoute from "./components/PrivateRoute";
+import EditProfile from "./pages/EditProfile";
+
 
 function App() {
   let userId = null;
@@ -64,10 +65,13 @@ function App() {
           </ProtectedRoutes>
         } />
         {userId ? (
-          <Route
-            path="/profile"
-            element={<Navigate to={`/profile/${userId}`} />}
-          />
+          <>
+           <Route
+             path="/profile"
+             element={<Navigate to={`/profile/${userId}`} />}
+           />
+           <Route path="/profile/:userId/edit" element={<EditProfile />} />
+          </>
         ) : (
           <Route path="/profile" element={<Navigate to="/login" />} />
         )}

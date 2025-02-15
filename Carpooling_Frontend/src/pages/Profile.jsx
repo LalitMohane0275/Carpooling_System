@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { User, Mail, Phone, MapPin, Car, Star, Edit2, Camera, LogOut, Calendar, Clock, Users, Music, CookingPot as Smoking, Dog } from "lucide-react";
 import { getProfile } from '../api/profileApi';
 
 const ProfilePage = () => {
-  let {userId} = useParams();
+  let { userId } = useParams();
+  const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -35,8 +36,6 @@ const ProfilePage = () => {
     ridesTaken: 52,
   });
 
-  const [isEditing, setIsEditing] = useState(false);
-
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -66,19 +65,7 @@ const ProfilePage = () => {
   }, [userId]);
 
   const handleEdit = () => {
-    setIsEditing(true);
-  };
-
-  const handleSave = () => {
-    setIsEditing(false);
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUser(prevUser => ({
-      ...prevUser,
-      [name]: value
-    }));
+    navigate(`/profile/${userId}/edit`);
   };
 
   // Mock data for rides offered and taken
@@ -206,17 +193,7 @@ const ProfilePage = () => {
                 <h2 className="text-xl font-semibold text-gray-800 mb-2">
                   About Me
                 </h2>
-                {isEditing ? (
-                  <textarea
-                    name="bio"
-                    value={user.bio}
-                    onChange={handleChange}
-                    className="w-full p-2 border rounded-md"
-                    rows="4"
-                  />
-                ) : (
-                  <p className="text-gray-600">{user.bio}</p>
-                )}
+                <p className="text-gray-600">{user.bio}</p>
               </div>
             </div>
 
@@ -239,22 +216,13 @@ const ProfilePage = () => {
 
             {/* Edit Profile Button */}
             <div className="mt-8 flex justify-center">
-              {isEditing ? (
-                <button
-                  onClick={handleSave}
-                  className="bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition-colors"
-                >
-                  Save Changes
-                </button>
-              ) : (
-                <button
-                  onClick={handleEdit}
-                  className="flex items-center space-x-2 bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition-colors"
-                >
-                  <Edit2 size={18} />
-                  <span>Edit Profile</span>
-                </button>
-              )}
+              <button
+                onClick={handleEdit}
+                className="flex items-center space-x-2 bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition-colors"
+              >
+                <Edit2 size={18} />
+                <span>Edit Profile</span>
+              </button>
             </div>
 
             {/* Rides Offered Section */}
