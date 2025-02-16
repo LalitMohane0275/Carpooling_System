@@ -2,6 +2,7 @@ const express = require("express");
 const carpool = require("./routes/carpool");
 const profile = require("./routes/profile"); 
 const auth = require("./routes/auth");
+const reviews = require("./routes/reviews");
 
 const cors = require("cors");
 const dbConnect = require("./config/database");
@@ -22,6 +23,7 @@ dbConnect();
 app.use("/api/v1", carpool);
 app.use("/api/v1/profile", profile); 
 app.use("/api/v1/auth", auth);
+app.use("/api/v1/reviews", reviews);
 
 // Default Route
 app.get("/", (req, res) => {
