@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/UserModel");
 const cloudinary = require("../config/cloudinary");
+const fs = require("fs");
 
 // Upload profile data
 const signup = async (req, res) => {
@@ -59,6 +60,9 @@ const signup = async (req, res) => {
         publicId: uploadResult.public_id,
       };
     }
+
+     // delete the file from local storage
+        fs.unlinkSync(req.file.path);
 
     // Save user to the database
     const newUser = await User.create({
