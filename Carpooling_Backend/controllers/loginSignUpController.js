@@ -136,4 +136,48 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { signup, login };
+const changePassword = async (req, res) => {
+  try {
+    const userId = req.userInfo.userId;
+    // extract old password, new password from request body
+    const { oldPassword, newPassword } = req.body;
+    // find current user
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User does not exist!",
+      });
+    }
+    // check if old password is correct or not
+    const isPasswordCorrect = await bcrypt.compare(oldPassword, user.password);
+    if (!isPasswordCorrect) {
+      return res.status(400).json({
+        success: false,
+        message: "Old password is incorrect!",
+      });
+    }
+
+    // hash the new password
+    const salt = await bcrypt.genSalt(10);
+    const newHashedPassword = await bcrypt.hash(newPassword, salt);
+
+    // update user password
+    user.password = newHashedPassword;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Password changed successfully"
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong! Please try again",
+    });
+  }
+}
+
+module.exports = { signup, login, changePassword };
