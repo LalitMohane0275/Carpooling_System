@@ -37,3 +37,26 @@ exports.getProfile = async (req, res) => {
     });
   }
 };
+
+
+
+exports.updateProfile = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const updates = req.body; // Get all fields dynamically from request body
+
+    // Find user and update details
+    const updatedUser = await User.findByIdAndUpdate(userId, updates, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ message: "Profile updated successfully", user: updatedUser });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating profile", error: error.message });
+  }
+};

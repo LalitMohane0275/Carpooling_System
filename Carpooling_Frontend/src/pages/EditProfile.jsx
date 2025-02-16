@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Camera, Car, Music, CookingPot as Smoking, Dog, Edit2 } from 'lucide-react';
 import { getProfile } from '../api/profileApi';
+import axios from "axios";
 
 function EditProfile() {
   const { userId } = useParams();
@@ -30,6 +31,8 @@ function EditProfile() {
     profilePicture: null,
   });
 
+
+  
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -71,16 +74,26 @@ function EditProfile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
     try {
-      // Add your API call to update the profile here
-      // const response = await updateProfile(userId, profile);
-      navigate(`/profile/${userId}`);
+      const response = await axios.put(`http://localhost:3000/api/v1/profile/edit-profile/${userId}`, profile, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (response.status === 200) {
+        alert("Profile updated successfully!");
+        navigate(`/profile/${userId}`);
+      } else {
+        alert("Failed to update profile.");
+      }
     } catch (err) {
-      setError(err.message);
-      console.error('Failed to update profile:', err);
+      console.error("Error updating profile:", err);
+      alert("An error occurred while updating the profile.");
     }
   };
-
+  
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
