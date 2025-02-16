@@ -13,6 +13,7 @@ import BookRide from "./pages/BookRide";
 import ProfilePage from "./pages/Profile";
 import Footer from "./components/Footer";
 import ProtectedRoutes from "./components/ProtectedRoutes";
+import EditProfile from "./pages/EditProfile";
 
 import Reviews from "./pages/Reviews"
 import PrivateRoute from "./components/PrivateRoute";
@@ -51,11 +52,20 @@ function App() {
             <CreateRide />
           </ProtectedRoutes>
         } />
+
+        <Route path="/profile/:userId/edit" element={
+          <ProtectedRoutes>
+            <EditProfile />
+          </ProtectedRoutes>
+        } />
+        
         <Route path="/about" element={
          <ProtectedRoutes>
             <About />
           </ProtectedRoutes>
         } />
+
+        
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/book-ride/:id" element={
@@ -68,8 +78,7 @@ function App() {
             path="/profile"
             element={<Navigate to={`/profile/${userId}`} />}
           />
-        ) : (
-          <Route path="/profile" element={<Navigate to="/login" />} />
+        ) : (        <Route path="/profile" element={<Navigate to="/login" />} />
         )}
         <Route path="/profile/:userId" element={<ProfilePage />} />
         <Route path="/reviews" element={<Reviews/>} />
