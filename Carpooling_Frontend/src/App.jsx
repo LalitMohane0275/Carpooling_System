@@ -38,9 +38,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/home" element={
-          <PrivateRoute>
+          <ProtectedRoutes>
             <Home />
-          </PrivateRoute>
+          </ProtectedRoutes>
         } />
         <Route path="/find-ride" element={
           <ProtectedRoutes>
@@ -85,7 +85,8 @@ function App() {
         <Route path="/reviews" element={<Reviews/>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      <Footer />
+      {/* Conditionally render the footer only if the user is logged in */}
+      {token && <Footer />}
     </div>
   );
 }

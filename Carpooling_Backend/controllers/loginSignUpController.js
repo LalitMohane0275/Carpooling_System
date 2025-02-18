@@ -143,6 +143,7 @@ const login = async (req, res) => {
 const changePassword = async (req, res) => {
   try {
     const { email, oldPassword, newPassword } = req.body;
+    console.log("Received data:", { email, oldPassword, newPassword });
     // find current user
     const user = await User.findOne({email});
     if (!user) {
