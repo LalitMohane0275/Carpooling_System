@@ -7,7 +7,7 @@ const { getProfile ,updateProfile} = require("../controllers/profileController")
 
 // Route to fetch profile data 
 router.get("/get-profile/:userId", authMiddleware, getProfile);
-router.put("/edit-profile/:userId", updateProfile);
+router.put("/edit-profile/:userId", authMiddleware, updateProfile);
 
 
 
