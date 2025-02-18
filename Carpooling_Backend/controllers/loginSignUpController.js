@@ -142,11 +142,9 @@ const login = async (req, res) => {
 
 const changePassword = async (req, res) => {
   try {
-    const userId = req.userInfo.userId;
-    // extract old password, new password from request body
-    const { oldPassword, newPassword } = req.body;
+    const { email, oldPassword, newPassword } = req.body;
     // find current user
-    const user = await User.findById(userId);
+    const user = await User.findOne({email});
     if (!user) {
       return res.status(400).json({
         success: false,

@@ -6,6 +6,6 @@ const authMiddleware = require('../middlewares/auth-middleware');
 
 router.post('/signup', upload.single("profilePicture"), signup); 
 router.post('/login', login); 
-router.post('/change-password', authMiddleware, changePassword);
+router.post('/change-password', changePassword);
 
 module.exports = router; 

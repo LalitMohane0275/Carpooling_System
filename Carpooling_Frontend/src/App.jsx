@@ -14,9 +14,9 @@ import ProfilePage from "./pages/Profile";
 import Footer from "./components/Footer";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import EditProfile from "./pages/EditProfile";
-
 import Reviews from "./pages/Reviews"
 import PrivateRoute from "./components/PrivateRoute";
+import ChangePassword from "./pages/ChangePassword";
 
 function App() {
   let userId = null;
@@ -68,6 +68,7 @@ function App() {
         
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/change-password" element= {<ChangePassword/>}/>
         <Route path="/book-ride/:id" element={
           <ProtectedRoutes>
             <BookRide />
