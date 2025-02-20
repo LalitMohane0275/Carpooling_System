@@ -32,6 +32,9 @@ const userSchema = new mongoose.Schema({
         musicAllowed: { type: Boolean, default: true },
     },
     profilePicture: { type: String, default: null },
+    isEmailVerified: { type: Boolean, default: false },
+    emailVerificationToken: { type: String },
+    emailVerificationTokenExpires: { type: Date },
 }, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);
