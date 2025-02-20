@@ -7,10 +7,10 @@ const User = require("../models/UserModel");
 exports.createRide = async (req, res) => {
     try {
         // Fetch data from request body
-        const { userId, start, destination, time, date, seats } = req.body;
+        const { user_id, start, destination, time, date, seats } = req.body;
 
         // Validate required fields
-        if (! userId || !start || !destination || !time || !date || !seats) {
+        if (! user_id || !start || !destination || !time || !date || !seats) {
             return res.status(400).json({ message: "All fields are required" });
         }
         
@@ -30,7 +30,7 @@ exports.createRide = async (req, res) => {
             time,
             date,
             seats,
-            driver: userId,
+            driver: user_id,
         });
 
         // Save the ride to MongoDB
