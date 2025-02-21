@@ -2,7 +2,11 @@ const express = require("express");
 const carpool = require("./routes/carpool");
 const profile = require("./routes/profile"); 
 const auth = require("./routes/auth");
+<<<<<<< HEAD
+const path = require("path");
+=======
 const reviews = require("./routes/reviews");
+>>>>>>> e2ec1d2a537680bbec48dfeeb7e29960fa12ff0a
 
 const cors = require("cors");
 const dbConnect = require("./config/database");
@@ -23,8 +27,12 @@ dbConnect();
 app.use("/api/v1", carpool);
 app.use("/api/v1/profile", profile); 
 app.use("/api/v1/auth", auth);
+<<<<<<< HEAD
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+=======
 app.use("/api/v1/reviews", reviews);
 
+>>>>>>> e2ec1d2a537680bbec48dfeeb7e29960fa12ff0a
 // Default Route
 app.get("/", (req, res) => {
   res.send(`<h1>HomePage</h1>`);

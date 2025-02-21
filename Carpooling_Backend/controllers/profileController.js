@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const User = require("../models/UserModel");
+const multer = require("multer");
 
 exports.getProfile = async (req, res) => {
   try {
@@ -44,7 +45,9 @@ exports.updateProfile = async (req, res) => {
   try {
     const userId = req.params.userId;
     const updates = req.body; // Get all fields dynamically from request body
-
+    if (req.file) {
+      updates.profilePicture = `/uploads/${req.file.filename}`;
+    }
     // Find user and update details
     const updatedUser = await User.findByIdAndUpdate(userId, updates, {
       new: true,

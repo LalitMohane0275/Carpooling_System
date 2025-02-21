@@ -148,8 +148,17 @@ function LoginPage() {
                 )}
               </button>
             </div>
+            <div className="flex justify-end mt-2">
+              <button
+                type="button"
+                onClick={() => navigate('/forgot-password')}
+                className="text-sm text-blue-600 hover:text-blue-700 hover:underline"
+              >
+                Forgot password?
+              </button>
+            </div>
           </div>
-
+           
           {/* Submit Button */}
           <button
             type="submit"
@@ -157,6 +166,14 @@ function LoginPage() {
           >
             Log In
           </button>
+           
+
+
+           
+          {/*Handle forget Password*/}
+
+
+
 
           <button
             onClick={handleGoogleLogin}

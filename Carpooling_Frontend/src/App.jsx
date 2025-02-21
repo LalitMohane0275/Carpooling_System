@@ -14,6 +14,11 @@ import ProfilePage from "./pages/Profile";
 import Footer from "./components/Footer";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import EditProfile from "./pages/EditProfile";
+<<<<<<< HEAD
+import ForgotPassword from "./pages/ForgotPassword";
+
+=======
+>>>>>>> e2ec1d2a537680bbec48dfeeb7e29960fa12ff0a
 import Reviews from "./pages/Reviews"
 import PrivateRoute from "./components/PrivateRoute";
 import ChangePassword from "./pages/ChangePassword";
@@ -68,6 +73,7 @@ function App() {
 
         
         <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/forgot-password" element={<ForgotPassword/>} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/change-password" element= {<ChangePassword/>}/>
         <Route path="/verify-email" element={<VerifyEmailPage />} />
