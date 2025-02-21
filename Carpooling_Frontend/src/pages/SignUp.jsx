@@ -111,22 +111,12 @@ function SignUp() {
         }
       );
 
-      // const data = await response.json();
-
-      if (response.data) {
-        toast.success("Account created successfully!", {
-          position: "top-right",
-        });
-        console.log(response);
-        dispatch(
-          login({
-            userId: response.data.userId,
-          })
+      if (response.status === 201) {
+        toast.success(
+          "Account created successfully! Check your email for the verification code."
         );
-
-        setTimeout(() => {
-          navigate("/login");
-        }, 2000);
+        const email = response.data.data.email;
+        navigate(`/verify-email?email=${encodeURIComponent(email)}`);
       }
     } catch (error) {
       console.error(error);

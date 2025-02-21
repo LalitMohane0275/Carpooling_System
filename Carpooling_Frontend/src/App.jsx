@@ -14,10 +14,15 @@ import ProfilePage from "./pages/Profile";
 import Footer from "./components/Footer";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import EditProfile from "./pages/EditProfile";
+<<<<<<< HEAD
 import ForgotPassword from "./pages/ForgotPassword";
 
+=======
+>>>>>>> e2ec1d2a537680bbec48dfeeb7e29960fa12ff0a
 import Reviews from "./pages/Reviews"
 import PrivateRoute from "./components/PrivateRoute";
+import ChangePassword from "./pages/ChangePassword";
+import VerifyEmailPage from "./pages/VerifyEmail";
 
 function App() {
   let userId = null;
@@ -39,9 +44,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/home" element={
-          <PrivateRoute>
+          <ProtectedRoutes>
             <Home />
-          </PrivateRoute>
+          </ProtectedRoutes>
         } />
         <Route path="/find-ride" element={
           <ProtectedRoutes>
@@ -70,6 +75,8 @@ function App() {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/forgot-password" element={<ForgotPassword/>} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/change-password" element= {<ChangePassword/>}/>
+        <Route path="/verify-email" element={<VerifyEmailPage />} />
         <Route path="/book-ride/:id" element={
           <ProtectedRoutes>
             <BookRide />
@@ -86,7 +93,8 @@ function App() {
         <Route path="/reviews" element={<Reviews/>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      <Footer />
+      {/* Conditionally render the footer only if the user is logged in */}
+      {token && <Footer />}
     </div>
   );
 }

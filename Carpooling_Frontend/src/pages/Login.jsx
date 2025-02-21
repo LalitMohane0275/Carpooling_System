@@ -197,6 +197,15 @@ function LoginPage() {
               Sign up
             </a>
           </p>
+          <p className="text-center text-sm text-gray-600">
+            Change Password{" "}
+            <a
+              href="/change-password"
+              className="text-blue-600 hover:text-blue-700 font-medium hover:underline"
+            >
+              Change Password
+            </a>
+          </p>
         </form>
       </div>
 

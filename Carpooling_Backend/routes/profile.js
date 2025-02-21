@@ -32,7 +32,7 @@ router.put("/upload-profile-picture/:userId", upload.single("profilePicture"), a
 
 // Route to fetch profile data 
 router.get("/get-profile/:userId", authMiddleware, getProfile);
-router.put("/edit-profile/:userId", updateProfile);
+router.put("/edit-profile/:userId", authMiddleware, updateProfile);
 
 
 

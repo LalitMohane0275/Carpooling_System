@@ -2,7 +2,16 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/UserModel");
 const cloudinary = require("../config/cloudinary");
+<<<<<<< HEAD
 const fs = require("fs"); 
+=======
+const fs = require("fs");
+const transporter = require('../utils/nodemailer');
+
+function generateVerificationCode() {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+}
+>>>>>>> e2ec1d2a537680bbec48dfeeb7e29960fa12ff0a
 
 // Upload profile data
 const signup = async (req, res) => {
@@ -68,6 +77,9 @@ const signup = async (req, res) => {
     console.log(profilePicture.url)
     console.log(profilePicture.publicId)
 
+     // delete the file from local storage
+      fs.unlinkSync(req.file.path);
+
     // Save user to the database
     const newUser = await User.create({
       email,
@@ -83,11 +95,29 @@ const signup = async (req, res) => {
       profilePicture: profilePicture?.url,
     });
 
+    // Generate and save verification code
+    const verificationCode = generateVerificationCode();
+    const tokenExpiration = new Date(Date.now() + 15 * 60 * 1000);
+
+    newUser.emailVerificationToken = verificationCode;
+    newUser.emailVerificationTokenExpires = tokenExpiration;
+    await newUser.save();
+
+    // Send verification email
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: newUser.email,
+      subject: 'Email Verification',
+      text: `Your verification code is: ${verificationCode}. Please enter this code to verify your email.`
+    };
+    await transporter.sendMail(mailOptions);
+
     res.status(201).json({
       success: true,
-      message: "Signup successful",
+      message: "Signup successful. Please check your email for verification.",
       data: newUser,
       publicId: profilePicture?.publicId,
+      // Omit sensitive fields like tokens and expiration
     });
   } catch (error) {
     console.error(error);
@@ -114,6 +144,10 @@ const login = async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password." });
+    }
+
+    if (!user.isEmailVerified) {
+      return res.status(400).json({ message: "Email not verified. Please verify your email to log in." });
     }
 
     // Compare password with the hashed password in the database
@@ -144,4 +178,73 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { signup, login };
+const changePassword = async (req, res) => {
+  try {
+    const { email, oldPassword, newPassword } = req.body;
+    console.log("Received data:", { email, oldPassword, newPassword });
+    // find current user
+    const user = await User.findOne({email});
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User does not exist!",
+      });
+    }
+    // check if old password is correct or not
+    const isPasswordCorrect = await bcrypt.compare(oldPassword, user.password);
+    if (!isPasswordCorrect) {
+      return res.status(400).json({
+        success: false,
+        message: "Old password is incorrect!",
+      });
+    }
+
+    // hash the new password
+    const salt = await bcrypt.genSalt(10);
+    const newHashedPassword = await bcrypt.hash(newPassword, salt);
+
+    // update user password
+    user.password = newHashedPassword;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Password changed successfully"
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Something went wrong! Please try again",
+    });
+  }
+}
+
+const verifyEmail = async (req, res) => {
+  try {
+    const { email, verificationCode } = req.body;
+    const user = await User.findOne({ email }).select('+emailVerificationToken +emailVerificationTokenExpires');
+
+    if (!user) return res.status(400).json({ success: false, message: "User not found." });
+    if (user.isEmailVerified) return res.status(400).json({ success: false, message: "Email already verified." });
+
+    const isTokenValid = user.emailVerificationToken === verificationCode;
+    const isTokenExpired = user.emailVerificationTokenExpires < new Date();
+
+    if (!isTokenValid || isTokenExpired) {
+      return res.status(400).json({ success: false, message: "Invalid or expired verification code." });
+    }
+
+    user.isEmailVerified = true;
+    user.emailVerificationToken = undefined;
+    user.emailVerificationTokenExpires = undefined;
+    await user.save();
+
+    res.status(200).json({ success: true, message: "Email verified successfully." });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+module.exports = { signup, login, changePassword, verifyEmail };
