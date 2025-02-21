@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/UserModel");
 const cloudinary = require("../config/cloudinary");
+const fs = require("fs"); 
 
 // Upload profile data
 const signup = async (req, res) => {
@@ -54,11 +55,18 @@ const signup = async (req, res) => {
       const uploadResult = await cloudinary.uploader.upload(req.file.path, {
         folder: "profile_pictures",
       });
+      
+      console.log("Cloudinary Upload Result:", uploadResult);
+
       profilePicture = {
         url : uploadResult.secure_url,
         publicId: uploadResult.public_id,
       };
+
+      fs.unlinkSync(req.file.path);
     }
+    console.log(profilePicture.url)
+    console.log(profilePicture.publicId)
 
     // Save user to the database
     const newUser = await User.create({
@@ -72,7 +80,7 @@ const signup = async (req, res) => {
       hasVehicle: JSON.parse(hasVehicle),
       vehicleDetails: JSON.parse(vehicleDetails),
       preferences: JSON.parse(preferences),
-      profilePictureUrl: profilePicture?.url,
+      profilePicture: profilePicture?.url,
     });
 
     res.status(201).json({

@@ -81,7 +81,8 @@ function EditProfile() {
           'Content-Type': 'application/json',
         },
       });
-  
+      
+      
       if (response.status === 200) {
         alert("Profile updated successfully!");
         navigate(`/profile/${userId}`);
@@ -93,6 +94,28 @@ function EditProfile() {
       alert("An error occurred while updating the profile.");
     }
   };
+  
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+  
+    const formData = new FormData();
+    formData.append("profilePicture", file);
+  
+    try {
+      const response = await axios.put(
+        `http://localhost:3000/api/v1/profile/upload-profile-picture/${userId}`,
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
+  
+      alert("Profile picture updated!");
+      setProfileImage(response.data.user.profilePicture); // Update UI
+    } catch (error) {
+      console.error("Error uploading profile picture:", error);
+    }
+  };
+
   
   if (isLoading) {
     return (
@@ -128,11 +151,22 @@ function EditProfile() {
                   alt="Profile"
                   className="w-24 h-24 rounded-full object-cover"
                 />
+                
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  id="profilePicInput"
+                />
+
                 <button
                   type="button"
                   className="absolute bottom-0 right-0 bg-blue-500 p-2 rounded-full text-white hover:bg-blue-600"
+                  onClick={() => document.getElementById('profilePicInput').click()}
                 >
                   <Camera size={16} />
+
                 </button>
               </div>
               <div>
