@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Camera, Car, Music, CookingPot as Smoking, Dog, Edit2 } from 'lucide-react';
+import { Camera, Car, Music, CookingPot as Smoking, Dog, ArrowLeft, Save } from 'lucide-react';
 import { getProfile } from '../api/profileApi';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 
 function EditProfile() {
@@ -31,8 +33,6 @@ function EditProfile() {
     profilePicture: null,
   });
 
-
-  
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -44,6 +44,7 @@ function EditProfile() {
       } catch (err) {
         setError(err.message);
         console.error('Failed to fetch profile:', err);
+        toast.error('Failed to load profile');
       } finally {
         setIsLoading(false);
       }
@@ -76,24 +77,26 @@ function EditProfile() {
     e.preventDefault();
     const token = localStorage.getItem("token");
     try {
-      console.log(userId);
-      const response = await axios.put(`http://localhost:3000/api/v1/profile/edit-profile/${userId}`, profile, {
-        headers: {
-          'Content-Type': 'application/json',
-          "Authorization": `Bearer ${token}`,
-        },
-      });
-      
+      const response = await axios.put(
+        `http://localhost:3000/api/v1/profile/edit-profile/${userId}`,
+        profile,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            "Authorization": `Bearer ${token}`,
+          },
+        }
+      );
       
       if (response.status === 200) {
-        alert("Profile updated successfully!");
-        navigate(`/profile/${userId}`);
-      } else {
-        alert("Failed to update profile.");
+        toast.success('Profile updated successfully!');
+        setTimeout(() => {
+          navigate(`/profile/${userId}`);
+        }, 1500);
       }
     } catch (err) {
       console.error("Error updating profile:", err);
-      alert("An error occurred while updating the profile.");
+      toast.error('Failed to update profile');
     }
   };
   
@@ -111,48 +114,66 @@ function EditProfile() {
         { headers: { "Content-Type": "multipart/form-data" } }
       );
   
-      alert("Profile picture updated!");
-      setProfileImage(response.data.user.profilePicture); // Update UI
+      toast.success('Profile picture updated!');
+      setProfile(prev => ({
+        ...prev,
+        profilePicture: response.data.user.profilePicture
+      }));
     } catch (error) {
       console.error("Error uploading profile picture:", error);
+      toast.error('Failed to update profile picture');
     }
   };
 
-  
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent"></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-red-500">Error: {error}</div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="bg-red-100 text-red-700 p-4 rounded-lg shadow-lg">
+          Error: {error}
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto">
-        <div className="bg-white shadow-xl rounded-lg overflow-hidden">
+    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <ToastContainer position="top-right" autoClose={3000} />
+      <div className="max-w-4xl mx-auto">
+        <div className="bg-white shadow-2xl rounded-2xl overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-8 py-6">
-            <h1 className="text-2xl font-bold text-white">Edit Profile</h1>
+          <div className="bg-gradient-to-r from-blue-600 to-blue-800 px-8 py-8">
+            <div className="flex items-center justify-between">
+              <h1 className="text-3xl font-bold text-white flex items-center gap-3">
+                <button
+                  onClick={() => navigate(`/profile/${userId}`)}
+                  className="hover:bg-blue-700/50 p-2 rounded-full transition-colors"
+                >
+                  <ArrowLeft size={24} />
+                </button>
+                Edit Profile
+              </h1>
+            </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="px-8 py-6 space-y-6">
+          <form onSubmit={handleSubmit} className="px-8 py-8 space-y-8">
             {/* Profile Picture Section */}
-            <div className="flex items-center space-x-6">
-              <div className="relative">
-                <img
-                  src={profile.profilePicture || 'https://via.placeholder.com/150'}
-                  alt="Profile"
-                  className="w-24 h-24 rounded-full object-cover"
-                />
+            <div className="flex items-center space-x-8">
+              <div className="relative group">
+                <div className="w-32 h-32 rounded-full overflow-hidden ring-4 ring-blue-100">
+                  <img
+                    src={profile.profilePicture || 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=400&h=400&fit=crop'}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
                 
                 <input
                   type="file"
@@ -164,78 +185,80 @@ function EditProfile() {
 
                 <button
                   type="button"
-                  className="absolute bottom-0 right-0 bg-blue-500 p-2 rounded-full text-white hover:bg-blue-600"
+                  className="absolute bottom-0 right-0 bg-blue-600 p-3 rounded-full text-white hover:bg-blue-700 transition-colors shadow-lg group-hover:scale-110 transform duration-200"
                   onClick={() => document.getElementById('profilePicInput').click()}
                 >
-                  <Camera size={16} />
-
+                  <Camera size={20} />
                 </button>
               </div>
               <div>
-                <h2 className="text-xl font-semibold">{`${profile.firstName} ${profile.lastName}`}</h2>
-                <p className="text-gray-500">{profile.email}</p>
+                <h2 className="text-2xl font-semibold text-gray-800">{`${profile.firstName} ${profile.lastName}`}</h2>
+                <p className="text-gray-500 mt-1">{profile.email}</p>
               </div>
             </div>
 
             {/* Personal Information */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">First Name</label>
-                <input
-                  type="text"
-                  name="firstName"
-                  value={profile.firstName}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Middle Name</label>
-                <input
-                  type="text"
-                  name="middleName"
-                  value={profile.middleName}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Last Name</label>
-                <input
-                  type="text"
-                  name="lastName"
-                  value={profile.lastName}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Phone Number</label>
-                <input
-                  type="tel"
-                  name="phoneNumber"
-                  value={profile.phoneNumber}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700">Address</label>
-                <input
-                  type="text"
-                  name="address"
-                  value={profile.address}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                />
+            <div className="space-y-6">
+              <h3 className="text-xl font-semibold text-gray-800 border-b pb-3">Personal Information</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">First Name</label>
+                  <input
+                    type="text"
+                    name="firstName"
+                    value={profile.firstName}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">Middle Name</label>
+                  <input
+                    type="text"
+                    name="middleName"
+                    value={profile.middleName}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">Last Name</label>
+                  <input
+                    type="text"
+                    name="lastName"
+                    value={profile.lastName}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">Phone Number</label>
+                  <input
+                    type="tel"
+                    name="phoneNumber"
+                    value={profile.phoneNumber}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
+                  />
+                </div>
+                <div className="md:col-span-2 space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">Address</label>
+                  <input
+                    type="text"
+                    name="address"
+                    value={profile.address}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
+                  />
+                </div>
               </div>
             </div>
 
             {/* Vehicle Information */}
-            <div className="border-t pt-6">
-              <div className="flex items-center space-x-2 mb-4">
-                <Car className="text-gray-400" />
-                <h3 className="text-lg font-medium">Vehicle Information</h3>
+            <div className="space-y-6">
+              <div className="flex items-center space-x-3 border-b pb-3">
+                <Car className="text-blue-600" size={24} />
+                <h3 className="text-xl font-semibold text-gray-800">Vehicle Information</h3>
               </div>
               <div className="flex items-center mb-4">
                 <input
@@ -243,50 +266,50 @@ function EditProfile() {
                   name="hasVehicle"
                   checked={profile.hasVehicle}
                   onChange={handleInputChange}
-                  className="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors"
                 />
-                <label className="ml-2 text-sm text-gray-700">I have a vehicle</label>
+                <label className="ml-3 text-sm text-gray-700">I have a vehicle</label>
               </div>
               {profile.hasVehicle && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-gray-50 rounded-xl">
+                  <div className="space-y-2">
                     <label className="block text-sm font-medium text-gray-700">Make</label>
                     <input
                       type="text"
                       name="vehicleDetails.make"
                       value={profile.vehicleDetails.make}
                       onChange={handleInputChange}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
                     />
                   </div>
-                  <div>
+                  <div className="space-y-2">
                     <label className="block text-sm font-medium text-gray-700">Model</label>
                     <input
                       type="text"
                       name="vehicleDetails.model"
                       value={profile.vehicleDetails.model}
                       onChange={handleInputChange}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
                     />
                   </div>
-                  <div>
+                  <div className="space-y-2">
                     <label className="block text-sm font-medium text-gray-700">Year</label>
                     <input
                       type="text"
                       name="vehicleDetails.year"
                       value={profile.vehicleDetails.year}
                       onChange={handleInputChange}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
                     />
                   </div>
-                  <div>
+                  <div className="space-y-2">
                     <label className="block text-sm font-medium text-gray-700">License Plate</label>
                     <input
                       type="text"
                       name="vehicleDetails.licensePlate"
                       value={profile.vehicleDetails.licensePlate}
                       onChange={handleInputChange}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                      className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
                     />
                   </div>
                 </div>
@@ -294,62 +317,68 @@ function EditProfile() {
             </div>
 
             {/* Preferences */}
-            <div className="border-t pt-6">
-              <h3 className="text-lg font-medium mb-4">Preferences</h3>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
+            <div className="space-y-6">
+              <h3 className="text-xl font-semibold text-gray-800 border-b pb-3">Preferences</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="flex items-center p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
                   <input
                     type="checkbox"
                     name="preferences.smokingAllowed"
                     checked={profile.preferences.smokingAllowed}
                     onChange={handleInputChange}
-                    className="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 rounded"
+                    className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors"
                   />
-                  <Smoking className="text-gray-400" />
-                  <label className="text-sm text-gray-700">Smoking Allowed</label>
+                  <div className="ml-4 flex items-center space-x-3">
+                    <Smoking className="text-gray-600" size={20} />
+                    <label className="text-sm font-medium text-gray-700">Smoking Allowed</label>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
                   <input
                     type="checkbox"
                     name="preferences.petsAllowed"
                     checked={profile.preferences.petsAllowed}
                     onChange={handleInputChange}
-                    className="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 rounded"
+                    className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors"
                   />
-                  <Dog className="text-gray-400" />
-                  <label className="text-sm text-gray-700">Pets Allowed</label>
+                  <div className="ml-4 flex items-center space-x-3">
+                    <Dog className="text-gray-600" size={20} />
+                    <label className="text-sm font-medium text-gray-700">Pets Allowed</label>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
                   <input
                     type="checkbox"
                     name="preferences.musicAllowed"
                     checked={profile.preferences.musicAllowed}
                     onChange={handleInputChange}
-                    className="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 rounded"
+                    className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded transition-colors"
                   />
-                  <Music className="text-gray-400" />
-                  <label className="text-sm text-gray-700">Music Allowed</label>
+                  <div className="ml-4 flex items-center space-x-3">
+                    <Music className="text-gray-600" size={20} />
+                    <label className="text-sm font-medium text-gray-700">Music Allowed</label>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Submit Button */}
-            <div className="border-t pt-6">
-              <div className="flex justify-end space-x-4">
-                <button
-                  type="button"
-                  onClick={() => navigate(`/profile/${userId}`)}
-                  className="px-6 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-6 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors"
-                >
-                  Save Changes
-                </button>
-              </div>
+            <div className="border-t pt-6 flex justify-end space-x-4">
+              <button
+                type="button"
+                onClick={() => navigate(`/profile/${userId}`)}
+                className="px-6 py-2.5 border-2 border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition-colors flex items-center space-x-2"
+              >
+                <ArrowLeft size={20} />
+                <span>Cancel</span>
+              </button>
+              <button
+                type="submit"
+                className="px-6 py-2.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors flex items-center space-x-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+              >
+                <Save size={20} />
+                <span>Save Changes</span>
+              </button>
             </div>
           </form>
         </div>

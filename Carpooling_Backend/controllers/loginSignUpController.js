@@ -151,7 +151,9 @@ const login = async (req, res) => {
         email: user.email,
       },
       process.env.JWT_SECRET_KEY,
-      { expiresIn: "30m" }
+      {
+        expiresIn: "2h"
+      }
     );
     console.log(accessToken);
 
