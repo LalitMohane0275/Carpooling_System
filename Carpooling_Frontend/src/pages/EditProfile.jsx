@@ -74,11 +74,13 @@ function EditProfile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+    const token = localStorage.getItem("token");
     try {
+      console.log(userId);
       const response = await axios.put(`http://localhost:3000/api/v1/profile/edit-profile/${userId}`, profile, {
         headers: {
           'Content-Type': 'application/json',
+          "Authorization": `Bearer ${token}`,
         },
       });
       

@@ -65,7 +65,7 @@ const ProfilePage = () => {
   }, [userId]);
 
   const handleEdit = () => {
-    navigate(`/profile/${userId}/edit`);
+    navigate(`/profile/edit/${userId}`);
   };
 
   // Mock data for rides offered and taken

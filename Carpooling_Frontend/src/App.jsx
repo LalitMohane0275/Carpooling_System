@@ -55,7 +55,7 @@ function App() {
           </ProtectedRoutes>
         } />
 
-        <Route path="/profile/:userId/edit" element={
+        <Route path="/profile/edit/:userId" element={
           <ProtectedRoutes>
             <EditProfile />
           </ProtectedRoutes>
