@@ -56,30 +56,35 @@ function CreateRide() {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const token = localStorage.getItem("token");
-      const userId = JSON.parse(atob(token.split(".")[1])).userId;
-      const rideData = { ...ride, user_id: userId };
-      console.log("Ride Object:", rideData);
-      const response = await axios.post(
-        "http://localhost:3000/api/v1/create-ride",
-        rideData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log("Ride Created Successfully:", response.data);
-      toast.success("Ride created successfully!");
-      setRide(initialState);
-    } catch (error) {
-      console.error("Error Creating Ride:", error);
-      toast.error("Failed to create the ride. Please try again.");
-    }
-  };
+ const handleSubmit = async (e) => {
+   e.preventDefault();
+   try {
+     const token = localStorage.getItem("token");
+     const userId = JSON.parse(atob(token.split(".")[1])).userId;
+     const rideData = {
+       ...ride,
+       user_id: userId,
+       seats: Number(ride.seats), // Convert to number
+       price: Number(ride.price), // Convert to number
+     };
+     console.log("Ride Object:", rideData);
+     const response = await axios.post(
+       "http://localhost:3000/api/v1/create-ride",
+       rideData,
+       {
+         headers: {
+           Authorization: `Bearer ${token}`,
+         },
+       }
+     );
+     console.log("Ride Created Successfully:", response.data);
+     toast.success("Ride created successfully!");
+     setRide(initialState);
+   } catch (error) {
+     console.error("Error Creating Ride:", error.response?.data || error);
+     toast.error("Failed to create the ride. Please try again.");
+   }
+ };
 
   return (
     <div className="bg-gradient-to-b from-blue-50 to-white py-12 px-4">

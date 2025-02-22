@@ -1,13 +1,16 @@
-// Import Mongoose 
+// RideModel.js
 const mongoose = require('mongoose');
 
-// Route Handler 
 const RideSchema = new mongoose.Schema({
     start: {
         type: String,
         required: true,
         trim: true,
     },
+    stops: [{
+        type: String,
+        trim: true
+    }], // Added array of stops
     destination: {
         type: String,
         required: true,
@@ -26,12 +29,17 @@ const RideSchema = new mongoose.Schema({
         required: true,
         min: 1,
     },
+    price: {
+        type: Number,
+        required: true,
+        min: 0,
+        default: 0
+    }, // Added price field
     driver: {
         type: mongoose.Schema.Types.ObjectId, 
         ref: "User",
         required: true,
     }
-}, { timestamps: true }); // Add timestamps to track creation and update time
+}, { timestamps: true });
 
-// Export 
 module.exports = mongoose.model("Ride", RideSchema);
