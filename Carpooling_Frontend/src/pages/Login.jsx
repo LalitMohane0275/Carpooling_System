@@ -5,9 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { Mail, Lock, Car, Eye, EyeOff } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { login } from "../store/authSlice";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { auth } from "../firebase-config";
-import googleIcon from "../assets/google-icon.svg";
 
 function LoginPage() {
   const [email, setEmail] = useState("");
@@ -16,34 +13,6 @@ function LoginPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleGoogleLogin = async () => {
-  const provider = new GoogleAuthProvider();
-  try {
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
-    console.log("Access Token:", user.accessToken);
-    console.log("User Info:", user);
-    
-    // Display success toast
-    toast.success("Google login successful!", {
-      position: "top-right",
-      autoClose: 3000,
-    });
-
-    // Redirect to home after a short delay
-    setTimeout(() => {
-      navigate("/home");
-    }, 2000);
-  } catch (error) {
-    toast.error("Error during Google login. Please try again.", {
-      position: "top-right",
-      autoClose: 3000,
-    });
-    console.error("Error during sign-in:", error);
-  }
-};
-
-  
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (email === "" || password === "") {
@@ -68,7 +37,7 @@ function LoginPage() {
         toast.success("Login successful!", {
           position: "top-right",
         });
-        dispatch(login({token: data.token}));
+        dispatch(login({ token: data.token }));
         setTimeout(() => {
           navigate("/home");
         }, 2000);
@@ -151,14 +120,14 @@ function LoginPage() {
             <div className="flex justify-end mt-2">
               <button
                 type="button"
-                onClick={() => navigate('/forgot-password')}
+                onClick={() => navigate("/forgot-password")}
                 className="text-sm text-blue-600 hover:text-blue-700 hover:underline"
               >
                 Forgot password?
               </button>
             </div>
           </div>
-           
+
           {/* Submit Button */}
           <button
             type="submit"
@@ -166,26 +135,8 @@ function LoginPage() {
           >
             Log In
           </button>
-           
 
-
-           
           {/*Handle forget Password*/}
-
-
-
-
-          <button
-            onClick={handleGoogleLogin}
-            className="w-full bg-white text-gray-700 py-3 rounded-xl font-semibold border border-gray-300 hover:bg-gray-100 transform hover:scale-[1.02] transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
-          >
-            <img
-              src={googleIcon}
-              alt="Google Logo"
-              className="h-5 w-5"
-            />
-            Sign in with Google
-          </button>
 
           {/* Sign Up Link */}
           <p className="text-center text-sm text-gray-600">
