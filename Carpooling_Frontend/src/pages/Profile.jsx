@@ -19,6 +19,7 @@ import { getProfile } from "../api/profileApi";
 import { logout } from "../store/authSlice";
 import { useDispatch } from "react-redux";
 
+
 const ProfilePage = () => {
   let { userId } = useParams();
   const navigate = useNavigate();
