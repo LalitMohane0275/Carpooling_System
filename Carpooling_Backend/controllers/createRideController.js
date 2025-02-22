@@ -69,44 +69,44 @@ exports.createRide = async (req, res) => {
   }
 };
 
+// createRideController.js
 exports.createPassengerRide = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { start, destination, time, seats } = req.body;
+  try {
+    const { id } = req.params; // Ride ID
+    const { start, destination, time, seats } = req.body;
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = require("jsonwebtoken").decode(token); // Assuming JWT
+    const passengerId = decoded.userId;
 
-        // Validate required fields
-        if (!start || !destination || !time || !seats || !id) {
-            return res.status(400).json({ message: "All fields are required" });
-        }
-
-        // Check if the ride ID exists
-        const existingRide = await Ride.findById(id);
-        if (!existingRide) {
-            return res.status(404).json({ message: "Ride not found" });
-        }
-
-        // Create a new PassengerRide object
-        const newPassengerRide = new PassengerRide({
-            start,
-            destination,
-            time,
-            seats,
-            ride: id,
-        });
-
-        // Save the PassengerRide to MongoDB
-        const savedPassengerRide = await newPassengerRide.save();
-
-        // Send success response
-        res.status(201).json({
-            message: "Passenger Ride created successfully",
-            PassengerRide: savedPassengerRide,
-        });
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({
-            message: "An error occurred while creating the passenger ride",
-            error: err.message,
-        });
+    if (!start || !destination || !time || !seats || !id) {
+      return res.status(400).json({ message: "All fields are required" });
     }
+
+    const existingRide = await Ride.findById(id);
+    if (!existingRide) {
+      return res.status(404).json({ message: "Ride not found" });
+    }
+
+    const newPassengerRide = new PassengerRide({
+      start,
+      destination,
+      time,
+      seats,
+      ride: id,
+      passenger: passengerId, // Store the passenger ID
+    });
+
+    const savedPassengerRide = await newPassengerRide.save();
+
+    res.status(201).json({
+      message: "Passenger Ride created successfully",
+      passengerRide: savedPassengerRide,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: "An error occurred while creating the passenger ride",
+      error: err.message,
+    });
+  }
 };
