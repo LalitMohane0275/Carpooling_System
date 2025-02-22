@@ -1,15 +1,32 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { User, Mail, Phone, MapPin, Car, Star, Edit2, Camera, LogOut, ArrowRight, Music, CookingPot as Smoking, Dog } from "lucide-react";
-import { getProfile } from '../api/profileApi';
+import {
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Car,
+  Star,
+  Edit2,
+  Camera,
+  LogOut,
+  ArrowRight,
+  Music,
+  CookingPot as Smoking,
+  Dog,
+} from "lucide-react";
+import { getProfile } from "../api/profileApi";
+import { logout } from "../store/authSlice";
+import { useDispatch } from "react-redux";
 
 const ProfilePage = () => {
   let { userId } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const [user, setUser] = useState({
     // API data
     name: "",
@@ -21,12 +38,12 @@ const ProfilePage = () => {
       make: "",
       model: "",
       year: "",
-      licensePlate: ""
+      licensePlate: "",
     },
     preferences: {
       smokingAllowed: false,
       petsAllowed: false,
-      musicAllowed: true
+      musicAllowed: true,
     },
     createdAt: "",
     // Hardcoded data
@@ -36,6 +53,11 @@ const ProfilePage = () => {
     ridesTaken: 52,
   });
 
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/");
+  };
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -43,7 +65,7 @@ const ProfilePage = () => {
 
         const response = await getProfile(userId);
         if (response.success) {
-          setUser(prevUser => ({
+          setUser((prevUser) => ({
             ...prevUser,
             ...response.data,
             // Add hardcoded data that's not from API
@@ -55,7 +77,7 @@ const ProfilePage = () => {
         }
       } catch (err) {
         setError(err.message);
-        console.error('Failed to fetch profile:', err);
+        console.error("Failed to fetch profile:", err);
       } finally {
         setIsLoading(false);
       }
@@ -139,19 +161,51 @@ const ProfilePage = () => {
                 </div>
                 {/* Preferences */}
                 <div className="mt-4 space-y-2">
-                  <h3 className="text-lg font-semibold text-gray-800">Ride Preferences</h3>
+                  <h3 className="text-lg font-semibold text-gray-800">
+                    Ride Preferences
+                  </h3>
                   <div className="flex items-center space-x-4">
-                    <div className={`flex items-center space-x-2 ${user.preferences.musicAllowed ? 'text-green-600' : 'text-gray-400'}`}>
+                    <div
+                      className={`flex items-center space-x-2 ${
+                        user.preferences.musicAllowed
+                          ? "text-green-600"
+                          : "text-gray-400"
+                      }`}
+                    >
                       <Music size={20} />
-                      <span>{user.preferences.musicAllowed ? 'Music allowed' : 'No music'}</span>
+                      <span>
+                        {user.preferences.musicAllowed
+                          ? "Music allowed"
+                          : "No music"}
+                      </span>
                     </div>
-                    <div className={`flex items-center space-x-2 ${user.preferences.smokingAllowed ? 'text-green-600' : 'text-gray-400'}`}>
+                    <div
+                      className={`flex items-center space-x-2 ${
+                        user.preferences.smokingAllowed
+                          ? "text-green-600"
+                          : "text-gray-400"
+                      }`}
+                    >
                       <Smoking size={20} />
-                      <span>{user.preferences.smokingAllowed ? 'Smoking allowed' : 'No smoking'}</span>
+                      <span>
+                        {user.preferences.smokingAllowed
+                          ? "Smoking allowed"
+                          : "No smoking"}
+                      </span>
                     </div>
-                    <div className={`flex items-center space-x-2 ${user.preferences.petsAllowed ? 'text-green-600' : 'text-gray-400'}`}>
+                    <div
+                      className={`flex items-center space-x-2 ${
+                        user.preferences.petsAllowed
+                          ? "text-green-600"
+                          : "text-gray-400"
+                      }`}
+                    >
                       <Dog size={20} />
-                      <span>{user.preferences.petsAllowed ? 'Pets allowed' : 'No pets'}</span>
+                      <span>
+                        {user.preferences.petsAllowed
+                          ? "Pets allowed"
+                          : "No pets"}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -169,15 +223,25 @@ const ProfilePage = () => {
             {/* Vehicle Details */}
             {user.hasVehicle && (
               <div className="mt-8 bg-gray-50 p-4 rounded-lg">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">Vehicle Details</h2>
+                <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                  Vehicle Details
+                </h2>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-gray-600">Make: {user.vehicleDetails.make}</p>
-                    <p className="text-gray-600">Model: {user.vehicleDetails.model}</p>
+                    <p className="text-gray-600">
+                      Make: {user.vehicleDetails.make}
+                    </p>
+                    <p className="text-gray-600">
+                      Model: {user.vehicleDetails.model}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-gray-600">Year: {user.vehicleDetails.year}</p>
-                    <p className="text-gray-600">License Plate: {user.vehicleDetails.licensePlate}</p>
+                    <p className="text-gray-600">
+                      Year: {user.vehicleDetails.year}
+                    </p>
+                    <p className="text-gray-600">
+                      License Plate: {user.vehicleDetails.licensePlate}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -229,7 +293,10 @@ const ProfilePage = () => {
                 RideBuddy Member since {new Date(user.createdAt).getFullYear()}
               </span>
             </div>
-            <button className="flex items-center space-x-2 text-red-500 hover:text-red-600 transition-colors">
+            <button
+              className="flex items-center space-x-2 text-red-500 hover:text-red-600 transition-colors"
+              onClick={handleLogout}
+            >
               <LogOut size={18} />
               <span>Log Out</span>
             </button>

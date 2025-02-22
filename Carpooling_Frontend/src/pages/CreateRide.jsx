@@ -2,15 +2,25 @@ import React, { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { MapPin, Clock, Calendar, Users, ArrowRight } from "lucide-react";
+import {
+  MapPin,
+  Clock,
+  Calendar,
+  Users,
+  ArrowRight,
+  Plus,
+  X,
+} from "lucide-react";
 
 function CreateRide() {
   const initialState = {
     start: "",
+    stops: [],
     destination: "",
     time: "",
     date: "",
     seats: "",
+    price: "",
   };
 
   const [ride, setRide] = useState(initialState);
@@ -23,21 +33,45 @@ function CreateRide() {
     }));
   };
 
+  const handleStopChange = (index, value) => {
+    setRide((prevRide) => {
+      const newStops = [...prevRide.stops];
+      newStops[index] = value;
+      return { ...prevRide, stops: newStops };
+    });
+  };
+
+  const addStop = () => {
+    setRide((prevRide) => ({
+      ...prevRide,
+      stops: [...prevRide.stops, ""],
+    }));
+  };
+
+  // Remove a specific stop
+  const removeStop = (index) => {
+    setRide((prevRide) => ({
+      ...prevRide,
+      stops: prevRide.stops.filter((_, i) => i !== index),
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      // fetch user id from token
       const userId = JSON.parse(atob(token.split(".")[1])).userId;
-      ride.user_id = userId;
-      console.log("Ride Object:", ride);
+      const rideData = { ...ride, user_id: userId };
+      console.log("Ride Object:", rideData);
       const response = await axios.post(
         "http://localhost:3000/api/v1/create-ride",
-        ride, {
-        headers: {
-          Authorization: `Bearer ${token}`, // Pass the token here
-        },
-      });
+        rideData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       console.log("Ride Created Successfully:", response.data);
       toast.success("Ride created successfully!");
       setRide(initialState);
@@ -48,7 +82,7 @@ function CreateRide() {
   };
 
   return (
-    <div className=" bg-gradient-to-b from-blue-50 to-white py-12 px-4">
+    <div className="bg-gradient-to-b from-blue-50 to-white py-12 px-4">
       <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-lg border border-blue-100">
         <div className="p-8">
           <h1 className="text-3xl font-bold text-blue-900 mb-2">
@@ -61,13 +95,23 @@ function CreateRide() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-6">
               <div className="relative">
-                <label
-                  className="flex items-center text-sm font-medium text-blue-900 mb-2"
-                  htmlFor="start"
-                >
-                  <MapPin className="w-4 h-4 mr-2 text-blue-500" />
-                  Start Location
-                </label>
+                <div className="flex items-center justify-between mb-2">
+                  <label
+                    className="flex items-center text-sm font-medium text-blue-900"
+                    htmlFor="start"
+                  >
+                    <MapPin className="w-4 h-4 mr-2 text-blue-500" />
+                    Start Location
+                  </label>
+                  <button
+                    type="button"
+                    onClick={addStop}
+                    className="flex items-center text-blue-600 hover:text-blue-800 text-sm font-medium"
+                  >
+                    <Plus className="w-4 h-4 mr-1" />
+                    Add Stop
+                  </button>
+                </div>
                 <input
                   type="text"
                   id="start"
@@ -79,6 +123,33 @@ function CreateRide() {
                   required
                 />
               </div>
+
+              {/* Dynamic Stop Fields with Remove Option */}
+              {ride.stops.map((stop, index) => (
+                <div key={index} className="relative group">
+                  <label className="flex items-center text-sm font-medium text-blue-900 mb-2">
+                    <MapPin className="w-4 h-4 mr-2 text-blue-500" />
+                    Stop {index + 1}
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={stop}
+                      onChange={(e) => handleStopChange(index, e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl border border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none"
+                      placeholder={`Enter stop ${index + 1} location`}
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeStop(index)}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-gray-500 hover:text-red-500"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
 
               <div className="relative">
                 <label
@@ -140,25 +211,49 @@ function CreateRide() {
                 </div>
               </div>
 
-              <div className="relative">
-                <label
-                  className="flex items-center text-sm font-medium text-blue-900 mb-2"
-                  htmlFor="seats"
-                >
-                  <Users className="w-4 h-4 mr-2 text-blue-500" />
-                  Available Seats
-                </label>
-                <input
-                  type="number"
-                  id="seats"
-                  name="seats"
-                  value={ride.seats}
-                  onChange={handleChange}
-                  className="w-full px-4 py-3 rounded-xl border border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none"
-                  placeholder="Number of available seats"
-                  required
-                  min="1"
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="relative">
+                  <label
+                    className="flex items-center text-sm font-medium text-blue-900 mb-2"
+                    htmlFor="seats"
+                  >
+                    <Users className="w-4 h-4 mr-2 text-blue-500" />
+                    Available Seats
+                  </label>
+                  <input
+                    type="number"
+                    id="seats"
+                    name="seats"
+                    value={ride.seats}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 rounded-xl border border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none"
+                    placeholder="Number of available seats"
+                    required
+                    min="1"
+                  />
+                </div>
+
+                <div className="relative">
+                  <label
+                    className="flex items-center text-sm font-medium text-blue-900 mb-2"
+                    htmlFor="price"
+                  >
+                    <span className="mr-2 text-blue-500">$</span>
+                    Total Price
+                  </label>
+                  <input
+                    type="number"
+                    id="price"
+                    name="price"
+                    value={ride.price}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 rounded-xl border border-blue-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 outline-none"
+                    placeholder="Total trip price"
+                    required
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
               </div>
             </div>
 

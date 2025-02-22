@@ -49,7 +49,6 @@ function Navbar() {
     console.log("no token found");
   }
 
-
   return (
     <div className="bg-gray-50 flex flex-col">
       <nav className="bg-white border-b border-gray-100 shadow-sm fixed w-full top-0 z-50">
@@ -101,14 +100,11 @@ function Navbar() {
                       >
                         View Profile
                       </a>
-                      <a
-                        href="/settings"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
-                      >
-                        Settings
-                      </a>
                       <hr className="my-2 border-gray-100" />
-                      <button className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2" onClick={handleLogout}>
+                      <button
+                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2"
+                        onClick={handleLogout}
+                      >
                         <LogOut className="h-4 w-4" />
                         <span>Log Out</span>
                       </button>
