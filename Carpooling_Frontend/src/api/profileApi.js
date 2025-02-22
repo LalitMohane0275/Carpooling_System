@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:3000/api/v1/profile'; 
+const BASE_URL = 'http://localhost:3000/api/v1'; 
 
 // Create axios instance with default config
 const api = axios.create({
@@ -12,7 +12,7 @@ const api = axios.create({
 
 export const getProfile = async (userId) => {
   try {
-    const response = await api.get(`/get-profile/${userId}`,{
+    const response = await api.get(`/profile/get-profile/${userId}`,{
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
@@ -20,6 +20,36 @@ export const getProfile = async (userId) => {
     return response.data;
   } catch (error) {
     console.error('Error fetching profile:', error);
+    throw error;
+  }
+};
+
+export const getRidesOffered = async (userId) => {
+  try {
+    const response = await api.get(`/get-rides/${userId}`,{
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+    console.log(response);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching offered rides:', error);
+    throw error;
+  }
+};
+
+export const getPassengerRidesTaken = async (userId) => {
+  try {
+    const response = await api.get(`/get-passenger-rides/${userId}`,{
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+    console.log(response);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching offered rides:', error);
     throw error;
   }
 };
