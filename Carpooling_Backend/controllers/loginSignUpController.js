@@ -2,16 +2,13 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/UserModel");
 const cloudinary = require("../config/cloudinary");
-<<<<<<< HEAD
-const fs = require("fs"); 
-=======
+
 const fs = require("fs");
 const transporter = require('../utils/nodemailer');
 
 function generateVerificationCode() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
->>>>>>> e2ec1d2a537680bbec48dfeeb7e29960fa12ff0a
 
 // Upload profile data
 const signup = async (req, res) => {
