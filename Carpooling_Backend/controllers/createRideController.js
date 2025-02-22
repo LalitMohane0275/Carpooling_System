@@ -1,61 +1,77 @@
-// Import model 
+// createRideController.js
 const Ride = require("../models/RideModel");
 const PassengerRide = require("../models/PassengerRideModel");
 const User = require("../models/UserModel");
 
-// Business Logic
+// createRideController.js
 exports.createRide = async (req, res) => {
-    try {
-        // Fetch data from request body
-        const { user_id, start, destination, time, date, seats } = req.body;
+  try {
+    // Fetch data from request body
+    const { user_id, start, stops, destination, time, date, seats, price } = req.body;
 
-        // Validate required fields
-        if (! user_id || !start || !destination || !time || !date || !seats) {
-            return res.status(400).json({ message: "All fields are required" });
-        }
-        
-        // fetch user details from userprofile
-        // const user = await User.findOne({ userId });
-        
-        // Check if user is authenticated
-        
-        // Check if user has vehicle and vehicle details
-        
-
-
-        // Create a new ride object
-        const newRide = new Ride({
-            start,
-            destination,
-            time,
-            date,
-            seats,
-            driver: user_id,
-        });
-
-        // Save the ride to MongoDB
-        const savedRide = await newRide.save();
-
-        // Send success response
-        res.status(201).json({
-            message: "Ride created successfully",
-            ride: savedRide,
-        });
-    } catch (err) {
-        console.error(err);
-
-        // Send error response
-        res.status(500).json({
-            message: "An error occurred while creating the ride",
-            error: err.message,
-        });
+    // Validate required fields
+    if (!user_id || !start || !destination || !time || !date || seats === undefined || price === undefined) {
+      return res.status(400).json({ 
+        message: "All required fields must be provided",
+        required: ["user_id", "start", "destination", "time", "date", "seats", "price"]
+      });
     }
-};
 
+    // Validate and convert stops
+    if (stops && !Array.isArray(stops)) {
+      return res.status(400).json({
+        message: "Stops must be an array of locations"
+      });
+    }
+
+    // Convert seats and price to numbers and validate
+    const seatsNum = Number(seats);
+    const priceNum = Number(price);
+
+    if (isNaN(seatsNum) || seatsNum < 1) {
+      return res.status(400).json({
+        message: "Seats must be a positive number"
+      });
+    }
+
+    if (isNaN(priceNum) || priceNum < 0) {
+      return res.status(400).json({
+        message: "Price must be a non-negative number"
+      });
+    }
+
+    // Create a new ride object
+    const newRide = new Ride({
+      start,
+      stops: stops || [],
+      destination,
+      time,
+      date,
+      seats: seatsNum,
+      price: priceNum,
+      driver: user_id,
+    });
+
+    // Save the ride to MongoDB
+    const savedRide = await newRide.save();
+
+    // Send success response
+    res.status(201).json({
+      message: "Ride created successfully",
+      ride: savedRide,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: "An error occurred while creating the ride",
+      error: err.message,
+    });
+  }
+};
 
 exports.createPassengerRide = async (req, res) => {
     try {
-        const { id } = req.params; // Ride ID from the route
+        const { id } = req.params;
         const { start, destination, time, seats } = req.body;
 
         // Validate required fields
@@ -75,7 +91,7 @@ exports.createPassengerRide = async (req, res) => {
             destination,
             time,
             seats,
-            ride: id, // Assign the ride ID to the `ride` field
+            ride: id,
         });
 
         // Save the PassengerRide to MongoDB
@@ -88,8 +104,6 @@ exports.createPassengerRide = async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-
-        // Send error response
         res.status(500).json({
             message: "An error occurred while creating the passenger ride",
             error: err.message,
