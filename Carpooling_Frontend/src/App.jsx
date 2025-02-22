@@ -19,6 +19,8 @@ import Reviews from "./pages/Reviews"
 import PrivateRoute from "./components/PrivateRoute";
 import ChangePassword from "./pages/ChangePassword";
 import VerifyEmailPage from "./pages/VerifyEmail";
+import RidesOffered from "./pages/RidesOffered";
+import RidesTaken from "./pages/RidesTaken";
 
 function App() {
   let userId = null;
@@ -86,7 +88,10 @@ function App() {
         ) : (        <Route path="/profile" element={<Navigate to="/login" />} />
         )}
         <Route path="/profile/:userId" element={<ProfilePage />} />
+        <Route path='/rides/offered/:userId' element={<RidesOffered/>} />
+        <Route path="/rides/taken/:userId" element={<RidesTaken/>} />
         <Route path="/reviews" element={<Reviews/>} />
+
         <Route path="*" element={<NotFound />} />
       </Routes>
       {/* Conditionally render the footer only if the user is logged in */}

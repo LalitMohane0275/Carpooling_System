@@ -72,7 +72,7 @@ exports.getRidesByDriverId = async (req, res) => {
         const { driver } = req.params;
 
         // Fetch ride by ID from the database
-        const rides = await Ride.findOne({driver});
+        const rides = await Ride.find({driver});
 
         // Check if ride exists
         if (!rides) {
@@ -100,14 +100,13 @@ exports.getRidesByDriverId = async (req, res) => {
     }
 };
 
-
-// Controller to get details of a specific ride by ID
+// Controller to get details of a specific ride by ID   
 exports.getPassengerRidesByDriverId = async (req, res) => {
     try {
         const { driver } = req.params;
 
         // Fetch ride by ID from the database
-        const rides = await PassengerRide.findOne({driver});
+        const rides = await PassengerRide.find({driver});
 
         // Check if ride exists
         if (!rides) {
