@@ -101,35 +101,37 @@ exports.getRidesByDriverId = async (req, res) => {
 };
 
 // Controller to get details of a specific ride by ID   
-exports.getPassengerRidesByDriverId = async (req, res) => {
-    try {
-        const { driver } = req.params;
+// getRideController.js
+exports.getPassengerRidesByPassengerId = async (req, res) => {
+  try {
+    const { passenger } = req.params; // Change 'driver' to 'passenger'
 
-        // Fetch ride by ID from the database
-        const rides = await PassengerRide.find({driver});
+    // Fetch passenger rides and populate the ride's driver details
+    const rides = await PassengerRide.find({ passenger })
+      .populate({
+        path: "ride",
+        populate: {
+          path: "driver",
+          select: "name photo", // Assuming User model has these fields
+        },
+      });
 
-        // Check if ride exists
-        if (!rides) {
-            return res.status(404).json({ message: "Rides of user not found" });
-        }
-
-        // Send success response with ride data
-        res.status(200).json({
-            message: "Rides fetched successfully",
-            rides: rides,
-        });
-    } catch (err) {
-        console.error(err);
-
-        // Handle invalid IDs and other errors
-        if (err.kind === "ObjectId") {
-            return res.status(400).json({ message: "Invalid ride ID" });
-        }
-
-        // Send error response
-        res.status(500).json({
-            message: "Failed to fetch ride details of driver",
-            error: err.message,
-        });
+    if (!rides || rides.length === 0) {
+      return res.status(404).json({ message: "No rides found for this passenger" });
     }
+
+    res.status(200).json({
+      message: "Passenger rides fetched successfully",
+      rides: rides,
+    });
+  } catch (err) {
+    console.error(err);
+    if (err.kind === "ObjectId") {
+      return res.status(400).json({ message: "Invalid passenger ID" });
+    }
+    res.status(500).json({
+      message: "Failed to fetch passenger ride details",
+      error: err.message,
+    });
+  }
 };
