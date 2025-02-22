@@ -15,7 +15,7 @@ import Footer from "./components/Footer";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import EditProfile from "./pages/EditProfile";
 import ForgotPassword from "./pages/ForgotPassword";
-import Reviews from "./pages/Reviews"
+import Reviews from "./pages/Reviews";
 import PrivateRoute from "./components/PrivateRoute";
 import ChangePassword from "./pages/ChangePassword";
 import VerifyEmailPage from "./pages/VerifyEmail";
@@ -29,7 +29,7 @@ function App() {
   if (token) {
     try {
       const payload = JSON.parse(atob(token.split(".")[1]));
-      userId = payload.userId; 
+      userId = payload.userId;
       console.log(`User ${userId}`);
     } catch (error) {
       console.error("Invalid token:", error, userId);
@@ -41,56 +41,74 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/home" element={
-          <ProtectedRoutes>
-            <Home />
-          </ProtectedRoutes>
-        } />
-        <Route path="/find-ride" element={
-          <ProtectedRoutes>
-            <FindRides />
-          </ProtectedRoutes>
-        } />
-        <Route path="/create-ride" element={
-          <ProtectedRoutes>
-            <CreateRide />
-          </ProtectedRoutes>
-        } />
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoutes>
+              <Home />
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="/find-ride"
+          element={
+            <ProtectedRoutes>
+              <FindRides />
+            </ProtectedRoutes>
+          }
+        />
+        <Route
+          path="/create-ride"
+          element={
+            <ProtectedRoutes>
+              <CreateRide />
+            </ProtectedRoutes>
+          }
+        />
 
-        <Route path="/profile/edit/:userId" element={
-          <ProtectedRoutes>
-            <EditProfile />
-          </ProtectedRoutes>
-        } />
-        
-        <Route path="/about" element={
-         <ProtectedRoutes>
-            <About />
-          </ProtectedRoutes>
-        } />
+        <Route
+          path="/profile/edit/:userId"
+          element={
+            <ProtectedRoutes>
+              <EditProfile />
+            </ProtectedRoutes>
+          }
+        />
 
-        
+        <Route
+          path="/about"
+          element={
+            <ProtectedRoutes>
+              <About />
+            </ProtectedRoutes>
+          }
+        />
+
         <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/forgot-password" element={<ForgotPassword/>} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/change-password" element= {<ChangePassword/>}/>
+        <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />
-        <Route path="/book-ride/:id" element={
-          <ProtectedRoutes>
-            <BookRide />
-          </ProtectedRoutes>
-        } />
+        <Route
+          path="/book-ride/:id"
+          element={
+            <ProtectedRoutes>
+              <BookRide />
+            </ProtectedRoutes>
+          }
+        />
         {userId ? (
           <Route
             path="/profile"
             element={<Navigate to={`/profile/${userId}`} />}
           />
-        ) : (        <Route path="/profile" element={<Navigate to="/login" />} />
+        ) : (
+          <Route path="/profile" element={<Navigate to="/login" />} />
         )}
         <Route path="/profile/:userId" element={<ProfilePage />} />
-        <Route path='/rides/offered/:userId' element={<RidesOffered/>} />
-        <Route path="/rides/taken/:userId" element={<RidesTaken/>} />
-        <Route path="/reviews" element={<Reviews/>} />
+        <Route path="/rides/offered/:userId" element={<RidesOffered />} />
+        <Route path="/rides/taken/:userId" element={<RidesTaken />} />
+        <Route path="/reviews" element={<Reviews />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
