@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { User, Mail, Phone, MapPin, Car, Star, Edit2, Camera, LogOut, Calendar, Clock, Users, Music, CookingPot as Smoking, Dog } from "lucide-react";
-import { getProfile } from '../api/profileApi';
+import { getProfile, getRidesOffered, getPassengerRidesTaken } from '../api/profileApi';
+
 
 const ProfilePage = () => {
   let { userId } = useParams();
@@ -36,6 +37,9 @@ const ProfilePage = () => {
     ridesTaken: 52,
   });
 
+  const [ridesOffered, setRidesOffered] = useState([]);
+  const[ ridesTaken, setRidesTaken] = useState([]);
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -68,44 +72,48 @@ const ProfilePage = () => {
     navigate(`/profile/${userId}/edit`);
   };
 
-  // Mock data for rides offered and taken
-  const ridesOffered = [
-    {
-      id: 1,
-      from: "San Francisco",
-      to: "Los Angeles",
-      date: "2023-05-15",
-      time: "09:00 AM",
-      seats: 3,
-    },
-    {
-      id: 2,
-      from: "San Jose",
-      to: "Sacramento",
-      date: "2023-05-20",
-      time: "10:30 AM",
-      seats: 2,
-    },
-  ];
+  useEffect(() => {
+    const fetchRidesOffered = async () => {
+      try {
+        setIsLoading(true);
 
-  const ridesTaken = [
-    {
-      id: 1,
-      from: "Oakland",
-      to: "San Francisco",
-      date: "2023-05-10",
-      time: "08:00 AM",
-      driver: "Alice Smith",
-    },
-    {
-      id: 2,
-      from: "San Francisco",
-      to: "Palo Alto",
-      date: "2023-05-18",
-      time: "07:30 AM",
-      driver: "Bob Johnson",
-    },
-  ];
+        const response = await getRidesOffered(userId);
+        if (response.success) {
+          setRidesOffered(response.rides);
+        }
+        console.log(response.rides);
+      } catch (err) {
+        setError(err.message);
+        console.error('Failed to fetch profile:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchRidesOffered();
+  }, [userId]);
+
+  useEffect(() => {
+    const fetchRidesTaken = async () => {
+      try {
+        setIsLoading(true);
+
+        const response = await getPassengerRidesTaken(userId);
+        if (response.success) {
+          setRidesTaken(response.rides);
+        }
+        console.log(response.rides);
+      } catch (err) {
+        setError(err.message);
+        console.error('Failed to fetch profile:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchRidesTaken();
+  }, [userId]);
+  
 
   if (isLoading) {
     return (
@@ -275,7 +283,7 @@ const RideCard = ({ ride, type }) => {
       <div className="flex justify-between items-start">
         <div>
           <h3 className="text-lg font-semibold text-gray-800">
-            {ride.from} to {ride.to}
+            {ride.start} to {ride.destination}
           </h3>
           <div className="mt-2 space-y-1">
             <div className="flex items-center text-sm text-gray-600">
