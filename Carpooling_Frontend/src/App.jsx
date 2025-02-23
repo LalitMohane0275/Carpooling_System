@@ -1,4 +1,9 @@
+// App.jsx
+import { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {jwtDecode} from "jwt-decode";
+import { logout } from "./store/authSlice";
 import "./App.css";
 import Home from "./pages/Home";
 import About from "./pages/About";
@@ -12,29 +17,58 @@ import NotFound from "./pages/NotFound";
 import BookRide from "./pages/BookRide";
 import ProfilePage from "./pages/Profile";
 import Footer from "./components/Footer";
-import ProtectedRoutes from "./components/ProtectedRoutes";
+import ProtectedRoute from "./components/ProtectedRoutes"; // Updated name
 import EditProfile from "./pages/EditProfile";
-<<<<<<< HEAD
 import ForgotPassword from "./pages/ForgotPassword";
-
-=======
->>>>>>> e2ec1d2a537680bbec48dfeeb7e29960fa12ff0a
-import Reviews from "./pages/Reviews"
-import PrivateRoute from "./components/PrivateRoute";
+import Reviews from "./pages/Reviews";
 import ChangePassword from "./pages/ChangePassword";
 import VerifyEmailPage from "./pages/VerifyEmail";
+import RidesOffered from "./pages/RidesOffered";
+import RidesTaken from "./pages/RidesTaken";
 
 function App() {
-  let userId = null;
-  const token = localStorage.getItem("token");
+  const dispatch = useDispatch();
+  const { token } = useSelector((state) => state.auth); // Get token from Redux
 
+  // Function to check token expiration
+  const checkTokenExpiration = () => {
+    const storedToken = localStorage.getItem("token");
+    if (!storedToken) {
+      dispatch(logout());
+      return;
+    }
+
+    try {
+      const decoded = jwtDecode(storedToken);
+      const currentTime = Date.now() / 1000; // Current time in seconds
+      if (decoded.exp < currentTime) {
+        dispatch(logout());
+      }
+    } catch (error) {
+      console.error("Invalid token:", error);
+      dispatch(logout());
+    }
+  };
+
+  // Periodic token check
+  useEffect(() => {
+    checkTokenExpiration(); // Check on mount
+
+    const interval = setInterval(() => {
+      checkTokenExpiration();
+    }, 60000); // Check every 60 seconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [dispatch]);
+
+  let userId = null;
   if (token) {
     try {
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      userId = payload.userId; 
+      const payload = jwtDecode(token);
+      userId = payload.userId;
       console.log(`User ${userId}`);
     } catch (error) {
-      console.error("Invalid token:", error, userId);
+      console.error("Invalid token:", error);
     }
   }
 
@@ -43,57 +77,73 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/home" element={
-          <ProtectedRoutes>
-            <Home />
-          </ProtectedRoutes>
-        } />
-        <Route path="/find-ride" element={
-          <ProtectedRoutes>
-            <FindRides />
-          </ProtectedRoutes>
-        } />
-        <Route path="/create-ride" element={
-          <ProtectedRoutes>
-            <CreateRide />
-          </ProtectedRoutes>
-        } />
-
-        <Route path="/profile/:userId/edit" element={
-          <ProtectedRoutes>
-            <EditProfile />
-          </ProtectedRoutes>
-        } />
-        
-        <Route path="/about" element={
-         <ProtectedRoutes>
-            <About />
-          </ProtectedRoutes>
-        } />
-
-        
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/find-ride"
+          element={
+            <ProtectedRoute>
+              <FindRides />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/create-ride"
+          element={
+            <ProtectedRoute>
+              <CreateRide />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile/edit/:userId"
+          element={
+            <ProtectedRoute>
+              <EditProfile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/about"
+          element={
+            <ProtectedRoute>
+              <About />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/forgot-password" element={<ForgotPassword/>} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/change-password" element= {<ChangePassword/>}/>
+        <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />
-        <Route path="/book-ride/:id" element={
-          <ProtectedRoutes>
-            <BookRide />
-          </ProtectedRoutes>
-        } />
+        <Route
+          path="/book-ride/:id"
+          element={
+            <ProtectedRoute>
+              <BookRide />
+            </ProtectedRoute>
+          }
+        />
         {userId ? (
           <Route
             path="/profile"
             element={<Navigate to={`/profile/${userId}`} />}
           />
-        ) : (        <Route path="/profile" element={<Navigate to="/login" />} />
+        ) : (
+          <Route path="/profile" element={<Navigate to="/login" />} />
         )}
         <Route path="/profile/:userId" element={<ProfilePage />} />
-        <Route path="/reviews" element={<Reviews/>} />
+        <Route path="/rides/offered/:userId" element={<RidesOffered />} />
+        <Route path="/rides/taken/:userId" element={<RidesTaken />} />
+        <Route path="/reviews" element={<Reviews />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      {/* Conditionally render the footer only if the user is logged in */}
       {token && <Footer />}
     </div>
   );

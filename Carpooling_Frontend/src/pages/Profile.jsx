@@ -1,15 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { User, Mail, Phone, MapPin, Car, Star, Edit2, Camera, LogOut, Calendar, Clock, Users, Music, CookingPot as Smoking, Dog } from "lucide-react";
-import { getProfile } from '../api/profileApi';
+import {
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Car,
+  Star,
+  Edit2,
+  Camera,
+  LogOut,
+  ArrowRight,
+  Music,
+  CookingPot as Smoking,
+  Dog,
+} from "lucide-react";
+import { getProfile } from "../api/profileApi";
+import { logout } from "../store/authSlice";
+import { useDispatch } from "react-redux";
+
 
 const ProfilePage = () => {
   let { userId } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const [user, setUser] = useState({
     // API data
     name: "",
@@ -21,12 +39,12 @@ const ProfilePage = () => {
       make: "",
       model: "",
       year: "",
-      licensePlate: ""
+      licensePlate: "",
     },
     preferences: {
       smokingAllowed: false,
       petsAllowed: false,
-      musicAllowed: true
+      musicAllowed: true,
     },
     createdAt: "",
     // Hardcoded data
@@ -36,6 +54,11 @@ const ProfilePage = () => {
     ridesTaken: 52,
   });
 
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/");
+  };
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -43,7 +66,7 @@ const ProfilePage = () => {
 
         const response = await getProfile(userId);
         if (response.success) {
-          setUser(prevUser => ({
+          setUser((prevUser) => ({
             ...prevUser,
             ...response.data,
             // Add hardcoded data that's not from API
@@ -55,7 +78,7 @@ const ProfilePage = () => {
         }
       } catch (err) {
         setError(err.message);
-        console.error('Failed to fetch profile:', err);
+        console.error("Failed to fetch profile:", err);
       } finally {
         setIsLoading(false);
       }
@@ -65,47 +88,16 @@ const ProfilePage = () => {
   }, [userId]);
 
   const handleEdit = () => {
-    navigate(`/profile/${userId}/edit`);
+    navigate(`/profile/edit/${userId}`);
   };
 
-  // Mock data for rides offered and taken
-  const ridesOffered = [
-    {
-      id: 1,
-      from: "San Francisco",
-      to: "Los Angeles",
-      date: "2023-05-15",
-      time: "09:00 AM",
-      seats: 3,
-    },
-    {
-      id: 2,
-      from: "San Jose",
-      to: "Sacramento",
-      date: "2023-05-20",
-      time: "10:30 AM",
-      seats: 2,
-    },
-  ];
+  const handleRidesOffered = () => {
+    navigate(`/rides/offered/${userId}`);
+  };
 
-  const ridesTaken = [
-    {
-      id: 1,
-      from: "Oakland",
-      to: "San Francisco",
-      date: "2023-05-10",
-      time: "08:00 AM",
-      driver: "Alice Smith",
-    },
-    {
-      id: 2,
-      from: "San Francisco",
-      to: "Palo Alto",
-      date: "2023-05-18",
-      time: "07:30 AM",
-      driver: "Bob Johnson",
-    },
-  ];
+  const handleRidesTaken = () => {
+    navigate(`/rides/taken/${userId}`);
+  };
 
   if (isLoading) {
     return (
@@ -170,19 +162,51 @@ const ProfilePage = () => {
                 </div>
                 {/* Preferences */}
                 <div className="mt-4 space-y-2">
-                  <h3 className="text-lg font-semibold text-gray-800">Ride Preferences</h3>
+                  <h3 className="text-lg font-semibold text-gray-800">
+                    Ride Preferences
+                  </h3>
                   <div className="flex items-center space-x-4">
-                    <div className={`flex items-center space-x-2 ${user.preferences.musicAllowed ? 'text-green-600' : 'text-gray-400'}`}>
+                    <div
+                      className={`flex items-center space-x-2 ${
+                        user.preferences.musicAllowed
+                          ? "text-green-600"
+                          : "text-gray-400"
+                      }`}
+                    >
                       <Music size={20} />
-                      <span>{user.preferences.musicAllowed ? 'Music allowed' : 'No music'}</span>
+                      <span>
+                        {user.preferences.musicAllowed
+                          ? "Music allowed"
+                          : "No music"}
+                      </span>
                     </div>
-                    <div className={`flex items-center space-x-2 ${user.preferences.smokingAllowed ? 'text-green-600' : 'text-gray-400'}`}>
+                    <div
+                      className={`flex items-center space-x-2 ${
+                        user.preferences.smokingAllowed
+                          ? "text-green-600"
+                          : "text-gray-400"
+                      }`}
+                    >
                       <Smoking size={20} />
-                      <span>{user.preferences.smokingAllowed ? 'Smoking allowed' : 'No smoking'}</span>
+                      <span>
+                        {user.preferences.smokingAllowed
+                          ? "Smoking allowed"
+                          : "No smoking"}
+                      </span>
                     </div>
-                    <div className={`flex items-center space-x-2 ${user.preferences.petsAllowed ? 'text-green-600' : 'text-gray-400'}`}>
+                    <div
+                      className={`flex items-center space-x-2 ${
+                        user.preferences.petsAllowed
+                          ? "text-green-600"
+                          : "text-gray-400"
+                      }`}
+                    >
                       <Dog size={20} />
-                      <span>{user.preferences.petsAllowed ? 'Pets allowed' : 'No pets'}</span>
+                      <span>
+                        {user.preferences.petsAllowed
+                          ? "Pets allowed"
+                          : "No pets"}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -200,52 +224,64 @@ const ProfilePage = () => {
             {/* Vehicle Details */}
             {user.hasVehicle && (
               <div className="mt-8 bg-gray-50 p-4 rounded-lg">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">Vehicle Details</h2>
+                <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                  Vehicle Details
+                </h2>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-gray-600">Make: {user.vehicleDetails.make}</p>
-                    <p className="text-gray-600">Model: {user.vehicleDetails.model}</p>
+                    <p className="text-gray-600">
+                      Make: {user.vehicleDetails.make}
+                    </p>
+                    <p className="text-gray-600">
+                      Model: {user.vehicleDetails.model}
+                    </p>
                   </div>
                   <div>
-                    <p className="text-gray-600">Year: {user.vehicleDetails.year}</p>
-                    <p className="text-gray-600">License Plate: {user.vehicleDetails.licensePlate}</p>
+                    <p className="text-gray-600">
+                      Year: {user.vehicleDetails.year}
+                    </p>
+                    <p className="text-gray-600">
+                      License Plate: {user.vehicleDetails.licensePlate}
+                    </p>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Edit Profile Button */}
-            <div className="mt-8 flex justify-center">
+            {/* Action Buttons */}
+            <div className="mt-8 space-y-4">
+              {/* Edit Profile Button */}
               <button
                 onClick={handleEdit}
-                className="flex items-center space-x-2 bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition-colors"
+                className="w-full flex items-center justify-center space-x-2 bg-blue-500 text-white px-6 py-3 rounded-xl hover:bg-blue-600 transition-all duration-200 transform hover:-translate-y-0.5"
               >
                 <Edit2 size={18} />
                 <span>Edit Profile</span>
               </button>
-            </div>
 
-            {/* Rides Offered Section */}
-            <div className="mt-12">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                Rides Offered
-              </h2>
-              <div className="space-y-4">
-                {ridesOffered.map((ride) => (
-                  <RideCard key={ride.id} ride={ride} type="offered" />
-                ))}
-              </div>
-            </div>
+              {/* Rides Navigation */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button
+                  onClick={handleRidesOffered}
+                  className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 group"
+                >
+                  <div className="flex items-center space-x-3">
+                    <Car size={20} />
+                    <span className="font-semibold">Rides Offered</span>
+                  </div>
+                  <ArrowRight className="transform group-hover:translate-x-1 transition-transform" />
+                </button>
 
-            {/* Rides Taken Section */}
-            <div className="mt-12">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                Rides Taken
-              </h2>
-              <div className="space-y-4">
-                {ridesTaken.map((ride) => (
-                  <RideCard key={ride.id} ride={ride} type="taken" />
-                ))}
+                <button
+                  onClick={handleRidesTaken}
+                  className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 group"
+                >
+                  <div className="flex items-center space-x-3">
+                    <User size={20} />
+                    <span className="font-semibold">Rides Taken</span>
+                  </div>
+                  <ArrowRight className="transform group-hover:translate-x-1 transition-transform" />
+                </button>
               </div>
             </div>
           </div>
@@ -258,52 +294,14 @@ const ProfilePage = () => {
                 RideBuddy Member since {new Date(user.createdAt).getFullYear()}
               </span>
             </div>
-            <button className="flex items-center space-x-2 text-red-500 hover:text-red-600 transition-colors">
+            <button
+              className="flex items-center space-x-2 text-red-500 hover:text-red-600 transition-colors"
+              onClick={handleLogout}
+            >
               <LogOut size={18} />
               <span>Log Out</span>
             </button>
           </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const RideCard = ({ ride, type }) => {
-  return (
-    <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-      <div className="flex justify-between items-start">
-        <div>
-          <h3 className="text-lg font-semibold text-gray-800">
-            {ride.from} to {ride.to}
-          </h3>
-          <div className="mt-2 space-y-1">
-            <div className="flex items-center text-sm text-gray-600">
-              <Calendar size={16} className="mr-2" />
-              {ride.date}
-            </div>
-            <div className="flex items-center text-sm text-gray-600">
-              <Clock size={16} className="mr-2" />
-              {ride.time}
-            </div>
-            {type === "offered" && (
-              <div className="flex items-center text-sm text-gray-600">
-                <Users size={16} className="mr-2" />
-                {ride.seats} seats available
-              </div>
-            )}
-            {type === "taken" && (
-              <div className="flex items-center text-sm text-gray-600">
-                <User size={16} className="mr-2" />
-                Driver: {ride.driver}
-              </div>
-            )}
-          </div>
-        </div>
-        <div className="text-right">
-          <span className="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
-            {type === "offered" ? "Offered" : "Taken"}
-          </span>
         </div>
       </div>
     </div>

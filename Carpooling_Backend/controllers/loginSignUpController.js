@@ -61,21 +61,14 @@ const signup = async (req, res) => {
       const uploadResult = await cloudinary.uploader.upload(req.file.path, {
         folder: "profile_pictures",
       });
-      
-      console.log("Cloudinary Upload Result:", uploadResult);
-
       profilePicture = {
         url : uploadResult.secure_url,
         publicId: uploadResult.public_id,
       };
-
-      fs.unlinkSync(req.file.path);
     }
-    console.log(profilePicture.url)
-    console.log(profilePicture.publicId)
 
      // delete the file from local storage
-      fs.unlinkSync(req.file.path);
+        fs.unlinkSync(req.file.path);
 
     // Save user to the database
     const newUser = await User.create({
@@ -159,7 +152,9 @@ const login = async (req, res) => {
         email: user.email,
       },
       process.env.JWT_SECRET_KEY,
-      { expiresIn: "30m" }
+      {
+        expiresIn: "2h"
+      }
     );
     console.log(accessToken);
 
