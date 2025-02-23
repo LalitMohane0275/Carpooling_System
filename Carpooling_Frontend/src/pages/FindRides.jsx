@@ -270,7 +270,7 @@ function FindRides() {
                     </div>
                     <div className="text-right">
                       <div className="text-lg font-semibold text-gray-900">
-                        ${ride.price}
+                      ₹{ride.price}
                       </div>
                       <div className="text-sm text-gray-500">per seat</div>
                     </div>

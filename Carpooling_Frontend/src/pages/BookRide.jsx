@@ -92,10 +92,17 @@ function BookRide() {
         navigate("/find-ride");
       }, 2000);
     } catch (err) {
-      toast.error("Failed to book the ride. Please try again.", {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      if (err.response && err.response.status === 403) {
+        toast.error("Cannot book your own ride", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+      } else {
+        toast.error("Failed to book the ride. Please try again.", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+      }
       console.error(err);
     }
   };

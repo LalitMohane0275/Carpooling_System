@@ -4,7 +4,7 @@ const { signup, login, changePassword, verifyEmail } = require('../controllers/l
 const upload = require("../utils/multer"); 
 const {forgotPassword,verifyOTP,resetPassword,resendOTP} = require('../controllers/authController');
 
-
++
 router.post('/signup', upload.single("profilePicture"), signup); 
 router.post('/login', login); 
 router.post('/change-password', changePassword);

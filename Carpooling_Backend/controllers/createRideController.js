@@ -72,10 +72,10 @@ exports.createRide = async (req, res) => {
 // createRideController.js
 exports.createPassengerRide = async (req, res) => {
   try {
-    const { id } = req.params; // Ride ID
+    const { id } = req.params; 
     const { start, destination, time, seats } = req.body;
     const token = req.headers.authorization.split(" ")[1];
-    const decoded = require("jsonwebtoken").decode(token); // Assuming JWT
+    const decoded = require("jsonwebtoken").decode(token);
     const passengerId = decoded.userId;
 
     if (!start || !destination || !time || !seats || !id) {
@@ -85,6 +85,10 @@ exports.createPassengerRide = async (req, res) => {
     const existingRide = await Ride.findById(id);
     if (!existingRide) {
       return res.status(404).json({ message: "Ride not found" });
+    }
+
+    if (passengerId === existingRide.driver.toString()) {
+      return res.status(403).json({ success: false, message: "Cannot book your own ride" });
     }
 
     const newPassengerRide = new PassengerRide({
