@@ -1,3 +1,4 @@
+// FindRides.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -185,7 +186,7 @@ function FindRides() {
             {filteredRides.map((ride) => (
               <div
                 key={ride._id}
-                className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col min-h-[400px]" // Added flex and min-height
+                className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col min-h-[400px]"
               >
                 <div className="p-6 flex flex-col flex-grow">
                   {/* Route Information */}
@@ -247,20 +248,20 @@ function FindRides() {
                   {/* Driver Information */}
                   <div className="flex items-center justify-between mb-6 pt-4 border-t border-gray-100">
                     <div className="flex items-center space-x-3">
-                      {ride.createdBy?.profilePicture ? (
+                      {ride.driver?.profilePicture ? (
                         <img
-                          src={ride.createdBy.profilePicture}
-                          alt={ride.createdBy.name}
+                          src={ride.driver.profilePicture}
+                          alt={`${ride.driver.firstName} ${ride.driver.lastName}`}
                           className="w-10 h-10 rounded-full object-cover"
                         />
-                      ) : ride.createdBy?.gender === "female" ? (
-                        <User className="w-10 h-10 p-2 bg-pink-100 text-pink-500 rounded-full" />
                       ) : (
                         <UserRound className="w-10 h-10 p-2 bg-blue-100 text-blue-500 rounded-full" />
                       )}
                       <div>
                         <div className="font-medium text-gray-900">
-                          {ride.createdBy?.name || "Anonymous"}
+                          {ride.driver?.firstName && ride.driver?.lastName
+                            ? `${ride.driver.firstName} ${ride.driver.lastName}`
+                            : "Anonymous"}
                         </div>
                         <div className="flex items-center text-yellow-400">
                           <Star className="w-4 h-4 fill-current" />
@@ -270,7 +271,7 @@ function FindRides() {
                     </div>
                     <div className="text-right">
                       <div className="text-lg font-semibold text-gray-900">
-                      ₹{ride.price}
+                        ₹{ride.price}
                       </div>
                       <div className="text-sm text-gray-500">per seat</div>
                     </div>

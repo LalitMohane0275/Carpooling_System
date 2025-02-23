@@ -235,6 +235,7 @@ const ProfilePage = () => {
                     <p className="text-gray-600">
                       Model: {user.vehicleDetails.model}
                     </p>
+                   
                   </div>
                   <div>
                     <p className="text-gray-600">
@@ -242,6 +243,10 @@ const ProfilePage = () => {
                     </p>
                     <p className="text-gray-600">
                       License Plate: {user.vehicleDetails.licensePlate}
+                    </p>
+                    <p className="text-gray-600">
+                        <span className="font-medium">
+                          Fuel Type:</span> {user.vehicleDetails.fuelType}
                     </p>
                   </div>
                 </div>

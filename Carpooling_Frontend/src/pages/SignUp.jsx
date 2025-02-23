@@ -428,6 +428,19 @@ function SignUp() {
                   className="px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required={formData.hasVehicle}
                 />
+                 <select
+                    name="vehicleDetails.fuelType"
+                    value={formData.vehicleDetails.fuelType}
+                    onChange={handleInputChange}
+                    className="px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required={formData.hasVehicle}
+                  >
+                    <option value="">Select Fuel Type</option>
+                    <option value="Petrol">Petrol</option>
+                    <option value="Diesel">Diesel</option>
+                    <option value="Electric">Electric</option>
+                    <option value="Hybrid">Hybrid</option>
+                 </select>
               </div>
             )}
           </div>

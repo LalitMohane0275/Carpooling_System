@@ -312,6 +312,22 @@ function EditProfile() {
                       className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
                     />
                   </div>
+                  <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-700">Fuel Type</label>
+                      <select
+                        name="vehicleDetails.fuelType"
+                        value={profile.vehicleDetails.fuelType}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
+                      >
+                        <option value="">Select Fuel Type</option>
+                        <option value="Petrol">Petrol</option>
+                        <option value="Diesel">Diesel</option>
+                        <option value="Electric">Electric</option>
+                        <option value="Hybrid">Hybrid</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
                 </div>
               )}
             </div>
