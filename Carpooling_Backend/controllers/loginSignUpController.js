@@ -152,7 +152,7 @@ const login = async (req, res) => {
       },
       process.env.JWT_SECRET_KEY,
       {
-        expiresIn: "10s"
+        expiresIn: "2h"
       }
     );
     console.log(accessToken);
