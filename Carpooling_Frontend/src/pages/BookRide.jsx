@@ -11,8 +11,9 @@ import {
   User,
   UserRound,
   MapPinned,
-  Timer,
   CarFront,
+  Phone,
+  Mail,
 } from "lucide-react";
 
 function BookRide() {
@@ -22,11 +23,11 @@ function BookRide() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [submitted, setSubmitted] = useState(false);
+  const [bookingDetails, setBookingDetails] = useState(null);
 
   const [formData, setFormData] = useState({
     start: "",
     destination: "",
-    time: "",
     seats: 1,
   });
 
@@ -35,11 +36,13 @@ function BookRide() {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:3000/api/v1/book-ride/${id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+          `http://localhost:3000/api/v1/book-ride/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         setRide(response.data.ride);
         setLoading(false);
       } catch (err) {
@@ -67,12 +70,15 @@ function BookRide() {
       const token = localStorage.getItem("token");
       const response = await axios.post(
         `http://localhost:3000/api/v1/create-passenger-ride/${id}`,
-        formDataToSend, {
-        headers: {
-          Authorization: `Bearer ${token}`, // Pass the token here
-        },
-      });
+        formDataToSend,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
+      setBookingDetails(response.data.bookingDetails); // Assuming backend returns booking details
       toast.success("Ride booked successfully!", {
         position: "top-right",
         autoClose: 3000,
@@ -81,16 +87,13 @@ function BookRide() {
       setFormData({
         start: "",
         destination: "",
-        time: "",
         seats: "",
       });
       setSubmitted(true);
-      toast.success("Ride Booked Successfully!", {
-        position: "top-right",
-      });
-      setTimeout(() => {
-        navigate("/find-ride");
-      }, 2000);
+
+      // setTimeout(() => {
+      //   navigate("/find-ride");
+      // }, 5000); // Increased timeout to allow user to see driver info
     } catch (err) {
       if (err.response && err.response.status === 403) {
         toast.error("Cannot book your own ride", {
@@ -141,6 +144,28 @@ function BookRide() {
                 Thank you! Your ride has been booked successfully.
               </p>
             </div>
+            {bookingDetails && (
+              <div className="text-left mb-6">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                  Driver Contact Information
+                </h3>
+                <p className="flex items-center text-gray-600">
+                  <User className="w-5 h-5 mr-2 text-blue-500" />
+                  {bookingDetails.driverName}
+                </p>
+                <p className="flex items-center text-gray-600">
+                  <Phone className="w-5 h-5 mr-2 text-blue-500" />
+                  {bookingDetails.driverPhone}
+                </p>
+                <p className="flex items-center text-gray-600">
+                  <Mail className="w-5 h-5 mr-2 text-blue-500" />
+                  {bookingDetails.driverEmail}
+                </p>
+                <p className="text-sm text-gray-500 mt-2">
+                  You’ll receive an email with these details shortly.
+                </p>
+              </div>
+            )}
             <button
               onClick={() => navigate("/")}
               className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-300"
@@ -190,21 +215,6 @@ function BookRide() {
                   <div className="flex items-center text-gray-600">
                     <Users className="w-4 h-4 mr-2 text-blue-500" />
                     <span>{ride.seats} seats available</span>
-                  </div>
-
-                  {/* Created By */}
-                  <div className="flex items-center pt-4 border-t border-gray-100">
-                    {ride.createdBy?.gender === "female" ? (
-                      <User className="w-5 h-5 text-pink-500 mr-2" />
-                    ) : (
-                      <UserRound className="w-5 h-5 text-blue-500 mr-2" />
-                    )}
-                    <span className="text-sm text-gray-600">
-                      Created by{" "}
-                      <span className="font-medium">
-                        {ride.createdBy?.name || "Anonymous"}
-                      </span>
-                    </span>
                   </div>
                 </div>
               </div>
@@ -257,27 +267,6 @@ function BookRide() {
                           onChange={handleInputChange}
                           className="pl-10 w-full rounded-lg border border-gray-200 bg-gray-50 py-3 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                           placeholder="Enter your drop-off location"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label
-                        htmlFor="time"
-                        className="block text-sm font-medium text-gray-700 mb-1"
-                      >
-                        Preferred Time
-                      </label>
-                      <div className="relative">
-                        <Timer className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                        <input
-                          type="time"
-                          id="time"
-                          name="time"
-                          value={formData.time}
-                          onChange={handleInputChange}
-                          className="pl-10 w-full rounded-lg border border-gray-200 bg-gray-50 py-3 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                           required
                         />
                       </div>
