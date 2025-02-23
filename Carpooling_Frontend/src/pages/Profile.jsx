@@ -14,11 +14,59 @@ import {
   Music,
   CookingPot as Smoking,
   Dog,
+  Zap,
+  Wind,
+  Droplet,
+  Fuel
 } from "lucide-react";
 import { getProfile } from "../api/profileApi";
 import { logout } from "../store/authSlice";
 import { useDispatch } from "react-redux";
 
+const getVehicleTypeIcon = (type) => {
+  switch (type) {
+    case 'ev':
+      return <Zap className="text-green-500" size={20} />;
+    case 'cng':
+      return <Wind className="text-blue-500" size={20} />;
+    case 'petrol':
+      return <Droplet className="text-red-500" size={20} />;
+    case 'diesel':
+      return <Fuel className="text-yellow-500" size={20} />;
+    default:
+      return <Car className="text-gray-500" size={20} />;
+  }
+};
+
+const getVehicleTypeColor = (type) => {
+  switch (type) {
+    case 'ev':
+      return 'bg-green-50 text-green-700 border-green-200';
+    case 'cng':
+      return 'bg-blue-50 text-blue-700 border-blue-200';
+    case 'petrol':
+      return 'bg-red-50 text-red-700 border-red-200';
+    case 'diesel':
+      return 'bg-yellow-50 text-yellow-700 border-yellow-200';
+    default:
+      return 'bg-gray-50 text-gray-700 border-gray-200';
+  }
+};
+
+const getVehicleTypeLabel = (type) => {
+  switch (type) {
+    case 'ev':
+      return 'Electric Vehicle';
+    case 'cng':
+      return 'CNG';
+    case 'petrol':
+      return 'Petrol';
+    case 'diesel':
+      return 'Diesel';
+    default:
+      return 'Not Specified';
+  }
+};
 
 const ProfilePage = () => {
   let { userId } = useParams();
@@ -40,6 +88,7 @@ const ProfilePage = () => {
       model: "",
       year: "",
       licensePlate: "",
+      type: "", // Added vehicle type
     },
     preferences: {
       smokingAllowed: false,
@@ -223,10 +272,18 @@ const ProfilePage = () => {
 
             {/* Vehicle Details */}
             {user.hasVehicle && (
-              <div className="mt-8 bg-gray-50 p-4 rounded-lg">
-                <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                  Vehicle Details
-                </h2>
+              <div className="mt-8 bg-gray-50 p-6 rounded-lg">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-semibold text-gray-800">
+                    Vehicle Details
+                  </h2>
+                  <div className={`flex items-center gap-2 px-4 py-2 rounded-full border ${getVehicleTypeColor(user.vehicleDetails.type)}`}>
+                    {getVehicleTypeIcon(user.vehicleDetails.type)}
+                    <span className="font-medium">
+                      {getVehicleTypeLabel(user.vehicleDetails.type)}
+                    </span>
+                  </div>
+                </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-gray-600">

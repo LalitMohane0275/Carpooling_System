@@ -25,6 +25,7 @@ const userSchema = new mongoose.Schema({
         model: { type: String, default: '' },
         year: { type: String, default: '' },
         licensePlate: { type: String, default: '' },
+        type: {type:String, default: ''},
     },
     preferences: {
         smokingAllowed: { type: Boolean, default: false },
