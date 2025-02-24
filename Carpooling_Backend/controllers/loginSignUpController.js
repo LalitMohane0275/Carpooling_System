@@ -149,6 +149,7 @@ const login = async (req, res) => {
       {
         userId: user._id,
         email: user.email,
+        name : user.firstName + " " + user.lastName,
       },
       process.env.JWT_SECRET_KEY,
       {

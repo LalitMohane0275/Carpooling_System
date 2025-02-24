@@ -14,16 +14,28 @@ import {
   ChevronRight,
   Star,
 } from "lucide-react";
+import { jwtDecode } from "jwt-decode";
+import { useEffect } from "react";
 
 const HomePage = () => {
   const [activeTab, setActiveTab] = useState("available");
+  const [userName, setUserName] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      console.log(decodedToken);
+      setUserName(decodedToken.name);
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
       <main className="container mx-auto px-4 py-8">
         <section className="mb-12">
           <h1 className="text-3xl font-bold text-gray-800 mb-6">
-            Welcome back, John!
+            Welcome back, {userName}!
           </h1>
           <div className="bg-white rounded-lg shadow-md p-6">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">
