@@ -44,6 +44,7 @@ function SignUp() {
       model: "",
       year: "",
       licensePlate: "",
+      type: "", 
     },
     preferences: {
       smokingAllowed: false,
@@ -391,56 +392,61 @@ function SignUp() {
             </div>
 
             {formData.hasVehicle && (
-              <div className="grid grid-cols-2 gap-4">
-                <input
-                  type="text"
-                  name="vehicleDetails.make"
-                  value={formData.vehicleDetails.make}
-                  onChange={handleInputChange}
-                  placeholder="Make"
-                  className="px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required={formData.hasVehicle}
-                />
-                <input
-                  type="text"
-                  name="vehicleDetails.model"
-                  value={formData.vehicleDetails.model}
-                  onChange={handleInputChange}
-                  placeholder="Model"
-                  className="px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required={formData.hasVehicle}
-                />
-                <input
-                  type="text"
-                  name="vehicleDetails.year"
-                  value={formData.vehicleDetails.year}
-                  onChange={handleInputChange}
-                  placeholder="Year"
-                  className="px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required={formData.hasVehicle}
-                />
-                <input
-                  type="text"
-                  name="vehicleDetails.licensePlate"
-                  value={formData.vehicleDetails.licensePlate}
-                  onChange={handleInputChange}
-                  placeholder="License Plate"
-                  className="px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required={formData.hasVehicle}
-                />
-                 <select
-                    name="vehicleDetails.fuelType"
-                    value={formData.vehicleDetails.fuelType}
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <input
+                    type="text"
+                    name="vehicleDetails.make"
+                    value={formData.vehicleDetails.make}
+                    onChange={handleInputChange}
+                    placeholder="Make"
+                    className="px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required={formData.hasVehicle}
+                  />
+                  <input
+                    type="text"
+                    name="vehicleDetails.model"
+                    value={formData.vehicleDetails.model}
+                    onChange={handleInputChange}
+                    placeholder="Model"
+                    className="px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required={formData.hasVehicle}
+                  />
+                </div>
+                <div className="grid grid-cols-3 gap-4">
+                  <input
+                    type="text"
+                    name="vehicleDetails.year"
+                    value={formData.vehicleDetails.year}
+                    onChange={handleInputChange}
+                    placeholder="Year"
+                    className="px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required={formData.hasVehicle}
+                  />
+                  <input
+                    type="text"
+                    name="vehicleDetails.licensePlate"
+                    value={formData.vehicleDetails.licensePlate}
+                    onChange={handleInputChange}
+                    placeholder="License Plate"
+                    className="px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required={formData.hasVehicle}
+                  />
+                  <select
+                    name="vehicleDetails.type"
+                    value={formData.vehicleDetails.type}
                     onChange={handleInputChange}
                     className="px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required={formData.hasVehicle}
                   >
-                    <option value="">Select Fuel Type</option>
-                    <option value="Petrol">Petrol</option>
-                    <option value="Diesel">Diesel</option>
-                    <option value="Electric">Electric</option>
-                    <option value="Hybrid">Hybrid</option>
-                 </select>
+                    <option value="">Select Type</option>
+                    <option value="ev">Electric (EV)</option>
+                    <option value="cng">CNG</option>
+                    <option value="petrol">Petrol</option>
+                    <option value="diesel">Diesel</option>
+                  </select>
+                </div>
+
               </div>
             )}
           </div>

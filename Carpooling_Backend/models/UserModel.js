@@ -25,12 +25,14 @@ const userSchema = new mongoose.Schema({
         model: { type: String, default: '' },
         year: { type: String, default: '' },
         licensePlate: { type: String, default: '' },
+
         fuelType: { 
             type: String, 
-            enum: ['petrol', 'diesel', 'electric', 'hybrid'], 
+            enum: ['electric (ev)', 'cng', 'petrol', 'diesel'], 
             lowercase: true,  // Convert input to lowercase before saving
             default: 'petrol' 
         },
+        type: {type:String, default: ''},
     },
 
     preferences: {

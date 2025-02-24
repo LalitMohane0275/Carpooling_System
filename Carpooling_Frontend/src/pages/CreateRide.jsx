@@ -80,10 +80,12 @@ function CreateRide() {
      console.log("Ride Created Successfully:", response.data);
      toast.success("Ride created successfully!");
      setRide(initialState);
-   } catch (error) {
-     console.error("Error Creating Ride:", error.response?.data || error);
-     toast.error("Failed to create the ride. Please try again.");
-   }
+   }catch (error) {
+    console.error("Error Creating Ride:", error.response?.data || error);
+    // Check if there is a response from the backend
+    const errorMessage = error.response?.data?.message || "Failed to create the ride. Please try again.";
+    toast.error(errorMessage);
+}
  };
 
   return (

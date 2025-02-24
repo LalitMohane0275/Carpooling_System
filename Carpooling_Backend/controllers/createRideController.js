@@ -9,6 +9,18 @@ exports.createRide = async (req, res) => {
   try {
     // Fetch data from request body
     const { user_id, start, stops, destination, time, date, seats, price } = req.body;
+    
+    const user = await User.findById(user_id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Check if the user has a vehicle
+    if (!user.hasVehicle || !user.vehicleDetails || !user.vehicleDetails.make || !user.vehicleDetails.model) {
+      return res.status(403).json({ 
+        message: "You cannot create a ride because you have not provided vehicle details. Please update your profile first." 
+      });
+    }
 
     // Validate required fields
     if (!user_id || !start || !destination || !time || !date || seats === undefined || price === undefined) {

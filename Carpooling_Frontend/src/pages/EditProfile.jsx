@@ -1,10 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Camera, Car, Music, CookingPot as Smoking, Dog, ArrowLeft, Save } from 'lucide-react';
+import { 
+  Camera, 
+  Car, 
+  Music, 
+  CookingPot as Smoking, 
+  Dog, 
+  ArrowLeft, 
+  Save,
+  Zap,
+  Wind,
+  Droplet,
+  Fuel
+} from 'lucide-react';
 import { getProfile } from '../api/profileApi';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
+
+const vehicleTypes = [
+  { value: 'ev', label: 'Electric Vehicle', icon: Zap },
+  { value: 'cng', label: 'CNG', icon: Wind },
+  { value: 'petrol', label: 'Petrol', icon: Droplet },
+  { value: 'diesel', label: 'Diesel', icon: Fuel }
+];
+
+const getVehicleTypeIcon = (type) => {
+  const vehicleType = vehicleTypes.find(vt => vt.value === type);
+  if (!vehicleType) return <Car className="text-gray-500" size={20} />;
+  
+  const Icon = vehicleType.icon;
+  return <Icon className={`
+    ${type === 'ev' ? 'text-green-500' : ''}
+    ${type === 'cng' ? 'text-blue-500' : ''}
+    ${type === 'petrol' ? 'text-red-500' : ''}
+    ${type === 'diesel' ? 'text-yellow-500' : ''}
+  `} size={20} />;
+};
 
 function EditProfile() {
   const { userId } = useParams();
@@ -24,6 +56,7 @@ function EditProfile() {
       model: '',
       year: '',
       licensePlate: '',
+      type: '', // Added vehicle type
     },
     preferences: {
       smokingAllowed: false,
@@ -312,22 +345,27 @@ function EditProfile() {
                       className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
                     />
                   </div>
-                  <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">Fuel Type</label>
+                  <div className="md:col-span-2 space-y-2">
+                    <label className="block text-sm font-medium text-gray-700">Vehicle Type</label>
+                    <div className="relative">
                       <select
-                        name="vehicleDetails.fuelType"
-                        value={profile.vehicleDetails.fuelType}
+                        name="vehicleDetails.type"
+                        value={profile.vehicleDetails.type}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
+                        className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow appearance-none bg-white pr-10"
                       >
-                        <option value="">Select Fuel Type</option>
-                        <option value="Petrol">Petrol</option>
-                        <option value="Diesel">Diesel</option>
-                        <option value="Electric">Electric</option>
-                        <option value="Hybrid">Hybrid</option>
-                        <option value="Other">Other</option>
+                        <option value="">Select Vehicle Type</option>
+                        {vehicleTypes.map((type) => (
+                          <option key={type.value} value={type.value}>
+                            {type.label}
+                          </option>
+                        ))}
                       </select>
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                        {getVehicleTypeIcon(profile.vehicleDetails.type)}
+                      </div>
                     </div>
+                  </div>
                 </div>
               )}
             </div>
