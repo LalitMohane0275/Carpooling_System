@@ -4,6 +4,7 @@ const profile = require("./routes/profile");
 const auth = require("./routes/auth");
 const path = require("path");
 const reviews = require("./routes/reviews");
+const notificationRoutes = require('./routes/notifications');
 
 
 const cors = require("cors");
@@ -27,6 +28,7 @@ app.use("/api/v1/profile", profile);
 app.use("/api/v1/auth", auth);
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 app.use("/api/v1/reviews", reviews);
+app.use('/api/v1/notifications', notificationRoutes);
 // Default Route
 app.get("/", (req, res) => {
   res.send(`<h1>HomePage</h1>`);
