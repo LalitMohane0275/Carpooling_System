@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { logout } from "./store/authSlice";
 import "./App.css";
 import Home from "./pages/Home";
@@ -138,10 +138,38 @@ function App() {
         ) : (
           <Route path="/profile" element={<Navigate to="/login" />} />
         )}
-        <Route path="/profile/:userId" element={<ProfilePage />} />
-        <Route path="/rides/offered/:userId" element={<RidesOffered />} />
-        <Route path="/rides/taken/:userId" element={<RidesTaken />} />
-        <Route path="/reviews" element={<Reviews />} />
+        <Route
+          path="/profile/:userId"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/rides/offered/:userId"
+          element={
+            <ProtectedRoute>
+              <RidesOffered />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/rides/taken/:userId"
+          element={
+            <ProtectedRoute>
+              <RidesTaken />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/reviews"
+          element={
+            <ProtectedRoute>
+              <Reviews />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Routes>
       {token && <Footer />}

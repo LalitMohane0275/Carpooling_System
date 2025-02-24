@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import debounce from "lodash/debounce";
 import {
   MapPin,
@@ -20,17 +20,14 @@ import {
 const shortenAddress = (fullAddress) => {
   if (!fullAddress) return "Unknown Location";
   const parts = fullAddress.split(", ");
-  // Extract major parts: typically city/town and state, or first few significant parts
-  const significantParts = parts.filter(
-    (part) => /[a-zA-Z]/.test(part) // Filter out parts that are just numbers (e.g., postal codes)
-  );
-  // Return the first two significant parts or just the first if that's all there is
+  const significantParts = parts.filter((part) => /[a-zA-Z]/.test(part));
   return significantParts.length > 1
     ? `${significantParts[0]}, ${significantParts[1]}`
     : significantParts[0];
 };
 
 function FindRides() {
+  const location = useLocation();
   const [rides, setRides] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -43,6 +40,14 @@ function FindRides() {
   const [isDestinationFocused, setIsDestinationFocused] = useState(false);
 
   useEffect(() => {
+    // Parse query parameters from URL
+    const params = new URLSearchParams(location.search);
+    const from = params.get("from") || "";
+    const to = params.get("to") || "";
+
+    setSearchStart(from);
+    setSearchDestination(to);
+
     const fetchRides = async () => {
       try {
         const token = localStorage.getItem("token");
@@ -56,6 +61,8 @@ function FindRides() {
         );
         setRides(response.data.rides);
         setFilteredRides(response.data.rides);
+        // Apply initial filter based on query params
+        filterRides(from, to);
       } catch (err) {
         if (err.response && err.response.status === 404) {
           setRides([]);
@@ -71,7 +78,7 @@ function FindRides() {
     };
 
     fetchRides();
-  }, []);
+  }, [location.search]);
 
   // Fetch address suggestions from Nominatim, restricted to India
   const fetchSuggestions = async (query, setSuggestions) => {
@@ -93,8 +100,8 @@ function FindRides() {
     }
   };
 
-  // Debounced search handler
-  const debouncedSearch = debounce(() => {
+  // Filter rides based on search inputs
+  const filterRides = (from, to) => {
     const filtered = rides.filter((ride) => {
       const allStops = [
         ride.start.toLowerCase(),
@@ -102,18 +109,18 @@ function FindRides() {
         ride.destination.toLowerCase(),
       ];
 
-      const startLower = searchStart.toLowerCase();
-      const destLower = searchDestination.toLowerCase();
+      const startLower = from.toLowerCase();
+      const destLower = to.toLowerCase();
 
       const matchesStart =
-        searchStart === "" ||
+        from === "" ||
         ride.start.toLowerCase().includes(startLower) ||
         (ride.stops || []).some((stop) =>
           stop.toLowerCase().includes(startLower)
         );
 
       const matchesDestination =
-        searchDestination === "" ||
+        to === "" ||
         ride.destination.toLowerCase().includes(destLower) ||
         (ride.stops || []).some((stop) =>
           stop.toLowerCase().includes(destLower)
@@ -123,6 +130,11 @@ function FindRides() {
     });
 
     setFilteredRides(filtered);
+  };
+
+  // Debounced search handler
+  const debouncedSearch = debounce(() => {
+    filterRides(searchStart, searchDestination);
   }, 300);
 
   const handleSearchInputChange = (e, field) => {
