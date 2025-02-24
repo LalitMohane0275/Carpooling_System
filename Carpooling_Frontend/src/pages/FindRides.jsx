@@ -1,7 +1,7 @@
-// FindRides.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import debounce from "lodash/debounce";
 import {
   MapPin,
   Calendar,
@@ -16,6 +16,20 @@ import {
   Star,
 } from "lucide-react";
 
+// Function to shorten address for display
+const shortenAddress = (fullAddress) => {
+  if (!fullAddress) return "Unknown Location";
+  const parts = fullAddress.split(", ");
+  // Extract major parts: typically city/town and state, or first few significant parts
+  const significantParts = parts.filter(
+    (part) => /[a-zA-Z]/.test(part) // Filter out parts that are just numbers (e.g., postal codes)
+  );
+  // Return the first two significant parts or just the first if that's all there is
+  return significantParts.length > 1
+    ? `${significantParts[0]}, ${significantParts[1]}`
+    : significantParts[0];
+};
+
 function FindRides() {
   const [rides, setRides] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,6 +37,10 @@ function FindRides() {
   const [searchStart, setSearchStart] = useState("");
   const [searchDestination, setSearchDestination] = useState("");
   const [filteredRides, setFilteredRides] = useState([]);
+  const [startSuggestions, setStartSuggestions] = useState([]);
+  const [destinationSuggestions, setDestinationSuggestions] = useState([]);
+  const [isStartFocused, setIsStartFocused] = useState(false);
+  const [isDestinationFocused, setIsDestinationFocused] = useState(false);
 
   useEffect(() => {
     const fetchRides = async () => {
@@ -55,32 +73,88 @@ function FindRides() {
     fetchRides();
   }, []);
 
-  const handleSearch = () => {
+  // Fetch address suggestions from Nominatim, restricted to India
+  const fetchSuggestions = async (query, setSuggestions) => {
+    if (query.length < 3) {
+      setSuggestions([]);
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+          query
+        )}&format=json&addressdetails=1&limit=5&countrycodes=in`
+      );
+      setSuggestions(response.data);
+    } catch (error) {
+      console.error("Error fetching suggestions:", error);
+      setSuggestions([]);
+    }
+  };
+
+  // Debounced search handler
+  const debouncedSearch = debounce(() => {
     const filtered = rides.filter((ride) => {
       const allStops = [
         ride.start.toLowerCase(),
-        ride.destination.toLowerCase(),
         ...(ride.stops || []).map((stop) => stop.toLowerCase()),
+        ride.destination.toLowerCase(),
       ];
+
+      const startLower = searchStart.toLowerCase();
+      const destLower = searchDestination.toLowerCase();
 
       const matchesStart =
         searchStart === "" ||
-        allStops.some((stop) => stop.includes(searchStart.toLowerCase()));
+        ride.start.toLowerCase().includes(startLower) ||
+        (ride.stops || []).some((stop) =>
+          stop.toLowerCase().includes(startLower)
+        );
 
       const matchesDestination =
         searchDestination === "" ||
-        allStops.some((stop) => stop.includes(searchDestination.toLowerCase()));
+        ride.destination.toLowerCase().includes(destLower) ||
+        (ride.stops || []).some((stop) =>
+          stop.toLowerCase().includes(destLower)
+        );
 
       return matchesStart && matchesDestination;
     });
 
     setFilteredRides(filtered);
+  }, 300);
+
+  const handleSearchInputChange = (e, field) => {
+    const value = e.target.value;
+    if (field === "start") {
+      setSearchStart(value);
+      fetchSuggestions(value, setStartSuggestions);
+    } else if (field === "destination") {
+      setSearchDestination(value);
+      fetchSuggestions(value, setDestinationSuggestions);
+    }
+    debouncedSearch();
+  };
+
+  const handleSuggestionSelect = (field, suggestion) => {
+    const address = suggestion.display_name.toLowerCase();
+    if (field === "start") {
+      setSearchStart(address);
+      setStartSuggestions([]);
+    } else if (field === "destination") {
+      setSearchDestination(address);
+      setDestinationSuggestions([]);
+    }
+    debouncedSearch();
   };
 
   const clearSearch = () => {
     setSearchStart("");
     setSearchDestination("");
     setFilteredRides(rides);
+    setStartSuggestions([]);
+    setDestinationSuggestions([]);
   };
 
   if (loading) {
@@ -129,26 +203,62 @@ function FindRides() {
               <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-500" />
               <input
                 type="text"
-                placeholder="Enter start location"
+                placeholder="Enter start location (India only)"
                 value={searchStart}
-                onChange={(e) => setSearchStart(e.target.value)}
+                onChange={(e) => handleSearchInputChange(e, "start")}
+                onFocus={() => setIsStartFocused(true)}
+                onBlur={() => setTimeout(() => setIsStartFocused(false), 200)}
                 className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+              {isStartFocused && startSuggestions.length > 0 && (
+                <ul className="absolute z-10 w-full bg-white border border-gray-200 rounded-lg shadow-lg mt-1 max-h-60 overflow-y-auto">
+                  {startSuggestions.map((suggestion) => (
+                    <li
+                      key={suggestion.place_id}
+                      onClick={() =>
+                        handleSuggestionSelect("start", suggestion)
+                      }
+                      className="px-4 py-2 hover:bg-blue-50 cursor-pointer text-sm text-gray-800"
+                    >
+                      {suggestion.display_name}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
             <div className="relative">
               <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-500" />
               <input
                 type="text"
-                placeholder="Enter destination"
+                placeholder="Enter destination (India only)"
                 value={searchDestination}
-                onChange={(e) => setSearchDestination(e.target.value)}
+                onChange={(e) => handleSearchInputChange(e, "destination")}
+                onFocus={() => setIsDestinationFocused(true)}
+                onBlur={() =>
+                  setTimeout(() => setIsDestinationFocused(false), 200)
+                }
                 className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+              {isDestinationFocused && destinationSuggestions.length > 0 && (
+                <ul className="absolute z-10 w-full bg-white border border-gray-200 rounded-lg shadow-lg mt-1 max-h-60 overflow-y-auto">
+                  {destinationSuggestions.map((suggestion) => (
+                    <li
+                      key={suggestion.place_id}
+                      onClick={() =>
+                        handleSuggestionSelect("destination", suggestion)
+                      }
+                      className="px-4 py-2 hover:bg-blue-50 cursor-pointer text-sm text-gray-800"
+                    >
+                      {suggestion.display_name}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
           <div className="flex justify-center mt-6 space-x-4">
             <button
-              onClick={handleSearch}
+              onClick={debouncedSearch}
               className="flex items-center px-6 py-3 bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors"
             >
               <Search className="w-5 h-5 mr-2" />
@@ -197,7 +307,7 @@ function FindRides() {
                         <div className="text-sm text-gray-500">From</div>
                       </div>
                       <div className="font-semibold text-gray-800 mt-1">
-                        {ride.start}
+                        {shortenAddress(ride.start)}
                       </div>
                     </div>
                     <ArrowRight className="w-5 h-5 text-gray-400" />
@@ -207,7 +317,7 @@ function FindRides() {
                         <div className="text-sm text-gray-500">To</div>
                       </div>
                       <div className="font-semibold text-gray-800 mt-1">
-                        {ride.destination}
+                        {shortenAddress(ride.destination)}
                       </div>
                     </div>
                   </div>
@@ -222,7 +332,7 @@ function FindRides() {
                             key={index}
                             className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm"
                           >
-                            {stop}
+                            {shortenAddress(stop)}
                           </span>
                         ))}
                       </div>
