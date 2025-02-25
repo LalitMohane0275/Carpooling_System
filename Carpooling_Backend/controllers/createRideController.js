@@ -3,6 +3,7 @@ const Ride = require("../models/RideModel");
 const PassengerRide = require("../models/PassengerRideModel");
 const User = require("../models/UserModel");
 const transporter = require("../utils/nodemailer"); // Use your Nodemailer setup
+const {createNotification} = require('./notificationController');
 const mongoose = require("mongoose");
 
 exports.createRide = async (req, res) => {
@@ -67,6 +68,13 @@ exports.createRide = async (req, res) => {
 
     // Save the ride to MongoDB
     const savedRide = await newRide.save();
+
+    await createNotification(
+      user_id,
+      `Your ride request #${savedRide._id} has been created!`,
+      'ride_request',
+      sendMail=true
+    );
 
     // Send success response
     res.status(201).json({
@@ -194,6 +202,21 @@ exports.createPassengerRide = async (req, res) => {
     console.log(`Sending email to ${passenger.email}`);
     await transporter.sendMail(mailOptions);
     console.log(`Email sent successfully to ${passenger.email}`);
+
+    // Notify the rider
+    await createNotification(
+      passengerId,
+      `Your ride #${passengerId} has been accepted by a driver!`,
+      'ride_accepted',
+      sendMail=false
+    );
+
+    await createNotification(
+      existingRide.driver.toString(),
+      `Your ride #${existingRide.driver.toString()} has been booked with ${seats} seats`,
+      'ride_booked',
+      sendMail=false
+    );
 
     // Commit the transaction
     await session.commitTransaction();

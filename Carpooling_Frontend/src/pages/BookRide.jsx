@@ -24,6 +24,7 @@ function BookRide() {
   const [error, setError] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [bookingDetails, setBookingDetails] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state for submission loading
 
   const [formData, setFormData] = useState({
     start: "",
@@ -44,6 +45,11 @@ function BookRide() {
           }
         );
         setRide(response.data.ride);
+        setFormData({
+          start: response.data.ride.start,
+          destination: response.data.ride.destination,
+          seats: 1,
+        });
         setLoading(false);
       } catch (err) {
         setError("Failed to fetch ride details.");
@@ -62,6 +68,17 @@ function BookRide() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Check if start and destination are the same
+    if (formData.start === formData.destination) {
+      toast.error("Pickup and drop-off locations cannot be the same", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      return;
+    }
+
+    setIsSubmitting(true); // Start loading
+
     try {
       const formDataToSend = {
         ...formData,
@@ -78,22 +95,18 @@ function BookRide() {
         }
       );
 
-      setBookingDetails(response.data.bookingDetails); // Assuming backend returns booking details
+      setBookingDetails(response.data.bookingDetails);
       toast.success("Ride booked successfully!", {
         position: "top-right",
         autoClose: 3000,
       });
 
       setFormData({
-        start: "",
-        destination: "",
+        start: ride.start,
+        destination: ride.destination,
         seats: "",
       });
       setSubmitted(true);
-
-      // setTimeout(() => {
-      //   navigate("/find-ride");
-      // }, 5000); // Increased timeout to allow user to see driver info
     } catch (err) {
       if (err.response && err.response.status === 403) {
         toast.error("Cannot book your own ride", {
@@ -107,6 +120,8 @@ function BookRide() {
         });
       }
       console.error(err);
+    } finally {
+      setIsSubmitting(false); // Stop loading
     }
   };
 
@@ -127,6 +142,9 @@ function BookRide() {
       </div>
     );
   }
+
+  const pickupOptions = [ride.start, ...(ride.stops || [])];
+  const dropoffOptions = [...(ride.stops || []), ride.destination];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-8 px-4">
@@ -200,6 +218,23 @@ function BookRide() {
                     </div>
                   </div>
 
+                  {/* Stops */}
+                  {ride.stops && ride.stops.length > 0 && (
+                    <div className="mb-6">
+                      <div className="text-sm text-gray-500 mb-2">Stops</div>
+                      <div className="flex flex-wrap gap-2">
+                        {ride.stops.map((stop, index) => (
+                          <span
+                            key={index}
+                            className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm"
+                          >
+                            {stop}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   {/* Time and Date */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex items-center text-gray-600">
@@ -237,16 +272,20 @@ function BookRide() {
                       </label>
                       <div className="relative">
                         <MapPinned className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                        <input
-                          type="text"
+                        <select
                           id="start"
                           name="start"
                           value={formData.start}
                           onChange={handleInputChange}
                           className="pl-10 w-full rounded-lg border border-gray-200 bg-gray-50 py-3 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                          placeholder="Enter your pickup location"
                           required
-                        />
+                        >
+                          {pickupOptions.map((option, index) => (
+                            <option key={index} value={option}>
+                              {option}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                     </div>
 
@@ -259,16 +298,20 @@ function BookRide() {
                       </label>
                       <div className="relative">
                         <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-                        <input
-                          type="text"
+                        <select
                           id="destination"
                           name="destination"
                           value={formData.destination}
                           onChange={handleInputChange}
                           className="pl-10 w-full rounded-lg border border-gray-200 bg-gray-50 py-3 text-sm outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                          placeholder="Enter your drop-off location"
                           required
-                        />
+                        >
+                          {dropoffOptions.map((option, index) => (
+                            <option key={index} value={option}>
+                              {option}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                     </div>
 
@@ -298,9 +341,32 @@ function BookRide() {
 
                   <button
                     type="submit"
-                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-300"
+                    className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-300 flex items-center justify-center space-x-2"
+                    disabled={isSubmitting} // Disable button while submitting
                   >
-                    Confirm Booking
+                    <span>Confirm Booking</span>
+                    {isSubmitting && (
+                      <svg
+                        className="animate-spin h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8v8h8a8 8 0 01-16 0z"
+                        ></path>
+                      </svg>
+                    )}
                   </button>
                 </form>
               </div>

@@ -428,7 +428,7 @@ function EditProfile() {
               </button>
               <button
                 type="submit"
-                className="px-6 py-2.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors flex items-center space-x-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                className="px-6 py-2.5 bg-blue-600 text-white rounded-full hover:bg-blue-700 flex items-center space-x-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
               >
                 <Save size={20} />
                 <span>Save Changes</span>

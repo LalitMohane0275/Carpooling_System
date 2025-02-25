@@ -1,223 +1,186 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 import {
-  Search,
   MapPin,
-  Calendar,
-  Clock,
-  Users,
+  Search,
   Car,
-  Plus,
-  Bell,
-  User,
-  LogOut,
-  ChevronDown,
-  ChevronRight,
+  Leaf,
+  Users,
   Star,
+  ArrowRight,
+  LogOut,
 } from "lucide-react";
 
 const HomePage = () => {
-  const [activeTab, setActiveTab] = useState("available");
+  const navigate = useNavigate();
+  const [userName, setUserName] = useState("");
+  const [searchData, setSearchData] = useState({
+    from: "",
+    to: "",
+  });
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      setUserName(decodedToken.name || "User");
+    }
+  }, []);
+
+  const handleSearchChange = (e) => {
+    const { name, value } = e.target;
+    setSearchData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    const query = new URLSearchParams({
+      from: searchData.from,
+      to: searchData.to,
+    }).toString();
+    navigate(`/find-ride?${query}`);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <main className="container mx-auto px-4 py-8">
-        <section className="mb-12">
-          <h1 className="text-3xl font-bold text-gray-800 mb-6">
-            Welcome back, John!
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex flex-col">
+      {/* Hero Section */}
+      <section className="flex-1 flex items-center justify-center py-16 px-4">
+        <div className="max-w-4xl w-full text-center">
+          <h1 className="text-5xl font-extrabold text-gray-900 mb-4">
+            Ride Together, Save Together
           </h1>
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">
-              Find a Ride
-            </h2>
-            <form className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="flex items-center bg-gray-100 rounded-md p-2">
-                <MapPin className="h-5 w-5 text-gray-500 mr-2" />
+          <p className="text-lg text-gray-600 mb-8">
+            Connect with fellow travelers, reduce costs, and help the planet
+            with Ridebuddy.
+          </p>
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <form
+              onSubmit={handleSearchSubmit}
+              className="grid grid-cols-1 md:grid-cols-3 gap-4"
+            >
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="From"
-                  className="bg-transparent w-full focus:outline-none"
+                  name="from"
+                  value={searchData.from}
+                  onChange={handleSearchChange}
+                  placeholder="From (e.g., Pune)"
+                  className="pl-10 w-full py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-gray-800"
+                  required
                 />
               </div>
-              <div className="flex items-center bg-gray-100 rounded-md p-2">
-                <MapPin className="h-5 w-5 text-gray-500 mr-2" />
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="To"
-                  className="bg-transparent w-full focus:outline-none"
+                  name="to"
+                  value={searchData.to}
+                  onChange={handleSearchChange}
+                  placeholder="To (e.g., Mumbai)"
+                  className="pl-10 w-full py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-gray-800"
+                  required
                 />
               </div>
-              <div className="flex items-center bg-gray-100 rounded-md p-2">
-                <Calendar className="h-5 w-5 text-gray-500 mr-2" />
-                <input
-                  type="date"
-                  className="bg-transparent w-full focus:outline-none"
-                />
-              </div>
-              <button className="bg-blue-500 text-white rounded-md py-2 px-4 hover:bg-blue-600 transition duration-300 flex items-center justify-center">
+              <button
+                type="submit"
+                className="bg-blue-500 text-white py-3 px-6 rounded-lg hover:bg-blue-600 transition-colors flex items-center justify-center"
+              >
                 <Search className="h-5 w-5 mr-2" />
-                Search Rides
+                Find Rides
               </button>
             </form>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section className="mb-12">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">Your Rides</h2>
-            <button className="bg-blue-500 text-white rounded-md py-2 px-4 hover:bg-blue-600 transition duration-300 flex items-center">
-              <Plus className="h-5 w-5 mr-2" />
-              Offer a Ride
-            </button>
-          </div>
-          <div className="bg-white rounded-lg shadow-md">
-            <div className="flex border-b">
-              <button
-                className={`flex-1 py-3 text-center font-medium ${
-                  activeTab === "available"
-                    ? "text-blue-500 border-b-2 border-blue-500"
-                    : "text-gray-500"
-                }`}
-                onClick={() => setActiveTab("available")}
-              >
-                Available
-              </button>
-              <button
-                className={`flex-1 py-3 text-center font-medium ${
-                  activeTab === "upcoming"
-                    ? "text-blue-500 border-b-2 border-blue-500"
-                    : "text-gray-500"
-                }`}
-                onClick={() => setActiveTab("upcoming")}
-              >
-                Upcoming
-              </button>
-              <button
-                className={`flex-1 py-3 text-center font-medium ${
-                  activeTab === "past"
-                    ? "text-blue-500 border-b-2 border-blue-500"
-                    : "text-gray-500"
-                }`}
-                onClick={() => setActiveTab("past")}
-              >
-                Past
-              </button>
+      {/* Why Ridebuddy Section */}
+      <section className="py-16 px-4 bg-gray-100">
+        <div className="max-w-6xl mx-auto text-center">
+          <h2 className="text-3xl font-bold text-gray-800 mb-12">
+            Why Choose Ridebuddy?
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <Car className="h-12 w-12 text-blue-500 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                Affordable Travel
+              </h3>
+              <p className="text-gray-600">
+                Split costs with others and save money on every trip.
+              </p>
             </div>
-            <div className="p-4">
-              {activeTab === "available" && (
-                <div className="space-y-4">
-                  <RideCard
-                    from="San Francisco, CA"
-                    to="Los Angeles, CA"
-                    date="May 15, 2023"
-                    time="09:00 AM"
-                    seats={3}
-                    price={35}
-                  />
-                  <RideCard
-                    from="New York, NY"
-                    to="Boston, MA"
-                    date="May 18, 2023"
-                    time="10:30 AM"
-                    seats={2}
-                    price={40}
-                  />
-                </div>
-              )}
-              {activeTab === "upcoming" && (
-                <div className="text-center text-gray-500 py-4">
-                  No upcoming rides scheduled.
-                </div>
-              )}
-              {activeTab === "past" && (
-                <div className="text-center text-gray-500 py-4">
-                  No past rides to display.
-                </div>
-              )}
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <Leaf className="h-12 w-12 text-green-500 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                Eco-Friendly
+              </h3>
+              <p className="text-gray-600">
+                Reduce your carbon footprint by sharing rides.
+              </p>
+            </div>
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <Users className="h-12 w-12 text-purple-500 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                Community Driven
+              </h3>
+              <p className="text-gray-600">
+                Connect with friendly travelers and build a community.
+              </p>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section>
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">
+      {/* Popular Routes Section */}
+      <section className="py-16 px-4">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-gray-800 mb-12 text-center">
             Popular Routes
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <PopularRouteCard
-              from="San Francisco"
-              to="Los Angeles"
-              price={35}
-              rating={4.8}
-            />
-            <PopularRouteCard
-              from="New York"
-              to="Boston"
-              price={40}
-              rating={4.7}
-            />
-            <PopularRouteCard
-              from="Chicago"
-              to="Detroit"
-              price={30}
-              rating={4.6}
-            />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <RouteCard from="Pune" to="Mumbai" price="₹500" rating="4.8" />
+            <RouteCard from="Delhi" to="Jaipur" price="₹600" rating="4.7" />
+            <RouteCard from="Bangalore" to="Mysore" price="₹350" rating="4.9" />
           </div>
-        </section>
-      </main>
+          <div className="text-center mt-8">
+            <button
+              onClick={() => navigate("/find-ride")}
+              className="text-blue-500 hover:text-blue-600 font-medium flex items-center justify-center mx-auto transition-colors"
+            >
+              Explore More Routes
+              <ArrowRight className="h-5 w-5 ml-2" />
+            </button>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
 
-const RideCard = ({ from, to, date, time, seats, price }) => {
+// Route Card Component
+const RouteCard = ({ from, to, price, rating }) => {
   return (
-    <div className="bg-gray-50 rounded-lg p-4 flex justify-between items-center">
-      <div>
-        <div className="font-semibold text-gray-800">
-          {from} to {to}
-        </div>
-        <div className="text-sm text-gray-500 mt-1">
-          <span className="flex items-center">
-            <Calendar className="h-4 w-4 mr-1" /> {date}
-          </span>
-          <span className="flex items-center mt-1">
-            <Clock className="h-4 w-4 mr-1" /> {time}
-          </span>
-        </div>
-      </div>
-      <div className="text-right">
-        <div className="font-semibold text-gray-800">${price}</div>
-        <div className="text-sm text-gray-500 mt-1">
-          <span className="flex items-center justify-end">
-            <Users className="h-4 w-4 mr-1" /> {seats} seats left
-          </span>
-        </div>
-      </div>
-      <button className="bg-blue-500 text-white rounded-md py-2 px-4 hover:bg-blue-600 transition duration-300 ml-4">
-        Book
-      </button>
-    </div>
-  );
-};
-
-const PopularRouteCard = ({ from, to, price, rating }) => {
-  return (
-    <div className="bg-white rounded-lg shadow-md p-4">
-      <div className="flex justify-between items-center mb-2">
-        <div className="font-semibold text-gray-800">
-          {from} to {to}
+    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+      <div className="flex justify-between items-center mb-4">
+        <div>
+          <div className="font-semibold text-gray-800">{from}</div>
+          <ArrowRight className="h-5 w-5 text-gray-400 mx-2 inline" />
+          <div className="font-semibold text-gray-800 inline">{to}</div>
         </div>
         <div className="flex items-center">
-          <Star className="h-4 w-4 text-yellow-400 mr-1" />
+          <Star className="h-4 w-4 text-yellow-400 fill-current mr-1" />
           <span className="text-sm text-gray-600">{rating}</span>
         </div>
       </div>
-      <div className="text-sm text-gray-500 mb-4">Popular among commuters</div>
-      <div className="flex justify-between items-center">
-        <div className="font-semibold text-gray-800">From ${price}</div>
-        <button className="text-blue-500 hover:text-blue-600 transition duration-300 flex items-center">
-          View Rides
-          <ChevronRight className="h-4 w-4 ml-1" />
-        </button>
-      </div>
+      <div className="text-gray-600 mb-4">Starting from</div>
+      <div className="font-semibold text-gray-800">{price}</div>
     </div>
   );
 };
