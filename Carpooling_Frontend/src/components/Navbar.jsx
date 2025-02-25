@@ -9,7 +9,7 @@ import {
   Home,
   Info,
   LogOut,
-  Bell, // Added Bell icon for notifications
+  Bell,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -26,7 +26,8 @@ function Navbar() {
   const handleLogInNavigation = () => navigate("/login");
   const handleSignUpNavigation = () => navigate("/signup");
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-  const toggleNotifications = () => setIsNotificationsOpen(!isNotificationsOpen);
+  const toggleNotifications = () =>
+    setIsNotificationsOpen(!isNotificationsOpen);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -41,32 +42,42 @@ function Navbar() {
       userId = payload.userId;
       console.log(`User ${userId}`);
     } catch (error) {
-      console.error("Invalid token:", error, userId);
+      console.error("Invalid token:", error);
     }
   } else {
-    console.log("no token found");
+    console.log("No token found");
   }
 
   // Fetch notifications
   useEffect(() => {
     if (isLoggedIn && userId) {
       const fetchNotifications = async () => {
-        const response = await fetch(`http://localhost:3000/api/v1/notifications/${userId}`);
-        const data = await response.json();
-        setNotifications(data);
+        try {
+          const response = await fetch(
+            `http://localhost:3000/api/v1/notifications/${userId}`
+          );
+          const data = await response.json();
+          setNotifications(data);
+        } catch (error) {
+          console.error("Error fetching notifications:", error);
+        }
       };
       fetchNotifications();
-
-      // Poll every 10 seconds (optional; replace with WebSockets for real-time)
-      const interval = setInterval(fetchNotifications, 10000);
+      const interval = setInterval(fetchNotifications, 10000); // Poll every 10s
       return () => clearInterval(interval);
     }
   }, [isLoggedIn, userId]);
 
   // Mark notification as read
   const markAsRead = async (id) => {
-    await fetch(`http://localhost:3000/api/v1/notifications//read/${id}`, { method: 'PUT' });
-    setNotifications(notifications.filter(n => n._id !== id));
+    try {
+      await fetch(`http://localhost:3000/api/v1/notifications/read/${id}`, {
+        method: "PUT",
+      });
+      setNotifications(notifications.filter((n) => n._id !== id));
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+    }
   };
 
   return (
@@ -75,7 +86,10 @@ function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <a href={isLoggedIn ? "/home" : "/"} className="flex items-center space-x-2">
+              <a
+                href={isLoggedIn ? "/home" : "/"}
+                className="flex items-center space-x-2"
+              >
                 <Car className="h-8 w-8 text-blue-600" strokeWidth={2.5} />
                 <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                   RideBuddy
@@ -105,23 +119,54 @@ function Navbar() {
 
                   {/* Notifications Dropdown */}
                   <div className="relative">
-                    <button onClick={toggleNotifications} className="p-2 rounded-full bg-gray-100 hover:bg-blue-50">
-                      <Bell className="h-5 w-5 text-gray-600" />
+                    <button
+                      onClick={toggleNotifications}
+                      className="p-2 rounded-full bg-blue-50 hover:bg-blue-100 transition-colors relative focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    >
+                      <Bell className="h-6 w-6 text-blue-600" />
                       {notifications.length > 0 && (
-                        <span className="absolute top-0 right-0 h-2 w-2 bg-red-500 rounded-full" />
+                        <span className="absolute top-1 right-1 h-3 w-3 bg-red-500 rounded-full border-2 border-white" />
                       )}
                     </button>
                     {isNotificationsOpen && (
-                      <div className="absolute right-0 w-64 mt-2 py-2 bg-white rounded-lg shadow-lg border">
+                      <div className="absolute right-0 w-80 mt-3 bg-white rounded-xl shadow-2xl border border-blue-100 max-h-96 overflow-y-auto z-50">
+                        <div className="p-4 border-b border-blue-100 bg-blue-50 rounded-t-xl">
+                          <h3 className="text-lg font-semibold text-blue-800 flex items-center">
+                            <Bell className="h-5 w-5 mr-2" />
+                            Notifications
+                            <span className="ml-2 text-sm text-blue-600 bg-blue-100 px-2 py-1 rounded-full">
+                              {notifications.length} New
+                            </span>
+                          </h3>
+                        </div>
                         {notifications.length > 0 ? (
-                          notifications.map((notif) => (
-                            <div key={notif._id} className="px-4 py-2 text-sm text-gray-700 hover:bg-blue-50">
-                              {notif.message}
-                              <button onClick={() => markAsRead(notif._id)} className="ml-2 text-blue-600">Mark as read</button>
-                            </div>
-                          ))
+                          <ul className="divide-y divide-blue-50">
+                            {notifications.map((notif) => (
+                              <li
+                                key={notif._id}
+                                className="px-4 py-3 hover:bg-blue-50 transition-colors duration-200 flex items-start justify-between"
+                              >
+                                <div className="text-sm text-gray-700">
+                                  <p className="font-medium text-blue-900">
+                                    {notif.message}
+                                  </p>
+                                  <p className="text-xs text-gray-500 mt-1">
+                                    {new Date(notif.createdAt).toLocaleString()}
+                                  </p>
+                                </div>
+                                <button
+                                  onClick={() => markAsRead(notif._id)}
+                                  className="text-blue-600 hover:text-blue-800 text-xs font-medium ml-2"
+                                >
+                                  Dismiss
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
                         ) : (
-                          <div className="px-4 py-2 text-sm text-gray-500">No new notifications</div>
+                          <div className="p-4 text-center text-gray-500 text-sm">
+                            No new notifications
+                          </div>
                         )}
                       </div>
                     )}

@@ -40,7 +40,6 @@ function FindRides() {
   const [isDestinationFocused, setIsDestinationFocused] = useState(false);
 
   useEffect(() => {
-    // Parse query parameters from URL
     const params = new URLSearchParams(location.search);
     const from = params.get("from") || "";
     const to = params.get("to") || "";
@@ -59,10 +58,18 @@ function FindRides() {
             },
           }
         );
-        setRides(response.data.rides);
-        setFilteredRides(response.data.rides);
-        // Apply initial filter based on query params
-        filterRides(from, to);
+        const fetchedRides = response.data.rides;
+        // Filter out past rides before setting state
+        const currentDateTime = new Date();
+        const futureRides = fetchedRides.filter((ride) => {
+          const rideDateTime = new Date(`${ride.date}T${ride.time}`);
+          return rideDateTime >= currentDateTime;
+        });
+        setRides(futureRides);
+        setFilteredRides(futureRides);
+        if (from || to) {
+          filterRides(from, to);
+        }
       } catch (err) {
         if (err.response && err.response.status === 404) {
           setRides([]);
@@ -80,7 +87,6 @@ function FindRides() {
     fetchRides();
   }, [location.search]);
 
-  // Fetch address suggestions from Nominatim, restricted to India
   const fetchSuggestions = async (query, setSuggestions) => {
     if (query.length < 3) {
       setSuggestions([]);
@@ -100,7 +106,6 @@ function FindRides() {
     }
   };
 
-  // Filter rides based on search inputs
   const filterRides = (from, to) => {
     const filtered = rides.filter((ride) => {
       const allStops = [
@@ -132,7 +137,6 @@ function FindRides() {
     setFilteredRides(filtered);
   };
 
-  // Debounced search handler
   const debouncedSearch = debounce(() => {
     filterRides(searchStart, searchDestination);
   }, 300);
@@ -311,7 +315,6 @@ function FindRides() {
                 className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col min-h-[400px]"
               >
                 <div className="p-6 flex flex-col flex-grow">
-                  {/* Route Information */}
                   <div className="flex items-center space-x-4 mb-6">
                     <div className="flex-1">
                       <div className="flex items-center space-x-2">
@@ -334,7 +337,6 @@ function FindRides() {
                     </div>
                   </div>
 
-                  {/* Stops */}
                   {ride.stops && ride.stops.length > 0 && (
                     <div className="mb-6">
                       <div className="text-sm text-gray-500 mb-2">Stops</div>
@@ -351,7 +353,6 @@ function FindRides() {
                     </div>
                   )}
 
-                  {/* Time and Date */}
                   <div className="space-y-3 mb-6">
                     <div className="flex items-center text-gray-600">
                       <Calendar className="w-4 h-4 mr-2 text-blue-500" />
@@ -367,7 +368,6 @@ function FindRides() {
                     </div>
                   </div>
 
-                  {/* Driver Information */}
                   <div className="flex items-center justify-between mb-6 pt-4 border-t border-gray-100">
                     <div className="flex items-center space-x-3">
                       {ride.driver?.profilePicture ? (
@@ -399,7 +399,6 @@ function FindRides() {
                     </div>
                   </div>
 
-                  {/* Book Button */}
                   <div className="mt-auto">
                     <Link
                       to={`/book-ride/${ride._id}`}

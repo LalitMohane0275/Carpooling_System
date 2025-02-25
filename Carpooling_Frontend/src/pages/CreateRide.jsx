@@ -121,6 +121,16 @@ function CreateRide() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate date and time against current date and time
+    const currentDateTime = new Date();
+    const selectedDateTime = new Date(`${ride.date}T${ride.time}`);
+
+    if (selectedDateTime < currentDateTime) {
+      toast.error("Cannot create a ride with a past date or time!");
+      return;
+    }
+
     try {
       const token = localStorage.getItem("token");
       const userId = JSON.parse(atob(token.split(".")[1])).userId;
@@ -252,6 +262,7 @@ function CreateRide() {
                     value={ride.date}
                     onChange={handleChange}
                     icon={<Calendar className="w-5 h-5 text-blue-500" />}
+                    min={new Date().toISOString().split("T")[0]} // Set minimum date to today
                   />
                 </div>
 

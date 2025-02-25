@@ -1,48 +1,42 @@
-// createRideController.js
 const Ride = require("../models/RideModel");
 const PassengerRide = require("../models/PassengerRideModel");
 const User = require("../models/UserModel");
-const transporter = require("../utils/nodemailer"); // Use your Nodemailer setup
-const {createNotification} = require('./notificationController');
+const transporter = require("../utils/nodemailer");
+const { createNotification } = require("./notificationController");
 const mongoose = require("mongoose");
 
 exports.createRide = async (req, res) => {
   try {
-    // Fetch data from request body
     const { user_id, start, stops, destination, time, date, seats, price } = req.body;
 
-    // Validate required fields
     if (!user_id || !start || !destination || !time || !date || seats === undefined || price === undefined) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         message: "All required fields must be provided",
-        required: ["user_id", "start", "destination", "time", "date", "seats", "price"]
+        required: ["user_id", "start", "destination", "time", "date", "seats", "price"],
       });
     }
 
-    // Validate and convert stops
     if (stops && !Array.isArray(stops)) {
       return res.status(400).json({
-        message: "Stops must be an array of locations"
+        message: "Stops must be an array of locations",
       });
     }
 
-    // Convert seats and price to numbers and validate
     const seatsNum = Number(seats);
     const priceNum = Number(price);
 
     if (isNaN(seatsNum) || seatsNum < 1) {
       return res.status(400).json({
-        message: "Seats must be a positive number"
+        message: "Seats must be a positive number",
       });
     }
 
     if (isNaN(priceNum) || priceNum < 0) {
       return res.status(400).json({
-        message: "Price must be a non-negative number"
+        message: "Price must be a non-negative number",
       });
     }
 
-    // Create a new ride object
     const newRide = new Ride({
       start,
       stops: stops || [],
@@ -54,17 +48,15 @@ exports.createRide = async (req, res) => {
       driver: user_id,
     });
 
-    // Save the ride to MongoDB
     const savedRide = await newRide.save();
 
     await createNotification(
       user_id,
-      `Your ride request #${savedRide._id} has been created!`,
-      'ride_request',
-      sendMail=true
+      `Your ride from ${start} to ${destination} on ${date} at ${time} has been successfully listed!`,
+      "ride_request",
+      true
     );
 
-    // Send success response
     res.status(201).json({
       message: "Ride created successfully",
       ride: savedRide,
@@ -91,7 +83,6 @@ exports.createPassengerRide = async (req, res) => {
 
     console.log(`Starting booking for ride ${id}, passenger ${passengerId}, seats: ${seats}`);
 
-    // Validate input
     if (!start || !destination || !seats || !id) {
       console.log("Validation failed: Missing required fields");
       return res.status(400).json({
@@ -100,14 +91,12 @@ exports.createPassengerRide = async (req, res) => {
       });
     }
 
-    // Convert seats to number and validate
     const seatsNum = Number(seats);
     if (isNaN(seatsNum) || seatsNum < 1) {
       console.log("Validation failed: Seats must be a positive number");
       return res.status(400).json({ message: "Seats must be a positive number" });
     }
 
-    // Fetch the ride
     console.log(`Fetching ride ${id}`);
     const existingRide = await Ride.findById(id).session(session);
     if (!existingRide) {
@@ -115,25 +104,21 @@ exports.createPassengerRide = async (req, res) => {
       return res.status(404).json({ message: "Ride not found" });
     }
 
-    // Check if passenger is the driver
     if (existingRide.driver.toString() === passengerId) {
       console.log("Cannot book own ride");
       return res.status(403).json({ message: "Cannot book your own ride" });
     }
 
-    // Check seat availability
     console.log(`Checking seats: requested ${seatsNum}, available ${existingRide.seats}`);
     if (seatsNum > existingRide.seats) {
       console.log("Not enough seats available");
       return res.status(400).json({ message: "Not enough seats available" });
     }
 
-    // Update ride seats
     existingRide.seats -= seatsNum;
     console.log(`Updating seats: new count ${existingRide.seats}`);
     await existingRide.save({ session });
 
-    // Create passenger ride
     console.log("Creating passenger ride");
     const newPassengerRide = new PassengerRide({
       start,
@@ -147,7 +132,6 @@ exports.createPassengerRide = async (req, res) => {
     const savedPassengerRide = await newPassengerRide.save({ session });
     console.log("Passenger ride saved:", savedPassengerRide._id);
 
-    // Fetch driver and passenger details
     console.log(`Fetching driver ${existingRide.driver} and passenger ${passengerId}`);
     const driver = await User.findById(existingRide.driver).session(session);
     const passenger = await User.findById(passengerId).session(session);
@@ -161,7 +145,6 @@ exports.createPassengerRide = async (req, res) => {
       throw new Error("Passenger not found");
     }
 
-    // Prepare email
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: passenger.email,
@@ -174,6 +157,7 @@ exports.createPassengerRide = async (req, res) => {
           <li>Pickup: ${start}</li>
           <li>Destination: ${destination}</li>
           <li>Date: ${existingRide.date}</li>
+          <li>Time: ${existingRide.time}</li>
           <li>Seats Booked: ${seatsNum}</li>
         </ul>
         <p><strong>Driver Contact Info:</strong></p>
@@ -182,35 +166,32 @@ exports.createPassengerRide = async (req, res) => {
           <li>Phone: ${driver.phoneNumber}</li>
           <li>Email: ${driver.email}</li>
         </ul>
-        <p>The driver will contact you to confirm the pickup details. Contact the driver for details about pickup time and charges </p>
+        <p>The driver will contact you to confirm the pickup details. Contact the driver for details about pickup time and charges.</p>
       `,
     };
 
-    // Send email
     console.log(`Sending email to ${passenger.email}`);
     await transporter.sendMail(mailOptions);
     console.log(`Email sent successfully to ${passenger.email}`);
 
-    // Notify the rider
+    // Notifications with improved messages
     await createNotification(
       passengerId,
-      `Your ride #${passengerId} has been accepted by a driver!`,
-      'ride_accepted',
-      sendMail=false
+      `Your booking from ${start} to ${destination} with ${seatsNum} seat${seatsNum > 1 ? "s" : ""} has been confirmed! Check your email for driver details.`,
+      "ride_accepted",
+      false
     );
 
     await createNotification(
       existingRide.driver.toString(),
-      `Your ride #${existingRide.driver.toString()} has been booked with ${seats} seats`,
-      'ride_booked',
-      sendMail=false
+      `${passenger.firstName} ${passenger.lastName} booked ${seatsNum} seat${seatsNum > 1 ? "s" : ""} on your ride from ${existingRide.start} to ${existingRide.destination} on ${existingRide.date} at ${existingRide.time}.`,
+      "ride_booked",
+      false
     );
 
-    // Commit the transaction
     await session.commitTransaction();
     console.log("Transaction committed");
 
-    // Response with booking details
     res.status(201).json({
       message: "Passenger Ride created successfully",
       bookingDetails: {
