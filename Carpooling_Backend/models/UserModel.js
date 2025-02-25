@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema({
 
         fuelType: { 
             type: String, 
-            enum: ['electric (ev)', 'cng', 'petrol', 'diesel'], 
+            enum: ['electric', 'cng', 'petrol', 'diesel'], 
             lowercase: true,  // Convert input to lowercase before saving
             default: 'petrol' 
         },

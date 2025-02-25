@@ -29,6 +29,9 @@ import RidesTaken from "./pages/RidesTaken";
 function App() {
   const dispatch = useDispatch();
   const { token } = useSelector((state) => state.auth); // Get token from Redux
+  
+
+
 
   // Function to check token expiration
   const checkTokenExpiration = () => {
