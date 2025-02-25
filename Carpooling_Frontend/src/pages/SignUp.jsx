@@ -24,6 +24,7 @@ function SignUp() {
   const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false); // New state for loading
 
   const [formData, setFormData] = useState({
     email: "",
@@ -44,7 +45,7 @@ function SignUp() {
       model: "",
       year: "",
       licensePlate: "",
-      type: "", 
+      type: "",
     },
     preferences: {
       smokingAllowed: false,
@@ -86,6 +87,8 @@ function SignUp() {
       return;
     }
 
+    setIsSubmitting(true); // Start loading
+
     const formDataToSubmit = new FormData();
 
     // Append all form fields to FormData
@@ -117,7 +120,10 @@ function SignUp() {
           "Account created successfully! Check your email for the verification code."
         );
         const email = response.data.data.email;
-        navigate(`/verify-email?email=${encodeURIComponent(email)}`);
+        setTimeout(() => {
+          navigate(`/verify-email?email=${encodeURIComponent(email)}`);
+          setIsSubmitting(false); // Stop loading after redirect
+        }, 3000); // Match toast autoClose duration
       }
     } catch (error) {
       console.error(error);
@@ -125,6 +131,7 @@ function SignUp() {
         error.response?.data?.message ||
         "Something went wrong. Please try again.";
       toast.error(errorMessage);
+      setIsSubmitting(false); // Stop loading on error
     }
   };
 
@@ -352,8 +359,8 @@ function SignUp() {
                 required
               />
             </div>
-            
-            {/* profile picture */}
+
+            {/* Profile Picture */}
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
                 <Upload className="h-4 w-4 text-blue-500" />
@@ -503,9 +510,32 @@ function SignUp() {
 
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-blue-700 transform hover:scale-[1.02] transition-all duration-200 shadow-md hover:shadow-lg"
+            className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-blue-700 transform hover:scale-[1.02] transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center space-x-2"
+            disabled={isSubmitting} // Disable button while submitting
           >
-            Create Account
+            <span>Create Account</span>
+            {isSubmitting && (
+              <svg
+                className="animate-spin h-5 w-5 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v8h8a8 8 0 01-16 0z"
+                ></path>
+              </svg>
+            )}
           </button>
 
           <p className="text-center text-sm text-gray-600">
