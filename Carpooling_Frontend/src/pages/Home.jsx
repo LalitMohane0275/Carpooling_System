@@ -13,7 +13,6 @@ import {
   MessageCircle,
   Share2,
   Bell,
-  Heart,
   Shield,
 } from "lucide-react";
 
@@ -220,6 +219,50 @@ const HomePage = () => {
           </div>
         </div>
       </section>
+
+      {/* About Us Section */}
+      <section className="py-16 px-4 bg-blue-50">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-800 mb-4">
+              About Ridebuddy
+            </h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Founded in 2025, Ridebuddy is transforming commutes across India by making them affordable, sustainable, and social.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+              <h3 className="text-xl font-semibold text-gray-800 mb-3">Our Mission</h3>
+              <p className="text-gray-600">
+                To create a community of conscious travelers who share rides, reduce costs, and minimize environmental impact.
+              </p>
+            </div>
+            <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+              <h3 className="text-xl font-semibold text-gray-800 mb-3">Our Vision</h3>
+              <p className="text-gray-600">
+                A world where shared mobility is the norm, making travel more accessible, affordable, and sustainable for everyone.
+              </p>
+            </div>
+            <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+              <h3 className="text-xl font-semibold text-gray-800 mb-3">Our Values</h3>
+              <p className="text-gray-600">
+                Community, sustainability, affordability, and safety are at the core of everything we do at Ridebuddy.
+              </p>
+            </div>
+          </div>
+          <div className="text-center mt-10">
+            <button
+              onClick={() => navigate("/about")}
+              className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors inline-flex items-center space-x-2"
+            >
+              <span>Learn More About Us</span>
+              <ArrowRight className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+      </section>
+
     </div>
   );
 };
