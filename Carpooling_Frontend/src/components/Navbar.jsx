@@ -171,7 +171,7 @@ function Navbar() {
                   </div>
                   {/* Profile and Community Buttons */}
                   <div className="flex items-center space-x-3">
-                    {/* Community Button with Enhanced Tooltip */}
+                    {/* Community Button */}
                     <div className="relative group">
                       <button
                         onClick={() => navigate("/community")}
@@ -179,7 +179,7 @@ function Navbar() {
                       >
                         <Users className="h-6 w-6 text-gray-600 group-hover:text-blue-600 transition-colors" />
                       </button>
-                      {/* Enhanced Tooltip */}
+                      {/* Tooltip */}
                       <div className="absolute right-0 w-64 mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-0 translate-y-1 z-50">
                         <div className="bg-white rounded-xl shadow-xl border border-blue-100 p-4">
                           <div className="flex items-center space-x-3 mb-2">
@@ -203,7 +203,6 @@ function Navbar() {
                         </div>
                       </div>
                     </div>
-
                     {/* Profile Dropdown */}
                     <div className="relative group">
                       <button className="flex items-center space-x-1 p-2 rounded-full bg-gray-100 hover:bg-blue-50 transition-colors group-hover:ring-2 group-hover:ring-blue-100">
@@ -304,6 +303,64 @@ function Navbar() {
                 <User className="h-5 w-5" />
                 <span>Profile</span>
               </a>
+              {/* Notifications in Mobile Menu */}
+              <div className="relative">
+                <button
+                  onClick={toggleNotifications}
+                  className="mobile-nav-link w-full justify-between"
+                >
+                  <div className="flex items-center">
+                    <Bell className="h-5 w-5" />
+                    <span>Notifications</span>
+                  </div>
+                  {notifications.length > 0 && (
+                    <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                      {notifications.length}
+                    </span>
+                  )}
+                </button>
+                {isNotificationsOpen && (
+                  <div className="mt-2 bg-white rounded-lg shadow-lg border border-gray-100 p-2">
+                    {notifications.length > 0 ? (
+                      <ul className="space-y-2">
+                        {notifications.map((notif) => (
+                          <li
+                            key={notif._id}
+                            className="p-2 hover:bg-blue-50 rounded flex items-start justify-between text-sm"
+                          >
+                            <div>
+                              <p className="font-medium text-blue-900">
+                                {notif.message}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {new Date(notif.createdAt).toLocaleString()}
+                              </p>
+                            </div>
+                            <button
+                              onClick={() => markAsRead(notif._id)}
+                              className="text-blue-600 hover:text-blue-800 text-xs ml-2"
+                            >
+                              Dismiss
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <div className="p-2 text-gray-500 text-sm text-center">
+                        No new notifications
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+              {/* Logout Button */}
+              <button
+                onClick={handleLogout}
+                className="mobile-nav-link text-red-600 hover:bg-red-50 w-full justify-start"
+              >
+                <LogOut className="h-5 w-5" />
+                <span>Log Out</span>
+              </button>
             </div>
           ) : (
             <div className="px-2 pt-2 pb-3 space-y-1 bg-white border-t border-gray-100">
