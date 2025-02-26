@@ -1,28 +1,34 @@
-import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Mail, KeyRound, ArrowRight, CheckCircle, RefreshCw } from 'lucide-react';
-import axios from 'axios';
-import { toast } from 'react-toastify';
+import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import {
+  Mail,
+  KeyRound,
+  ArrowRight,
+  CheckCircle,
+  RefreshCw,
+} from "lucide-react";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 function VerifyEmailPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [verificationCode, setVerificationCode] = useState('');
-  const email = new URLSearchParams(location.search).get('email');
+  const [verificationCode, setVerificationCode] = useState("");
+  const email = new URLSearchParams(location.search).get("email");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await axios.post(
-        'http://localhost:3000/api/v1/auth/verify-email',
+        "https://carpoolingsystem-production.up.railway.app/api/v1/auth/verify-email",
         { email, verificationCode }
       );
-      toast.success('Email verified successfully!');
+      toast.success("Email verified successfully!");
       setTimeout(() => {
-        navigate('/login');
+        navigate("/login");
       }, 2000);
     } catch (error) {
-      toast.error('Invalid or expired verification code');
+      toast.error("Invalid or expired verification code");
     }
   };
 
@@ -38,7 +44,7 @@ function VerifyEmailPage() {
             Verify Your Email
           </h2>
           <p className="mt-3 text-gray-600">
-            We sent a verification code to{' '}
+            We sent a verification code to{" "}
             <span className="font-semibold text-indigo-600">{email}</span>
           </p>
         </div>
@@ -48,7 +54,10 @@ function VerifyEmailPage() {
           <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl p-8 border border-white/20">
             <div className="space-y-5">
               <div>
-                <label htmlFor="verification-code" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="verification-code"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Verification Code
                 </label>
                 <div className="relative rounded-lg">

@@ -37,7 +37,7 @@ function BookRide() {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:3000/api/v1/book-ride/${id}`,
+          `https://carpoolingsystem-production.up.railway.app/api/v1/book-ride/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -85,7 +85,7 @@ function BookRide() {
       };
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        `http://localhost:3000/api/v1/create-passenger-ride/${id}`,
+        `https://carpoolingsystem-production.up.railway.app/api/v1/create-passenger-ride/${id}`,
         formDataToSend,
         {
           headers: {

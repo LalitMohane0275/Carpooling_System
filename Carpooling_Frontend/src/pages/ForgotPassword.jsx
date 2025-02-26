@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { Mail, Lock, KeyRound, ArrowLeft } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { Mail, Lock, KeyRound, ArrowLeft } from "lucide-react";
 
 function ForgotPassword() {
-  const [email, setEmail] = useState('');
-  const [otp, setOtp] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [step, setStep] = useState(1);
   const [timer, setTimer] = useState(300); // 5 minutes in seconds
   const navigate = useNavigate();
@@ -25,108 +25,120 @@ function ForgotPassword() {
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
   };
 
   const handleSendOTP = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3000/api/v1/auth/forgot-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
+      const response = await fetch(
+        "https://carpoolingsystem-production.up.railway.app/api/v1/auth/forgot-password",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
 
       const data = await response.json();
       if (response.ok) {
-        toast.success('OTP sent successfully!');
+        toast.success("OTP sent successfully!");
         setStep(2);
         setTimer(300); // Reset timer to 5 minutes
       } else {
-        toast.error(data.message || 'Failed to send OTP');
+        toast.error(data.message || "Failed to send OTP");
       }
     } catch (error) {
-      toast.error('An error occurred. Please try again.');
+      toast.error("An error occurred. Please try again.");
     }
   };
 
   const handleVerifyOTP = async (e) => {
     e.preventDefault();
     if (timer === 0) {
-      toast.error('OTP has expired. Please request a new one.');
+      toast.error("OTP has expired. Please request a new one.");
       return;
     }
     try {
-      const response = await fetch('http://localhost:3000/api/v1/auth/verify-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, otp }),
-      });
+      const response = await fetch(
+        "https://carpoolingsystem-production.up.railway.app/api/v1/auth/verify-otp",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, otp }),
+        }
+      );
 
       const data = await response.json();
       if (response.ok) {
-        toast.success('OTP verified successfully!');
+        toast.success("OTP verified successfully!");
         setStep(3);
       } else {
-        toast.error(data.message || 'Invalid OTP');
+        toast.error(data.message || "Invalid OTP");
       }
     } catch (error) {
-      toast.error('An error occurred. Please try again.');
+      toast.error("An error occurred. Please try again.");
     }
   };
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
-      toast.error('Passwords do not match!');
+      toast.error("Passwords do not match!");
       return;
     }
     try {
-      const response = await fetch('http://localhost:3000/api/v1/auth/reset-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, otp, newPassword }),
-      });
+      const response = await fetch(
+        "https://carpoolingsystem-production.up.railway.app/api/v1/auth/reset-password",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, otp, newPassword }),
+        }
+      );
 
       const data = await response.json();
       if (response.ok) {
-        toast.success('Password reset successfully!');
+        toast.success("Password reset successfully!");
         setTimeout(() => {
-          navigate('/login');
+          navigate("/login");
         }, 2000);
       } else {
-        toast.error(data.message || 'Failed to reset password');
+        toast.error(data.message || "Failed to reset password");
       }
     } catch (error) {
-      toast.error('An error occurred. Please try again.');
+      toast.error("An error occurred. Please try again.");
     }
   };
 
   const handleResendOTP = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/v1/auth/resend-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
+      const response = await fetch(
+        "https://carpoolingsystem-production.up.railway.app/api/v1/auth/resend-otp",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email }),
+        }
+      );
 
       const data = await response.json();
       if (response.ok) {
-        toast.success('New OTP sent successfully!');
+        toast.success("New OTP sent successfully!");
         setTimer(300); // Reset timer to 5 minutes
       } else {
-        toast.error(data.message || 'Failed to resend OTP');
+        toast.error(data.message || "Failed to resend OTP");
       }
     } catch (error) {
-      toast.error('An error occurred. Please try again.');
+      toast.error("An error occurred. Please try again.");
     }
   };
 
