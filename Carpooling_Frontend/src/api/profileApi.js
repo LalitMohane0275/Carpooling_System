@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:3000/api/v1'; 
+const BASE_URL = 'https://carpoolingsystem-production.up.railway.app/api/v1'; 
 
 // Create axios instance with default config
 const api = axios.create({

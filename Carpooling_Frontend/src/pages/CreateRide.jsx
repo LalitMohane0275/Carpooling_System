@@ -142,7 +142,7 @@ function CreateRide() {
       };
       console.log("Ride Object:", rideData);
       const response = await axios.post(
-        "http://localhost:3000/api/v1/create-ride",
+        "https://carpoolingsystem-production.up.railway.app/api/v1/create-ride",
         rideData,
         {
           headers: {

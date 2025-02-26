@@ -116,7 +116,7 @@ function EditProfile() {
     const token = localStorage.getItem("token");
     try {
       const response = await axios.put(
-        `http://localhost:3000/api/v1/profile/edit-profile/${userId}`,
+        `https://carpoolingsystem-production.up.railway.app/api/v1/profile/edit-profile/${userId}`,
         profile,
         {
           headers: {
@@ -147,7 +147,7 @@ function EditProfile() {
 
     try {
       const response = await axios.put(
-        `http://localhost:3000/api/v1/profile/upload-profile-picture/${userId}`,
+        `https://carpoolingsystem-production.up.railway.app/api/v1/profile/upload-profile-picture/${userId}`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );

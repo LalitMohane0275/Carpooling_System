@@ -54,7 +54,7 @@ function Community() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "http://localhost:3000/api/v1/community/posts",
+        "https://carpoolingsystem-production.up.railway.app/api/v1/community/posts",
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -76,7 +76,7 @@ function Community() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "http://localhost:3000/api/v1/community/posts",
+        "https://carpoolingsystem-production.up.railway.app/api/v1/community/posts",
         { content, category },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -93,7 +93,7 @@ function Community() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "http://localhost:3000/api/v1/community/posts/react",
+        "https://carpoolingsystem-production.up.railway.app/api/v1/community/posts/react",
         { postId, reactionType },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -115,7 +115,7 @@ function Community() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "http://localhost:3000/api/v1/community/posts/comment",
+        "https://carpoolingsystem-production.up.railway.app/api/v1/community/posts/comment",
         { postId, content: commentContent },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -148,7 +148,7 @@ function Community() {
     try {
       const token = localStorage.getItem("token");
       await axios.delete(
-        `http://localhost:3000/api/v1/community/posts/${deletePostId}`,
+        `https://carpoolingsystem-production.up.railway.app/api/v1/community/posts/${deletePostId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -165,7 +165,7 @@ function Community() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.delete(
-        `http://localhost:3000/api/v1/community/posts/${deletePostId}/comments/${deleteCommentId}`,
+        `https://carpoolingsystem-production.up.railway.app/api/v1/community/posts/${deletePostId}/comments/${deleteCommentId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setPosts(

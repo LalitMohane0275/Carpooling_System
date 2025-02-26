@@ -77,7 +77,7 @@ function FindRides() {
     const fetchRides = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/api/v1/find-ride",
+          "https://carpoolingsystem-production.up.railway.app/api/v1/find-ride",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -220,7 +220,7 @@ function FindRides() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.delete(
-        `http://localhost:3000/api/v1/delete-ride/${rideToDelete}`,
+        `https://carpoolingsystem-production.up.railway.app/api/v1/delete-ride/${rideToDelete}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

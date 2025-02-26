@@ -106,7 +106,7 @@ function SignUp() {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/v1/auth/signup",
+        "https://carpoolingsystem-production.up.railway.app/api/v1/auth/signup",
         formDataToSubmit,
         {
           headers: {

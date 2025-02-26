@@ -29,7 +29,7 @@ const RidesTaken = () => {
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `http://localhost:3000/api/v1/get-passenger-rides/${userId}`,
+          `https://carpoolingsystem-production.up.railway.app/api/v1/get-passenger-rides/${userId}`,
           {
             method: "GET",
             headers: {

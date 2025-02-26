@@ -54,7 +54,7 @@ function Navbar() {
       const fetchNotifications = async () => {
         try {
           const response = await fetch(
-            `http://localhost:3000/api/v1/notifications/${userId}`
+            `https://carpoolingsystem-production.up.railway.app/api/v1/notifications/${userId}`
           );
           const data = await response.json();
           setNotifications(data);
@@ -70,9 +70,12 @@ function Navbar() {
 
   const markAsRead = async (id) => {
     try {
-      await fetch(`http://localhost:3000/api/v1/notifications/read/${id}`, {
-        method: "PUT",
-      });
+      await fetch(
+        `https://carpoolingsystem-production.up.railway.app/api/v1/notifications/read/${id}`,
+        {
+          method: "PUT",
+        }
+      );
       setNotifications(notifications.filter((n) => n._id !== id));
     } catch (error) {
       console.error("Error marking notification as read:", error);
