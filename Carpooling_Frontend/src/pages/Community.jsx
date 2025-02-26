@@ -242,7 +242,7 @@ function Community() {
               <textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                placeholder="What's on your mind? Share your thoughts, experiences, or updates with the community..."
+                placeholder="What's on your mind? Share your thoughts or updates with the community..."
                 className="w-full p-6 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-gray-700 placeholder-gray-400 min-h-[120px] bg-gray-50"
                 maxLength="500"
                 required
