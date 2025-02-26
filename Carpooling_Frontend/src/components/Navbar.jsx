@@ -10,6 +10,7 @@ import {
   Info,
   LogOut,
   Bell,
+  Users,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -48,7 +49,6 @@ function Navbar() {
     console.log("No token found");
   }
 
-  // Fetch notifications
   useEffect(() => {
     if (isLoggedIn && userId) {
       const fetchNotifications = async () => {
@@ -63,12 +63,11 @@ function Navbar() {
         }
       };
       fetchNotifications();
-      const interval = setInterval(fetchNotifications, 10000); // Poll every 10s
+      const interval = setInterval(fetchNotifications, 10000);
       return () => clearInterval(interval);
     }
   }, [isLoggedIn, userId]);
 
-  // Mark notification as read
   const markAsRead = async (id) => {
     try {
       await fetch(`http://localhost:3000/api/v1/notifications/read/${id}`, {
@@ -116,7 +115,6 @@ function Navbar() {
                     <PlusCircle className="h-5 w-5 group-hover:text-blue-600 transition-colors" />
                     <span>Create a Ride</span>
                   </a>
-
                   {/* Notifications Dropdown */}
                   <div className="relative">
                     <button
@@ -171,27 +169,62 @@ function Navbar() {
                       </div>
                     )}
                   </div>
-
-                  {/* Profile Dropdown */}
-                  <div className="relative group">
-                    <button className="flex items-center space-x-1 p-2 rounded-full bg-gray-100 hover:bg-blue-50 transition-colors group-hover:ring-2 group-hover:ring-blue-100">
-                      <User className="h-5 w-5 text-gray-600 group-hover:text-blue-600" />
-                    </button>
-                    <div className="absolute right-0 w-48 mt-2 py-2 bg-white rounded-lg shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                      <a
-                        href={`/profile/${userId}`}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
-                      >
-                        View Profile
-                      </a>
-                      <hr className="my-2 border-gray-100" />
+                  {/* Profile and Community Buttons */}
+                  <div className="flex items-center space-x-3">
+                    {/* Community Button with Enhanced Tooltip */}
+                    <div className="relative group">
                       <button
-                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2"
-                        onClick={handleLogout}
+                        onClick={() => navigate("/community")}
+                        className="p-2 rounded-full bg-gray-100 hover:bg-blue-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-200 relative"
                       >
-                        <LogOut className="h-4 w-4" />
-                        <span>Log Out</span>
+                        <Users className="h-6 w-6 text-gray-600 group-hover:text-blue-600 transition-colors" />
                       </button>
+                      {/* Enhanced Tooltip */}
+                      <div className="absolute right-0 w-64 mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-0 translate-y-1 z-50">
+                        <div className="bg-white rounded-xl shadow-xl border border-blue-100 p-4">
+                          <div className="flex items-center space-x-3 mb-2">
+                            <Users className="h-8 w-8 text-blue-600" />
+                            <h3 className="font-semibold text-gray-900">
+                              Join RideBuddy Community
+                            </h3>
+                          </div>
+                          <p className="text-sm text-gray-600 mb-3">
+                            Connect with fellow travelers, share experiences,
+                            and make your journeys more memorable! 🚗✨
+                          </p>
+                          <div className="flex justify-end">
+                            <button
+                              onClick={() => navigate("/community")}
+                              className="text-xs bg-blue-50 text-blue-600 px-3 py-1 rounded-full font-medium hover:bg-blue-100 transition-colors"
+                            >
+                              Learn More →
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Profile Dropdown */}
+                    <div className="relative group">
+                      <button className="flex items-center space-x-1 p-2 rounded-full bg-gray-100 hover:bg-blue-50 transition-colors group-hover:ring-2 group-hover:ring-blue-100">
+                        <User className="h-5 w-5 text-gray-600 group-hover:text-blue-600" />
+                      </button>
+                      <div className="absolute right-0 w-48 mt-2 py-2 bg-white rounded-lg shadow-lg border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                        <a
+                          href={`/profile/${userId}`}
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+                        >
+                          View Profile
+                        </a>
+                        <hr className="my-2 border-gray-100" />
+                        <button
+                          className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2"
+                          onClick={handleLogout}
+                        >
+                          <LogOut className="h-4 w-4" />
+                          <span>Log Out</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </>
@@ -263,7 +296,11 @@ function Navbar() {
                 <PlusCircle className="h-5 w-5" />
                 <span>Create a Ride</span>
               </a>
-              <a href="/profile" className="mobile-nav-link">
+              <a href="/community" className="mobile-nav-link">
+                <Users className="h-5 w-5" />
+                <span>Community</span>
+              </a>
+              <a href={`/profile/${userId}`} className="mobile-nav-link">
                 <User className="h-5 w-5" />
                 <span>Profile</span>
               </a>

@@ -10,6 +10,11 @@ import {
   Star,
   ArrowRight,
   LogOut,
+  MessageCircle,
+  Share2,
+  Bell,
+  Heart,
+  Shield,
 } from "lucide-react";
 
 const HomePage = () => {
@@ -134,6 +139,61 @@ const HomePage = () => {
                 Connect with friendly travelers and build a community.
               </p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Community Section */}
+      <section className="py-16 px-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4">
+              Join Our Vibrant Community
+            </h2>
+            <p className="text-xl text-blue-100">
+              Connect with fellow travelers, share experiences, and make your
+              journeys more memorable
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="bg-white bg-opacity-10 rounded-xl p-6 backdrop-blur-lg border border-white border-opacity-20 hover:transform hover:scale-105 transition-transform duration-300">
+              <MessageCircle className="h-10 w-10 text-blue-200 mb-4" />
+              <h3 className="text-xl font-semibold mb-2">Share Stories</h3>
+              <p className="text-blue-100">
+                Share your travel experiences and tips with the community
+              </p>
+            </div>
+            <div className="bg-white bg-opacity-10 rounded-xl p-6 backdrop-blur-lg border border-white border-opacity-20 hover:transform hover:scale-105 transition-transform duration-300">
+              <Share2 className="h-10 w-10 text-blue-200 mb-4" />
+              <h3 className="text-xl font-semibold mb-2">Connect & Network</h3>
+              <p className="text-blue-100">
+                Build meaningful connections with like-minded travelers
+              </p>
+            </div>
+            <div className="bg-white bg-opacity-10 rounded-xl p-6 backdrop-blur-lg border border-white border-opacity-20 hover:transform hover:scale-105 transition-transform duration-300">
+              <Bell className="h-10 w-10 text-blue-200 mb-4" />
+              <h3 className="text-xl font-semibold mb-2">Stay Updated</h3>
+              <p className="text-blue-100">
+                Get real-time updates on routes and travel conditions
+              </p>
+            </div>
+            <div className="bg-white bg-opacity-10 rounded-xl p-6 backdrop-blur-lg border border-white border-opacity-20 hover:transform hover:scale-105 transition-transform duration-300">
+              <Shield className="h-10 w-10 text-blue-200 mb-4" />
+              <h3 className="text-xl font-semibold mb-2">Safe Travel</h3>
+              <p className="text-blue-100">
+                Travel with verified community members you can trust
+              </p>
+            </div>
+          </div>
+          <div className="text-center mt-12">
+            <button
+              onClick={() => navigate("/community")}
+              className="bg-white text-blue-600 px-8 py-4 rounded-full font-semibold hover:bg-blue-50 transition-colors inline-flex items-center space-x-2 shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-transform duration-300"
+            >
+              <Users className="h-5 w-5" />
+              <span>Join Our Community</span>
+              <ArrowRight className="h-5 w-5" />
+            </button>
           </div>
         </div>
       </section>
