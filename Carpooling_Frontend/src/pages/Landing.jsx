@@ -10,9 +10,15 @@ import { useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  function handleNavigation() {
+
+  const handleSignUpNavigation = () => {
     navigate("/signup");
-  }
+  };
+
+  const handleLogInNavigation = () => {
+    navigate("/login");
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <main className="flex-grow">
@@ -31,12 +37,20 @@ const LandingPage = () => {
               <p className="text-xl mb-8 text-blue-100">
                 Join RideBuddy today and experience a smarter way to commute!
               </p>
-              <button
-                className="px-8 py-4 bg-white text-blue-600 rounded-full font-semibold flex items-center hover:bg-blue-50 transform hover:scale-105 transition-all shadow-lg"
-                onClick={handleNavigation}
-              >
-                Get Started <ChevronRight className="ml-2 w-5 h-5" />
-              </button>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <button
+                  className="px-8 py-4 bg-white text-blue-600 rounded-full font-semibold flex items-center justify-center hover:bg-blue-50 transform hover:scale-105 transition-all shadow-lg"
+                  onClick={handleSignUpNavigation}
+                >
+                  Sign Up <ChevronRight className="ml-2 w-5 h-5" />
+                </button>
+                <button
+                  className="px-8 py-4 bg-blue-100 text-blue-700 rounded-full font-semibold flex items-center justify-center hover:bg-blue-200 transform hover:scale-105 transition-all shadow-lg"
+                  onClick={handleLogInNavigation}
+                >
+                  Log In
+                </button>
+              </div>
             </div>
             <div className="md:w-1/2">
               <img
@@ -116,17 +130,17 @@ const LandingPage = () => {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
               <TestimonialCard
-                name="Sarah L."
+                name="Shounak Mulay"
                 quote="RideBuddy has transformed my daily commute. I've saved money and made new friends!"
                 image="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80"
               />
               <TestimonialCard
-                name="Mike T."
+                name="Abhijeet Lahase"
                 quote="As a driver, I love how easy it is to find passengers and split costs. Highly recommended!"
                 image="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80"
               />
               <TestimonialCard
-                name="Emily R."
+                name="Sahil Katkamwar"
                 quote="The app is user-friendly, and the community is fantastic. It's a win-win for everyone!"
                 image="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&q=80"
               />
@@ -146,7 +160,7 @@ const LandingPage = () => {
               emissions.
             </p>
             <div className="inline-flex justify-center items-center space-x-6 bg-white/10 backdrop-blur-lg rounded-2xl p-8">
-              <div className="text-5xl font-bold text-blue-100">1,234,567</div>
+              <div className="text-5xl font-bold text-blue-100">X</div>
               <div className="text-left">
                 <div className="text-2xl font-semibold">kg of CO2 saved</div>
                 <div className="text-blue-100">by our RideBuddy community</div>
@@ -164,14 +178,18 @@ const LandingPage = () => {
             <p className="text-xl mb-12 text-blue-600">
               Join thousands of happy commuters and start saving today!
             </p>
-            <div className="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4 max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="w-full px-6 py-4 border-2 border-blue-200 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent text-blue-900 placeholder-blue-300"
-              />
-              <button className="w-full sm:w-auto px-8 py-4 bg-blue-500 text-white rounded-full font-semibold hover:bg-blue-600 transform hover:scale-105 transition-all shadow-lg">
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-4 max-w-lg mx-auto">
+              <button
+                className="w-full sm:w-auto px-8 py-4 bg-blue-500 text-white rounded-full font-semibold hover:bg-blue-600 transform hover:scale-105 transition-all shadow-lg"
+                onClick={handleSignUpNavigation}
+              >
                 Sign Up Now
+              </button>
+              <button
+                className="w-full sm:w-auto px-8 py-4 bg-blue-100 text-blue-700 rounded-full font-semibold hover:bg-blue-200 transform hover:scale-105 transition-all shadow-lg"
+                onClick={handleLogInNavigation}
+              >
+                Log In
               </button>
             </div>
           </div>
