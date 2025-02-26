@@ -28,8 +28,8 @@ app.use("/api/v1/reviews", reviews);
 app.use("/api/v1/notifications", notificationRoutes);
 app.use("/api/v1/community", communityRoutes);
 
-app.get("/", (req, res) => {
-  res.send(`<h1>HomePage</h1>`);
+app.get('/', (req, res) => {
+  res.json({ message: 'Carpooling Backend API is live', status: 'ok' });
 });
 
 app.listen(PORT, () => {
