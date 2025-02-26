@@ -6,6 +6,7 @@ const authMiddleware = require("../middlewares/auth-middleware");
 // Import Controller 
 const {createRide, createPassengerRide} = require("../controllers/createRideController");
 const {getRide, getRides, getRidesByDriverId, getPassengerRidesByPassengerId} = require("../controllers/getRideController");
+const {deleteRide} = require("../controllers/deleteRideController");
 
 
 // Mapping Create
@@ -15,6 +16,7 @@ router.get("/find-ride", authMiddleware, getRides);
 router.get("/book-ride/:id", authMiddleware, getRide);
 router.get("/get-rides/:driver", authMiddleware, getRidesByDriverId);
 router.get("/get-passenger-rides/:passenger", authMiddleware, getPassengerRidesByPassengerId);
+router.delete("/delete-ride/:rideId", authMiddleware, deleteRide);
 
 // Export Controller
 module.exports = router;

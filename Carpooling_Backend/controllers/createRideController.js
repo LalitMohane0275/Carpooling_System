@@ -1,9 +1,9 @@
+const mongoose = require("mongoose");
 const Ride = require("../models/RideModel");
 const PassengerRide = require("../models/PassengerRideModel");
 const User = require("../models/UserModel");
 const transporter = require("../utils/nodemailer");
 const { createNotification } = require("./notificationController");
-const mongoose = require("mongoose");
 
 exports.createRide = async (req, res) => {
   try {
@@ -145,7 +145,8 @@ exports.createPassengerRide = async (req, res) => {
       throw new Error("Passenger not found");
     }
 
-    const mailOptions = {
+    // Email to passenger
+    const passengerMailOptions = {
       from: process.env.EMAIL_USER,
       to: passenger.email,
       subject: `Your Ride to ${destination} is Booked!`,
@@ -170,11 +171,41 @@ exports.createPassengerRide = async (req, res) => {
       `,
     };
 
-    console.log(`Sending email to ${passenger.email}`);
-    await transporter.sendMail(mailOptions);
+    console.log(`Sending email to passenger ${passenger.email}`);
+    await transporter.sendMail(passengerMailOptions);
     console.log(`Email sent successfully to ${passenger.email}`);
 
-    // Notifications with improved messages
+    // Email to driver
+    const driverMailOptions = {
+      from: process.env.EMAIL_USER,
+      to: driver.email,
+      subject: `New Booking for Your Ride to ${existingRide.destination}`,
+      html: `
+        <h2>New Passenger Booking</h2>
+        <p>A passenger has booked a ride with you!</p>
+        <p><strong>Ride Details:</strong></p>
+        <ul>
+          <li>Pickup: ${start}</li>
+          <li>Destination: ${destination}</li>
+          <li>Date: ${existingRide.date}</li>
+          <li>Time: ${existingRide.time}</li>
+          <li>Seats Booked: ${seatsNum}</li>
+        </ul>
+        <p><strong>Passenger Contact Info:</strong></p>
+        <ul>
+          <li>Name: ${passenger.firstName} ${passenger.lastName}</li>
+          <li>Phone: ${passenger.phoneNumber}</li>
+          <li>Email: ${passenger.email}</li>
+        </ul>
+        <p>Please contact the passenger to confirm pickup details and discuss payment arrangements.</p>
+      `,
+    };
+
+    console.log(`Sending email to driver ${driver.email}`);
+    await transporter.sendMail(driverMailOptions);
+    console.log(`Email sent successfully to ${driver.email}`);
+
+    // Notifications
     await createNotification(
       passengerId,
       `Your booking from ${start} to ${destination} with ${seatsNum} seat${seatsNum > 1 ? "s" : ""} has been confirmed! Check your email for driver details.`,
@@ -184,7 +215,7 @@ exports.createPassengerRide = async (req, res) => {
 
     await createNotification(
       existingRide.driver.toString(),
-      `${passenger.firstName} ${passenger.lastName} booked ${seatsNum} seat${seatsNum > 1 ? "s" : ""} on your ride from ${existingRide.start} to ${existingRide.destination} on ${existingRide.date} at ${existingRide.time}.`,
+      `${passenger.firstName} ${passenger.lastName} booked ${seatsNum} seat${seatsNum > 1 ? "s" : ""} on your ride from ${existingRide.start} to ${existingRide.destination} on ${existingRide.date} at ${existingRide.time}. Check your email for passenger details.`,
       "ride_booked",
       false
     );
