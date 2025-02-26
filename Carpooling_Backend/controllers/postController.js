@@ -13,7 +13,7 @@ exports.createPost = async (req, res) => {
       user: userId,
       content,
       category,
-      reactions: { like: [], smile: [], sad: [], love: [], star: [], award: [] },
+      reactions: { like: [], dislike: [] },
     });
 
     const savedPost = await post.save();
@@ -47,7 +47,7 @@ exports.addReaction = async (req, res) => {
     const { postId, reactionType } = req.body;
     const userId = req.userInfo.userId;
 
-    const allowedReactions = ["like", "smile", "sad", "love", "star", "award"];
+    const allowedReactions = ["like", "dislike"];
     if (!allowedReactions.includes(reactionType)) {
       return res.status(400).json({ message: "Invalid reaction type" });
     }
@@ -55,10 +55,6 @@ exports.addReaction = async (req, res) => {
     const post = await Post.findById(postId);
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
-    }
-
-    if (!post.reactions[reactionType]) {
-      post.reactions[reactionType] = [];
     }
 
     const reactionArray = post.reactions[reactionType];
