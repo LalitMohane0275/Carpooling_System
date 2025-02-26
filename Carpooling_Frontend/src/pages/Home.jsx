@@ -14,6 +14,9 @@ import {
   Share2,
   Bell,
   Shield,
+  Target,
+  Eye,
+  Heart,
 } from "lucide-react";
 
 const HomePage = () => {
@@ -221,44 +224,72 @@ const HomePage = () => {
       </section>
 
       {/* About Us Section */}
-      <section className="py-16 px-4 bg-blue-50">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-800 mb-4">
+      <section className="py-20 px-4 bg-gradient-to-b from-blue-50 to-white relative overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-10">
+          <div className="absolute top-10 left-10 w-64 h-64 rounded-full bg-blue-300 blur-3xl"></div>
+          <div className="absolute bottom-10 right-10 w-80 h-80 rounded-full bg-purple-300 blur-3xl"></div>
+        </div>
+        
+        <div className="max-w-6xl mx-auto relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-800 mb-4 relative inline-block">
               About Ridebuddy
+              <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-blue-500 rounded-full"></div>
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mt-8">
               Founded in 2025, Ridebuddy is transforming commutes across India by making them affordable, sustainable, and social.
             </p>
           </div>
+          
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">Our Mission</h3>
-              <p className="text-gray-600">
-                To create a community of conscious travelers who share rides, reduce costs, and minimize environmental impact.
+            <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-t-4 border-blue-500">
+              <div className="bg-blue-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
+                <Target className="h-8 w-8 text-blue-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">Our Mission</h3>
+              <p className="text-gray-600 leading-relaxed">
+                To create a community of conscious travelers who share rides, reduce costs, and minimize environmental impact through collaborative mobility solutions.
               </p>
+              <div className="w-12 h-1 bg-blue-200 mx-auto my-4 rounded-full"></div>
+              <p className="text-sm text-gray-500 italic text-center">Connecting people, one ride at a time</p>
             </div>
-            <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">Our Vision</h3>
-              <p className="text-gray-600">
-                A world where shared mobility is the norm, making travel more accessible, affordable, and sustainable for everyone.
+            
+            <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-t-4 border-purple-500 md:mt-8">
+              <div className="bg-purple-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
+                <Eye className="h-8 w-8 text-purple-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">Our Vision</h3>
+              <p className="text-gray-600 leading-relaxed">
+                A world where shared mobility is the norm, making travel more accessible, affordable, and sustainable for everyone across urban and rural landscapes.
               </p>
+              <div className="w-12 h-1 bg-purple-200 mx-auto my-4 rounded-full"></div>
+              <p className="text-sm text-gray-500 italic text-center">Reimagining transportation together</p>
             </div>
-            <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">Our Values</h3>
-              <p className="text-gray-600">
-                Community, sustainability, affordability, and safety are at the core of everything we do at Ridebuddy.
+            
+            <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-t-4 border-green-500">
+              <div className="bg-green-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
+                <Heart className="h-8 w-8 text-green-600" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-800 mb-4 text-center">Our Values</h3>
+              <p className="text-gray-600 leading-relaxed">
+                Community, sustainability, affordability, and safety are at the core of everything we do at Ridebuddy. We believe in creating value for all stakeholders.
               </p>
+              <div className="w-12 h-1 bg-green-200 mx-auto my-4 rounded-full"></div>
+              <p className="text-sm text-gray-500 italic text-center">Driven by purpose, guided by values</p>
             </div>
           </div>
-          <div className="text-center mt-10">
-            <button
-              onClick={() => navigate("/about")}
-              className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors inline-flex items-center space-x-2"
-            >
-              <span>Learn More About Us</span>
-              <ArrowRight className="h-5 w-5" />
-            </button>
+          
+          <div className="mt-16 text-center">
+            <div className="inline-block bg-white px-1 py-1 rounded-full shadow-lg">
+              <button
+                onClick={() => navigate("/about")}
+                className="bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-4 rounded-full font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 inline-flex items-center space-x-2 shadow-inner"
+              >
+                <span>Learn More About Us</span>
+                <ArrowRight className="h-5 w-5 ml-2" />
+              </button>
+            </div>
           </div>
         </div>
       </section>
