@@ -10,6 +10,8 @@ import {
 import axios from "axios";
 import { toast } from "react-toastify";
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 function VerifyEmailPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -19,10 +21,10 @@ function VerifyEmailPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(
-        "https://carpoolingsystem-production.up.railway.app/api/v1/auth/verify-email",
-        { email, verificationCode }
-      );
+      await axios.post(`${BASE_URL}/auth/verify-email`, {
+        email,
+        verificationCode,
+      });
       toast.success("Email verified successfully!");
       setTimeout(() => {
         navigate("/login");

@@ -12,6 +12,8 @@ import {
   ChevronRight,
 } from "lucide-react";
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 const RidesTaken = () => {
   const { userId } = useParams();
   const navigate = useNavigate();
@@ -28,7 +30,7 @@ const RidesTaken = () => {
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `https://carpoolingsystem-production.up.railway.app/api/v1/get-passenger-rides/${userId}`,
+          `${BASE_URL}/get-passenger-rides/${userId}`,
           {
             method: "GET",
             headers: {

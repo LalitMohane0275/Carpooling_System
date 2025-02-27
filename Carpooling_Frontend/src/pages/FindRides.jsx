@@ -19,6 +19,8 @@ import {
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 // Function to shorten address for display
 const shortenAddress = (fullAddress) => {
   if (!fullAddress) return "Unknown Location";
@@ -76,14 +78,11 @@ function FindRides() {
 
     const fetchRides = async () => {
       try {
-        const response = await axios.get(
-          "https://carpoolingsystem-production.up.railway.app/api/v1/find-ride",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await axios.get(`${BASE_URL}/find-ride`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         const fetchedRides = response.data.rides;
         const currentDateTime = new Date();
         const futureRides = fetchedRides.filter((ride) => {
@@ -220,7 +219,7 @@ function FindRides() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.delete(
-        `https://carpoolingsystem-production.up.railway.app/api/v1/delete-ride/${rideToDelete}`,
+        `${BASE_URL}/delete-ride/${rideToDelete}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

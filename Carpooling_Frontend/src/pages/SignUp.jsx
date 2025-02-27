@@ -19,6 +19,8 @@ import { useDispatch } from "react-redux";
 import { login } from "../store/authSlice";
 import countryDialCodes from "../utils/countryDialCodes";
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 function SignUp() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -104,7 +106,7 @@ function SignUp() {
 
     try {
       const response = await axios.post(
-        "https://carpoolingsystem-production.up.railway.app/api/v1/auth/signup",
+        `${BASE_URL}/auth/signup`,
         formDataToSubmit,
         {
           headers: {

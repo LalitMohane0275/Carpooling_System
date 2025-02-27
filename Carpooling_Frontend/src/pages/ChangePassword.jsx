@@ -3,6 +3,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Mail, Lock, KeyRound, Eye, EyeOff, ShieldCheck } from "lucide-react";
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 function App() {
   const [email, setEmail] = useState("");
   const [oldPassword, setOldPassword] = useState("");
@@ -24,20 +26,17 @@ function App() {
     }
 
     try {
-      const response = await fetch(
-        "https://carpoolingsystem-production.up.railway.app/api/v1/auth/change-password",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            oldPassword,
-            newPassword,
-          }),
-        }
-      );
+      const response = await fetch(`${BASE_URL}/auth/change-password`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          oldPassword,
+          newPassword,
+        }),
+      });
 
       if (response.ok) {
         toast.success("Password changed successfully!", {

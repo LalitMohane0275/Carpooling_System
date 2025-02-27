@@ -16,6 +16,8 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../store/authSlice";
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 function Navbar() {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const dispatch = useDispatch();
@@ -62,7 +64,7 @@ function Navbar() {
       const fetchNotifications = async () => {
         try {
           const response = await fetch(
-            `https://carpoolingsystem-production.up.railway.app/api/v1/notifications/${userId}`,
+            `${BASE_URL}/notifications/${userId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -85,7 +87,7 @@ function Navbar() {
   const markAsRead = async (id) => {
     try {
       const response = await fetch(
-        `https://carpoolingsystem-production.up.railway.app/api/v1/notifications/read/${id}`,
+        `${BASE_URL}/notifications/read/${id}`,
         {
           method: "PUT",
           headers: {

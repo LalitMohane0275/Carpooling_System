@@ -16,6 +16,8 @@ import {
   Mail,
 } from "lucide-react";
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 function BookRide() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -36,14 +38,11 @@ function BookRide() {
     const fetchRideDetails = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(
-          `https://carpoolingsystem-production.up.railway.app/api/v1/book-ride/${id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await axios.get(`${BASE_URL}/book-ride/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         setRide(response.data.ride);
         setFormData({
           start: response.data.ride.start,
@@ -85,7 +84,7 @@ function BookRide() {
       };
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        `https://carpoolingsystem-production.up.railway.app/api/v1/create-passenger-ride/${id}`,
+        `${BASE_URL}/create-passenger-ride/${id}`,
         formDataToSend,
         {
           headers: {

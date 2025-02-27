@@ -12,6 +12,9 @@ import {
   X,
 } from "lucide-react";
 
+// Use Vite's import.meta.env to access environment variables
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 function CreateRide() {
   const initialState = {
     start: "",
@@ -122,7 +125,6 @@ function CreateRide() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate date and time against current date and time
     const currentDateTime = new Date();
     const selectedDateTime = new Date(`${ride.date}T${ride.time}`);
 
@@ -142,7 +144,7 @@ function CreateRide() {
       };
       console.log("Ride Object:", rideData);
       const response = await axios.post(
-        "https://carpoolingsystem-production.up.railway.app/api/v1/create-ride",
+        `${BASE_URL}/create-ride`, // Use BASE_URL from Vite's env
         rideData,
         {
           headers: {
@@ -262,7 +264,7 @@ function CreateRide() {
                     value={ride.date}
                     onChange={handleChange}
                     icon={<Calendar className="w-5 h-5 text-blue-500" />}
-                    min={new Date().toISOString().split("T")[0]} // Set minimum date to today
+                    min={new Date().toISOString().split("T")[0]}
                   />
                 </div>
 

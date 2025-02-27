@@ -18,6 +18,8 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 function Community() {
   const [posts, setPosts] = useState([]);
   const [content, setContent] = useState("");
@@ -50,10 +52,9 @@ function Community() {
   const fetchPosts = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(
-        "https://carpoolingsystem-production.up.railway.app/api/v1/community/posts",
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await axios.get(`${BASE_URL}/community/posts`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setPosts(response.data.posts);
       setLoading(false);
     } catch (error) {
@@ -71,7 +72,7 @@ function Community() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "https://carpoolingsystem-production.up.railway.app/api/v1/community/posts",
+        `${BASE_URL}/community/posts`,
         { content, category },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -87,7 +88,7 @@ function Community() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "https://carpoolingsystem-production.up.railway.app/api/v1/community/posts/react",
+        `${BASE_URL}/community/posts/react`,
         { postId, reactionType },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -108,7 +109,7 @@ function Community() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "https://carpoolingsystem-production.up.railway.app/api/v1/community/posts/comment",
+        `${BASE_URL}/community/posts/comment`,
         { postId, content: commentContent },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -145,10 +146,9 @@ function Community() {
   const handleDeletePost = async () => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(
-        `https://carpoolingsystem-production.up.railway.app/api/v1/community/posts/${deletePostId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await axios.delete(`${BASE_URL}/community/posts/${deletePostId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setPosts(posts.filter((post) => post._id !== deletePostId));
       setShowDeletePostModal(false);
       toast.success("Post deleted!");
@@ -161,7 +161,7 @@ function Community() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.delete(
-        `https://carpoolingsystem-production.up.railway.app/api/v1/community/posts/${deletePostId}/comments/${deleteCommentId}`,
+        `${BASE_URL}/community/posts/${deletePostId}/comments/${deleteCommentId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setPosts(

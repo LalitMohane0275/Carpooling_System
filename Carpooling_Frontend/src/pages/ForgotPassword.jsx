@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Mail, Lock, KeyRound, ArrowLeft } from "lucide-react";
 
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
 function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
@@ -32,7 +34,7 @@ function ForgotPassword() {
     e.preventDefault();
     try {
       const response = await fetch(
-        "https://carpoolingsystem-production.up.railway.app/api/v1/auth/forgot-password",
+        `${BASE_URL}/auth/forgot-password`,
         {
           method: "POST",
           headers: {
@@ -63,7 +65,7 @@ function ForgotPassword() {
     }
     try {
       const response = await fetch(
-        "https://carpoolingsystem-production.up.railway.app/api/v1/auth/verify-otp",
+        `${BASE_URL}/auth/verify-otp`,
         {
           method: "POST",
           headers: {
@@ -93,7 +95,7 @@ function ForgotPassword() {
     }
     try {
       const response = await fetch(
-        "https://carpoolingsystem-production.up.railway.app/api/v1/auth/reset-password",
+        `${BASE_URL}/auth/reset-password`,
         {
           method: "POST",
           headers: {
@@ -120,7 +122,7 @@ function ForgotPassword() {
   const handleResendOTP = async () => {
     try {
       const response = await fetch(
-        "https://carpoolingsystem-production.up.railway.app/api/v1/auth/resend-otp",
+        `${BASE_URL}/auth/resend-otp`,
         {
           method: "POST",
           headers: {
