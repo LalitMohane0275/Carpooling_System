@@ -17,6 +17,9 @@ import {
   Wind,
   Droplet,
   Fuel,
+  Calendar, // For Age
+  Users, // For Gender (substitute for GenderMale if unavailable)
+  Info, // For About
 } from "lucide-react";
 import { getProfile } from "../api/profileApi";
 import { logout } from "../store/authSlice";
@@ -79,6 +82,9 @@ const ProfilePage = () => {
     name: "",
     phoneNumber: "",
     address: "",
+    age: "",
+    gender: "",
+    about: "",
     hasVehicle: false,
     profilePicture: "",
     vehicleDetails: {
@@ -109,13 +115,15 @@ const ProfilePage = () => {
       try {
         setIsLoading(true);
         const response = await getProfile(userId);
+        console.log("Profile response:", response); // Debugging log
         if (response.success) {
           setUser((prevUser) => ({
             ...prevUser,
             ...response.data,
-            rating: 4.8,
-            ridesGiven: 87,
-            ridesTaken: 52,
+            name: `${response.data.firstName} ${response.data.lastName || ""}`,
+            rating: 4.8, // Static for now
+            ridesGiven: 87, // Static for now
+            ridesTaken: 52, // Static for now
           }));
         }
       } catch (err) {
@@ -152,7 +160,9 @@ const ProfilePage = () => {
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-red-500 text-base">Error loading profile: {error}</div>
+        <div className="text-red-500 text-base">
+          Error loading profile: {error}
+        </div>
       </div>
     );
   }
@@ -166,7 +176,10 @@ const ProfilePage = () => {
             <div className="absolute bottom-0 left-0 right-0 flex justify-center">
               <div className="relative">
                 <img
-                  src={user.profilePicture}
+                  src={
+                    user.profilePicture ||
+                    "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=400&h=400&fit=crop"
+                  }
                   alt={user.name}
                   className="w-24 h-24 rounded-full border-4 border-white shadow-lg object-cover"
                 />
@@ -181,11 +194,14 @@ const ProfilePage = () => {
           <div className="p-6 pt-12">
             <div className="text-center mb-6">
               <h1 className="text-2xl font-bold text-gray-800">{user.name}</h1>
-              <p className="text-gray-600 text-sm">{user.firstName ? `@${user.firstName}` : ""}</p>
+              <p className="text-gray-600 text-sm">
+                {user.firstName ? `@${user.firstName}` : ""}
+              </p>
               <div className="flex items-center justify-center mt-2">
                 <Star className="text-yellow-400 mr-1" size={16} />
                 <span className="text-gray-600 text-sm">
-                  {user.rating} • {user.ridesGiven} rides given • {user.ridesTaken} rides taken
+                  {user.rating} • {user.ridesGiven} rides given •{" "}
+                  {user.ridesTaken} rides taken
                 </span>
               </div>
             </div>
@@ -195,44 +211,80 @@ const ProfilePage = () => {
               <div className="space-y-3">
                 <div className="flex items-center space-x-2">
                   <Phone className="text-blue-500" size={16} />
-                  <span className="text-gray-700 text-sm">{user.phoneNumber}</span>
+                  <span className="text-gray-700 text-sm">
+                    {user.phoneNumber}
+                  </span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <MapPin className="text-blue-500" size={16} />
                   <span className="text-gray-700 text-sm">{user.address}</span>
                 </div>
+                <div className="flex items-center space-x-2">
+                  <Calendar className="text-blue-500" size={16} />
+                  <span className="text-gray-700 text-sm">Age: {user.age}</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Users className="text-blue-500" size={16} />
+                  <span className="text-gray-700 text-sm">
+                    Gender: {user.gender}
+                  </span>
+                </div>
+                {/* About Section */}
+                <div className="mt-4">
+                  <h3 className="text-base font-semibold text-gray-800 mb-2 flex items-center gap-2">
+                    <Info className="text-blue-500" size={16} />
+                    About Me
+                  </h3>
+                  <p className="text-gray-700 text-sm leading-relaxed bg-gray-50 p-3 rounded-lg">
+                    {user.about || "This user hasn’t added a bio yet."}
+                  </p>
+                </div>
                 {/* Preferences */}
                 <div className="mt-4">
-                  <h3 className="text-base font-semibold text-gray-800 mb-2">Ride Preferences</h3>
+                  <h3 className="text-base font-semibold text-gray-800 mb-2">
+                    Ride Preferences
+                  </h3>
                   <div className="flex flex-wrap gap-3">
                     <div
                       className={`flex items-center space-x-2 ${
-                        user.preferences.musicAllowed ? "text-green-600" : "text-gray-400"
+                        user.preferences.musicAllowed
+                          ? "text-green-600"
+                          : "text-gray-400"
                       }`}
                     >
                       <Music size={16} />
                       <span className="text-sm">
-                        {user.preferences.musicAllowed ? "Music allowed" : "No music"}
+                        {user.preferences.musicAllowed
+                          ? "Music allowed"
+                          : "No music"}
                       </span>
                     </div>
                     <div
                       className={`flex items-center space-x-2 ${
-                        user.preferences.smokingAllowed ? "text-green-600" : "text-gray-400"
+                        user.preferences.smokingAllowed
+                          ? "text-green-600"
+                          : "text-gray-400"
                       }`}
                     >
                       <Smoking size={16} />
                       <span className="text-sm">
-                        {user.preferences.smokingAllowed ? "Smoking allowed" : "No smoking"}
+                        {user.preferences.smokingAllowed
+                          ? "Smoking allowed"
+                          : "No smoking"}
                       </span>
                     </div>
                     <div
                       className={`flex items-center space-x-2 ${
-                        user.preferences.petsAllowed ? "text-green-600" : "text-gray-400"
+                        user.preferences.petsAllowed
+                          ? "text-green-600"
+                          : "text-gray-400"
                       }`}
                     >
                       <Dog size={16} />
                       <span className="text-sm">
-                        {user.preferences.petsAllowed ? "Pets allowed" : "No pets"}
+                        {user.preferences.petsAllowed
+                          ? "Pets allowed"
+                          : "No pets"}
                       </span>
                     </div>
                   </div>
@@ -243,7 +295,9 @@ const ProfilePage = () => {
               {user.hasVehicle && (
                 <div className="bg-gray-50 p-4 rounded-lg">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-3">
-                    <h2 className="text-base font-semibold text-gray-800 mb-2 sm:mb-0">Vehicle Details</h2>
+                    <h2 className="text-base font-semibold text-gray-800 mb-2 sm:mb-0">
+                      Vehicle Details
+                    </h2>
                     <div
                       className={`flex items-center gap-2 px-3 py-1 rounded-full border ${getVehicleTypeColor(
                         user.vehicleDetails.type
@@ -257,11 +311,17 @@ const ProfilePage = () => {
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <p className="text-gray-600 text-sm">Make: {user.vehicleDetails.make}</p>
-                      <p className="text-gray-600 text-sm">Model: {user.vehicleDetails.model}</p>
+                      <p className="text-gray-600 text-sm">
+                        Make: {user.vehicleDetails.make}
+                      </p>
+                      <p className="text-gray-600 text-sm">
+                        Model: {user.vehicleDetails.model}
+                      </p>
                     </div>
                     <div>
-                      <p className="text-gray-600 text-sm">Year: {user.vehicleDetails.year}</p>
+                      <p className="text-gray-600 text-sm">
+                        Year: {user.vehicleDetails.year}
+                      </p>
                       <p className="text-gray-600 text-sm">
                         License Plate: {user.vehicleDetails.licensePlate}
                       </p>
@@ -287,9 +347,14 @@ const ProfilePage = () => {
                   >
                     <div className="flex items-center space-x-2">
                       <Car size={16} />
-                      <span className="text-sm font-semibold">Rides Offered</span>
+                      <span className="text-sm font-semibold">
+                        Rides Offered
+                      </span>
                     </div>
-                    <ArrowRight size={16} className="transform group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight
+                      size={16}
+                      className="transform group-hover:translate-x-1 transition-transform"
+                    />
                   </button>
 
                   <button
@@ -300,7 +365,10 @@ const ProfilePage = () => {
                       <User size={16} />
                       <span className="text-sm font-semibold">Rides Taken</span>
                     </div>
-                    <ArrowRight size={16} className="transform group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight
+                      size={16}
+                      className="transform group-hover:translate-x-1 transition-transform"
+                    />
                   </button>
                 </div>
               </div>

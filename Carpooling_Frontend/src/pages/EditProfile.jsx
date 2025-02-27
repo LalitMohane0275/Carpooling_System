@@ -12,6 +12,9 @@ import {
   Wind,
   Droplet,
   Fuel,
+  Calendar, // For Age
+  Users, // For Gender (substitute for GenderMale)
+  Info, // For About
 } from "lucide-react";
 import { getProfile } from "../api/profileApi";
 import { ToastContainer, toast } from "react-toastify";
@@ -33,11 +36,11 @@ const getVehicleTypeIcon = (type) => {
   return (
     <Icon
       className={`
-    ${type === "ev" ? "text-green-500" : ""}
-    ${type === "cng" ? "text-blue-500" : ""}
-    ${type === "petrol" ? "text-red-500" : ""}
-    ${type === "diesel" ? "text-yellow-500" : ""}
-  `}
+        ${type === "ev" ? "text-green-500" : ""}
+        ${type === "cng" ? "text-blue-500" : ""}
+        ${type === "petrol" ? "text-red-500" : ""}
+        ${type === "diesel" ? "text-yellow-500" : ""}
+      `}
       size={20}
     />
   );
@@ -55,13 +58,16 @@ function EditProfile() {
     lastName: "",
     phoneNumber: "",
     address: "",
+    age: "",
+    gender: "",
+    about: "",
     hasVehicle: false,
     vehicleDetails: {
       make: "",
       model: "",
       year: "",
       licensePlate: "",
-      type: "", // Added vehicle type
+      type: "",
     },
     preferences: {
       smokingAllowed: false,
@@ -146,10 +152,16 @@ function EditProfile() {
     formData.append("profilePicture", file);
 
     try {
+      const token = localStorage.getItem("token");
       const response = await axios.put(
         `https://carpoolingsystem-production.up.railway.app/api/v1/profile/upload-profile-picture/${userId}`,
         formData,
-        { headers: { "Content-Type": "multipart/form-data" } }
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       toast.success("Profile picture updated!");
@@ -294,6 +306,35 @@ function EditProfile() {
                     className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
                   />
                 </div>
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Age
+                  </label>
+                  <input
+                    type="number"
+                    name="age"
+                    value={profile.age}
+                    onChange={handleInputChange}
+                    min="18"
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Gender
+                  </label>
+                  <select
+                    name="gender"
+                    value={profile.gender}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
+                  >
+                    <option value="">Select Gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
                 <div className="md:col-span-2 space-y-2">
                   <label className="block text-sm font-medium text-gray-700">
                     Address
@@ -304,6 +345,20 @@ function EditProfile() {
                     value={profile.address}
                     onChange={handleInputChange}
                     className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
+                  />
+                </div>
+                <div className="md:col-span-2 space-y-2">
+                  <label className="block text-sm font-medium text-gray-700 flex items-center gap-2">
+                    <Info className="w-4 h-4 text-blue-600" />
+                    About Me
+                  </label>
+                  <textarea
+                    name="about"
+                    value={profile.about}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow resize-none min-h-[100px]"
+                    placeholder="Tell us a bit about yourself (optional)..."
+                    maxLength="500"
                   />
                 </div>
               </div>

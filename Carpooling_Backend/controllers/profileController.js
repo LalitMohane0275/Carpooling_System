@@ -1,13 +1,11 @@
+// profileController.js
 const mongoose = require("mongoose");
 const User = require("../models/UserModel");
-const multer = require("multer");
 
 exports.getProfile = async (req, res) => {
   try {
-    const { userId } = req.params; 
-    // console.log("Request Parameters:", req.params);
+    const { userId } = req.params;
 
-    // Check if `userId` is a valid ObjectId
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({
         success: false,
@@ -15,8 +13,7 @@ exports.getProfile = async (req, res) => {
       });
     }
 
-    // Find the profile by `_id`
-    const user = await User.findOne({ _id: userId });
+    const user = await User.findOne({ _id: userId }).select("-password");
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -24,7 +21,6 @@ exports.getProfile = async (req, res) => {
       });
     }
 
-    // Return the profile data
     res.status(200).json({
       success: true,
       data: user,
@@ -39,20 +35,23 @@ exports.getProfile = async (req, res) => {
   }
 };
 
-
-
 exports.updateProfile = async (req, res) => {
   try {
     const userId = req.params.userId;
-    const updates = req.body; // Get all fields dynamically from request body
-    if (req.file) {
-      updates.profilePicture = `/uploads/${req.file.filename}`;
+    const updates = req.body;
+
+    // Parse nested fields if they come as strings
+    if (typeof updates.vehicleDetails === "string") {
+      updates.vehicleDetails = JSON.parse(updates.vehicleDetails);
     }
-    // Find user and update details
+    if (typeof updates.preferences === "string") {
+      updates.preferences = JSON.parse(updates.preferences);
+    }
+
     const updatedUser = await User.findByIdAndUpdate(userId, updates, {
       new: true,
       runValidators: true,
-    });
+    }).select("-password");
 
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
@@ -60,6 +59,7 @@ exports.updateProfile = async (req, res) => {
 
     res.status(200).json({ message: "Profile updated successfully", user: updatedUser });
   } catch (error) {
+    console.error("Error updating profile:", error);
     res.status(500).json({ message: "Error updating profile", error: error.message });
   }
 };
