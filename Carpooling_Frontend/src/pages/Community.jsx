@@ -16,6 +16,7 @@ import {
   Cloud,
   Navigation,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 function Community() {
   const [posts, setPosts] = useState([]);
@@ -30,6 +31,8 @@ function Community() {
   const [showDeletePostModal, setShowDeletePostModal] = useState(false);
   const [showDeleteCommentModal, setShowDeleteCommentModal] = useState(false);
   const [currentUserId, setCurrentUserId] = useState(null);
+
+  const navigate = useNavigate(); // Add navigate hook
 
   useEffect(() => {
     fetchPosts();
@@ -192,6 +195,10 @@ function Community() {
     }
   };
 
+  const handleUserClick = (userId) => {
+    navigate(`/profile/${userId}`);
+  };
+
   const reactions = [
     { emoji: "👍", type: "like", icon: <ThumbsUp className="w-5 h-5" /> },
     { emoji: "👎", type: "dislike", icon: <ThumbsDown className="w-5 h-5" /> },
@@ -341,17 +348,25 @@ function Community() {
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-4">
-                    {post.user && post.user.profilePicture ? (
-                      <img
-                        src={post.user.profilePicture}
-                        alt={`${post.user.firstName} ${post.user.lastName}`}
-                        className="w-12 h-12 rounded-full object-cover border-2 border-blue-500 shadow-sm"
-                      />
-                    ) : (
-                      <UserRound className="w-12 h-12 text-gray-600 bg-gray-100 rounded-full p-3 border border-gray-200" />
-                    )}
+                    <div
+                      className="cursor-pointer"
+                      onClick={() => handleUserClick(post.user._id)}
+                    >
+                      {post.user && post.user.profilePicture ? (
+                        <img
+                          src={post.user.profilePicture}
+                          alt={`${post.user.firstName} ${post.user.lastName}`}
+                          className="w-12 h-12 rounded-full object-cover border-2 border-blue-500 shadow-sm hover:shadow-md transition-shadow"
+                        />
+                      ) : (
+                        <UserRound className="w-12 h-12 text-gray-600 bg-gray-100 rounded-full p-3 border border-gray-200 hover:shadow-md transition-shadow" />
+                      )}
+                    </div>
                     <div>
-                      <p className="font-bold text-gray-900 text-base sm:text-lg">
+                      <p
+                        className="font-bold text-gray-900 text-base sm:text-lg hover:text-blue-600 cursor-pointer transition-colors"
+                        onClick={() => handleUserClick(post.user._id)}
+                      >
                         {post.user
                           ? `${post.user.firstName} ${post.user.lastName}`
                           : "Anonymous"}
@@ -446,12 +461,19 @@ function Community() {
                               src={comment.user.profilePicture}
                               alt={`${comment.user.firstName} ${comment.user.lastName}`}
                               className="w-10 h-10 rounded-full object-cover border-2 border-gray-300 shadow-sm"
+                              onClick={() => handleUserClick(comment.user._id)}
                             />
                           ) : (
-                            <UserRound className="w-10 h-10 text-gray-600 bg-gray-100 rounded-full p-2 border border-gray-200" />
+                            <UserRound
+                              className="w-10 h-10 text-gray-600 bg-gray-100 rounded-full p-2 border border-gray-200 cursor-pointer"
+                              onClick={() => handleUserClick(comment.user._id)}
+                            />
                           )}
                           <div className="flex-1 bg-gray-100 p-3 sm:p-4 rounded-xl shadow-sm">
-                            <p className="font-semibold text-gray-900 text-sm sm:text-base">
+                            <p
+                              className="font-semibold text-gray-900 text-sm sm:text-base hover:text-blue-600 cursor-pointer transition-colors"
+                              onClick={() => handleUserClick(comment.user._id)}
+                            >
                               {comment.user
                                 ? `${comment.user.firstName} ${comment.user.lastName}`
                                 : "Anonymous"}

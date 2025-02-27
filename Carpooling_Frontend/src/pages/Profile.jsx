@@ -77,6 +77,7 @@ const ProfilePage = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentUserId, setCurrentUserId] = useState(null); // Add current user ID state
 
   const [user, setUser] = useState({
     name: "",
@@ -105,12 +106,15 @@ const ProfilePage = () => {
     ridesTaken: 52,
   });
 
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate("/");
-  };
-
   useEffect(() => {
+    const fetchCurrentUser = () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const decoded = JSON.parse(atob(token.split(".")[1]));
+        setCurrentUserId(decoded.userId);
+      }
+    };
+
     const fetchProfile = async () => {
       try {
         setIsLoading(true);
@@ -134,8 +138,14 @@ const ProfilePage = () => {
       }
     };
 
+    fetchCurrentUser();
     fetchProfile();
   }, [userId]);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/");
+  };
 
   const handleEdit = () => {
     navigate(`/profile/edit/${userId}`);
@@ -167,10 +177,12 @@ const ProfilePage = () => {
     );
   }
 
+  const isOwnProfile = currentUserId === userId;
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-6 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto">
-        <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-100">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-6 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+      <div className="w-full max-w-3xl mx-auto sm:max-w-4xl lg:max-w-5xl">
+        <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-100 mx-2 sm:mx-0">
           {/* Header */}
           <div className="relative h-32 sm:h-40 bg-gradient-to-r from-blue-600 to-blue-800">
             <div className="absolute bottom-0 left-0 right-0 flex justify-center transform translate-y-1/2">
@@ -183,9 +195,11 @@ const ProfilePage = () => {
                   alt={user.name}
                   className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-white shadow-md object-cover"
                 />
-                <button className="absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors shadow-sm">
-                  <Camera size={14} />
-                </button>
+                {isOwnProfile && (
+                  <button className="absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors shadow-sm">
+                    <Camera size={14} />
+                  </button>
+                )}
               </div>
             </div>
           </div>
@@ -338,13 +352,15 @@ const ProfilePage = () => {
 
               {/* Action Buttons */}
               <div className="space-y-3">
-                <button
-                  onClick={handleEdit}
-                  className="w-full flex items-center justify-center space-x-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-                >
-                  <Edit2 size={16} />
-                  <span className="text-sm sm:text-base">Edit Profile</span>
-                </button>
+                {isOwnProfile && (
+                  <button
+                    onClick={handleEdit}
+                    className="w-full flex items-center justify-center space-x-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                  >
+                    <Edit2 size={16} />
+                    <span className="text-sm sm:text-base">Edit Profile</span>
+                  </button>
+                )}
 
                 <div className="flex flex-col sm:flex-row gap-3">
                   <button
@@ -391,13 +407,15 @@ const ProfilePage = () => {
                 RideBuddy Member since {new Date(user.createdAt).getFullYear()}
               </span>
             </div>
-            <button
-              className="flex items-center space-x-2 text-red-500 hover:text-red-600 transition-colors"
-              onClick={handleLogout}
-            >
-              <LogOut size={16} />
-              <span className="text-sm sm:text-base">Log Out</span>
-            </button>
+            {isOwnProfile && (
+              <button
+                className="flex items-center space-x-2 text-red-500 hover:text-red-600 transition-colors"
+                onClick={handleLogout}
+              >
+                <LogOut size={16} />
+                <span className="text-sm sm:text-base">Log Out</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
