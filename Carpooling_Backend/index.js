@@ -5,6 +5,7 @@ const auth = require("./routes/auth");
 const path = require("path");
 const reviews = require("./routes/reviews");
 const notificationRoutes = require('./routes/notifications');
+const paymentRoutes = require("./routes/carpool");
 
 
 const cors = require("cors");
@@ -22,6 +23,7 @@ app.use(express.urlencoded({ extended: true })); // To handle form submissions
 // Database Connection
 dbConnect();
 
+
 // Mount Routes
 app.use("/api/v1", carpool);
 app.use("/api/v1/profile", profile); 
@@ -29,6 +31,8 @@ app.use("/api/v1/auth", auth);
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 app.use("/api/v1/reviews", reviews);
 app.use('/api/v1/notifications', notificationRoutes);
+
+app.use("/api/payment", paymentRoutes);
 // Default Route
 app.get("/", (req, res) => {
   res.send(`<h1>HomePage</h1>`);

@@ -2,6 +2,8 @@
 const Ride = require("../models/RideModel");
 const PassengerRide = require("../models/PassengerRideModel");
 
+
+
 // Controller to get all rides
 exports.getRides = async (req, res) => {
   try {
