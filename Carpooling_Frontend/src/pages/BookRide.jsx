@@ -24,7 +24,7 @@ function BookRide() {
   const [error, setError] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [bookingDetails, setBookingDetails] = useState(null);
-  const [isSubmitting, setIsSubmitting] = useState(false); // New state for submission loading
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     start: "",
@@ -37,7 +37,7 @@ function BookRide() {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `http://localhost:3000/api/v1/book-ride/${id}`,
+          `https://carpoolingsystem-production.up.railway.app/api/v1/book-ride/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -68,7 +68,6 @@ function BookRide() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if start and destination are the same
     if (formData.start === formData.destination) {
       toast.error("Pickup and drop-off locations cannot be the same", {
         position: "top-right",
@@ -77,7 +76,7 @@ function BookRide() {
       return;
     }
 
-    setIsSubmitting(true); // Start loading
+    setIsSubmitting(true);
 
     try {
       const formDataToSend = {
@@ -86,7 +85,7 @@ function BookRide() {
       };
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        `http://localhost:3000/api/v1/create-passenger-ride/${id}`,
+        `https://carpoolingsystem-production.up.railway.app/api/v1/create-passenger-ride/${id}`,
         formDataToSend,
         {
           headers: {
@@ -121,7 +120,7 @@ function BookRide() {
       }
       console.error(err);
     } finally {
-      setIsSubmitting(false); // Stop loading
+      setIsSubmitting(false);
     }
   };
 
@@ -184,6 +183,10 @@ function BookRide() {
                 </p>
               </div>
             )}
+            <p className="text-red-600 font-medium mb-6">
+              Warning: Do not pay online before you reach your driver, as it may
+              lead to a scam.
+            </p>
             <button
               onClick={() => navigate("/")}
               className="bg-blue-500 hover:bg-blue-600 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-300"
@@ -342,7 +345,7 @@ function BookRide() {
                   <button
                     type="submit"
                     className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium px-6 py-3 rounded-lg transition-colors duration-300 flex items-center justify-center space-x-2"
-                    disabled={isSubmitting} // Disable button while submitting
+                    disabled={isSubmitting}
                   >
                     <span>Confirm Booking</span>
                     {isSubmitting && (

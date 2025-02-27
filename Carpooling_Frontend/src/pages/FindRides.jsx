@@ -14,7 +14,10 @@ import {
   Route,
   ArrowRight,
   Star,
+  Trash2,
 } from "lucide-react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Function to shorten address for display
 const shortenAddress = (fullAddress) => {
@@ -38,9 +41,32 @@ function FindRides() {
   const [destinationSuggestions, setDestinationSuggestions] = useState([]);
   const [isStartFocused, setIsStartFocused] = useState(false);
   const [isDestinationFocused, setIsDestinationFocused] = useState(false);
+  const [userId, setUserId] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [rideToDelete, setRideToDelete] = useState(null);
+  const [deleteReason, setDeleteReason] = useState("");
+  const [customReason, setCustomReason] = useState("");
+  const [isOtherSelected, setIsOtherSelected] = useState(false);
+
+  const commonReasons = [
+    "Emergency Situation",
+    "Vehicle Breakdown",
+    "Personal Reasons",
+    "Weather Conditions",
+    "Other",
+  ];
 
   useEffect(() => {
-    // Parse query parameters from URL
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const decoded = JSON.parse(atob(token.split(".")[1]));
+        setUserId(decoded.userId);
+      } catch (err) {
+        console.error("Error decoding token:", err);
+      }
+    }
+
     const params = new URLSearchParams(location.search);
     const from = params.get("from") || "";
     const to = params.get("to") || "";
@@ -50,19 +76,25 @@ function FindRides() {
 
     const fetchRides = async () => {
       try {
-        const token = localStorage.getItem("token");
         const response = await axios.get(
-          "http://localhost:3000/api/v1/find-ride",
+          "https://carpoolingsystem-production.up.railway.app/api/v1/find-ride",
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        setRides(response.data.rides);
-        setFilteredRides(response.data.rides);
-        // Apply initial filter based on query params
-        filterRides(from, to);
+        const fetchedRides = response.data.rides;
+        const currentDateTime = new Date();
+        const futureRides = fetchedRides.filter((ride) => {
+          const rideDateTime = new Date(`${ride.date}T${ride.time}`);
+          return rideDateTime >= currentDateTime;
+        });
+        setRides(futureRides);
+        setFilteredRides(futureRides);
+        if (from || to) {
+          filterRides(from, to);
+        }
       } catch (err) {
         if (err.response && err.response.status === 404) {
           setRides([]);
@@ -80,7 +112,6 @@ function FindRides() {
     fetchRides();
   }, [location.search]);
 
-  // Fetch address suggestions from Nominatim, restricted to India
   const fetchSuggestions = async (query, setSuggestions) => {
     if (query.length < 3) {
       setSuggestions([]);
@@ -100,7 +131,6 @@ function FindRides() {
     }
   };
 
-  // Filter rides based on search inputs
   const filterRides = (from, to) => {
     const filtered = rides.filter((ride) => {
       const allStops = [
@@ -132,7 +162,6 @@ function FindRides() {
     setFilteredRides(filtered);
   };
 
-  // Debounced search handler
   const debouncedSearch = debounce(() => {
     filterRides(searchStart, searchDestination);
   }, 300);
@@ -169,6 +198,65 @@ function FindRides() {
     setDestinationSuggestions([]);
   };
 
+  const confirmDeleteRide = (rideId) => {
+    setRideToDelete(rideId);
+    setShowDeleteModal(true);
+    setDeleteReason(""); // Reset reason
+    setCustomReason("");
+    setIsOtherSelected(false);
+  };
+
+  const handleDeleteRide = async () => {
+    if (!rideToDelete || (!deleteReason && !customReason)) {
+      toast.error("Please provide a reason for cancellation", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      return;
+    }
+
+    const finalReason = deleteReason === "Other" ? customReason : deleteReason;
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.delete(
+        `https://carpoolingsystem-production.up.railway.app/api/v1/delete-ride/${rideToDelete}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          data: { reason: finalReason }, // Send reason to backend
+        }
+      );
+
+      setRides((prevRides) =>
+        prevRides.filter((ride) => ride._id !== rideToDelete)
+      );
+      setFilteredRides((prevFiltered) =>
+        prevFiltered.filter((ride) => ride._id !== rideToDelete)
+      );
+      toast.success(
+        "Ride deleted successfully! Please contact your passengers ASAP if they had booked this ride.",
+        {
+          position: "top-right",
+          autoClose: 5000,
+        }
+      );
+    } catch (error) {
+      console.error("Error deleting ride:", error.response?.data || error);
+      toast.error("Failed to delete the ride. Please try again.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    } finally {
+      setShowDeleteModal(false);
+      setRideToDelete(null);
+      setDeleteReason("");
+      setCustomReason("");
+      setIsOtherSelected(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-blue-50 to-white">
@@ -198,6 +286,7 @@ function FindRides() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-8 px-4 sm:px-6 lg:px-8">
+      <ToastContainer />
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -285,6 +374,62 @@ function FindRides() {
           </div>
         </div>
 
+        {/* Delete Confirmation Modal */}
+        {showDeleteModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full mx-4">
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                Cancel Ride
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Please select a reason for cancelling this ride:
+              </p>
+              <div className="space-y-2 mb-6">
+                {commonReasons.map((reason) => (
+                  <label key={reason} className="flex items-center space-x-2">
+                    <input
+                      type="radio"
+                      name="deleteReason"
+                      value={reason}
+                      checked={deleteReason === reason}
+                      onChange={(e) => {
+                        setDeleteReason(e.target.value);
+                        setIsOtherSelected(e.target.value === "Other");
+                      }}
+                      className="text-blue-500 focus:ring-blue-500"
+                    />
+                    <span className="text-gray-700">{reason}</span>
+                  </label>
+                ))}
+                {isOtherSelected && (
+                  <input
+                    type="text"
+                    value={customReason}
+                    onChange={(e) => setCustomReason(e.target.value)}
+                    placeholder="Please specify your reason"
+                    className="mt-2 w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                )}
+              </div>
+              <div className="flex justify-end space-x-4">
+                <button
+                  onClick={() => setShowDeleteModal(false)}
+                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteRide}
+                  className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center space-x-2"
+                >
+                  <Trash2 className="w-5 h-5" />
+                  <span>Confirm Cancellation</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Rides Grid */}
         {filteredRides.length === 0 ? (
           <div className="text-center bg-white p-12 rounded-2xl shadow-lg">
@@ -311,7 +456,6 @@ function FindRides() {
                 className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col min-h-[400px]"
               >
                 <div className="p-6 flex flex-col flex-grow">
-                  {/* Route Information */}
                   <div className="flex items-center space-x-4 mb-6">
                     <div className="flex-1">
                       <div className="flex items-center space-x-2">
@@ -334,7 +478,6 @@ function FindRides() {
                     </div>
                   </div>
 
-                  {/* Stops */}
                   {ride.stops && ride.stops.length > 0 && (
                     <div className="mb-6">
                       <div className="text-sm text-gray-500 mb-2">Stops</div>
@@ -351,7 +494,6 @@ function FindRides() {
                     </div>
                   )}
 
-                  {/* Time and Date */}
                   <div className="space-y-3 mb-6">
                     <div className="flex items-center text-gray-600">
                       <Calendar className="w-4 h-4 mr-2 text-blue-500" />
@@ -367,7 +509,6 @@ function FindRides() {
                     </div>
                   </div>
 
-                  {/* Driver Information */}
                   <div className="flex items-center justify-between mb-6 pt-4 border-t border-gray-100">
                     <div className="flex items-center space-x-3">
                       {ride.driver?.profilePicture ? (
@@ -399,14 +540,21 @@ function FindRides() {
                     </div>
                   </div>
 
-                  {/* Book Button */}
-                  <div className="mt-auto">
+                  <div className="mt-auto flex space-x-2">
                     <Link
                       to={`/book-ride/${ride._id}`}
-                      className="block w-full text-center bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl transition-colors duration-300"
+                      className="flex-1 text-center bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl transition-colors duration-300"
                     >
                       Book This Ride
                     </Link>
+                    {userId && ride.driver?._id === userId && (
+                      <button
+                        onClick={() => confirmDeleteRide(ride._id)}
+                        className="flex items-center justify-center bg-red-500 hover:bg-red-600 text-white font-semibold px-4 py-3 rounded-xl transition-colors duration-300"
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Mail, Lock, KeyRound, Eye, EyeOff, ShieldCheck } from 'lucide-react';
+import { Mail, Lock, KeyRound, Eye, EyeOff, ShieldCheck } from "lucide-react";
 
 function App() {
-  const [email, setEmail] = useState('');
-  const [oldPassword, setOldPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -24,17 +24,20 @@ function App() {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/v1/auth/change-password", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          oldPassword,
-          newPassword
-        }),
-      });
+      const response = await fetch(
+        "https://carpoolingsystem-production.up.railway.app/api/v1/auth/change-password",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            oldPassword,
+            newPassword,
+          }),
+        }
+      );
 
       if (response.ok) {
         toast.success("Password changed successfully!", {

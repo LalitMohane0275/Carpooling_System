@@ -25,6 +25,7 @@ import ChangePassword from "./pages/ChangePassword";
 import VerifyEmailPage from "./pages/VerifyEmail";
 import RidesOffered from "./pages/RidesOffered";
 import RidesTaken from "./pages/RidesTaken";
+import Community from "./pages/Community";
 
 function App() {
   const dispatch = useDispatch();
@@ -170,6 +171,14 @@ function App() {
           element={
             <ProtectedRoute>
               <Reviews />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/community"
+          element={
+            <ProtectedRoute>
+              <Community />
             </ProtectedRoute>
           }
         />

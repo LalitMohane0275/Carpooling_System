@@ -1,16 +1,16 @@
+// authController.js
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = require("../models/UserModel");
 const cloudinary = require("../config/cloudinary");
 
 const fs = require("fs");
-const transporter = require('../utils/nodemailer');
+const transporter = require("../utils/nodemailer");
 
 function generateVerificationCode() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-// Upload profile data
 const signup = async (req, res) => {
   try {
     const {
@@ -19,6 +19,8 @@ const signup = async (req, res) => {
       lastName,
       phoneNumber,
       address,
+      age,
+      gender,
       hasVehicle,
       vehicleDetails,
       preferences,
@@ -35,42 +37,37 @@ const signup = async (req, res) => {
       !lastName ||
       !phoneNumber ||
       !address ||
+      !age ||
+      !gender ||
       !preferences
     ) {
       return res.status(400).json({ message: "Required data missing" });
     }
 
-    // Check if passwords match
     if (password !== confirmPassword) {
       return res.status(400).json({ message: "Passwords do not match." });
     }
 
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists." });
     }
 
-    // Hash the password
-    const saltRounds = 10; // Adjust the salt rounds as necessary
+    const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Upload image to Cloudinary
     let profilePicture = null;
     if (req.file) {
       const uploadResult = await cloudinary.uploader.upload(req.file.path, {
         folder: "profile_pictures",
       });
       profilePicture = {
-        url : uploadResult.secure_url,
+        url: uploadResult.secure_url,
         publicId: uploadResult.public_id,
       };
+      fs.unlinkSync(req.file.path);
     }
 
-     // delete the file from local storage
-        fs.unlinkSync(req.file.path);
-
-    // Save user to the database
     const newUser = await User.create({
       email,
       password: hashedPassword,
@@ -79,13 +76,15 @@ const signup = async (req, res) => {
       lastName,
       phoneNumber,
       address,
+      age: Number(age), // Ensure it's saved as a number
+      gender,
+      about: "", // Optional, defaults to empty string
       hasVehicle: JSON.parse(hasVehicle),
       vehicleDetails: JSON.parse(vehicleDetails),
       preferences: JSON.parse(preferences),
       profilePicture: profilePicture?.url,
     });
 
-    // Generate and save verification code
     const verificationCode = generateVerificationCode();
     const tokenExpiration = new Date(Date.now() + 15 * 60 * 1000);
 
@@ -93,21 +92,19 @@ const signup = async (req, res) => {
     newUser.emailVerificationTokenExpires = tokenExpiration;
     await newUser.save();
 
-    // Send verification email
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: newUser.email,
-      subject: 'Email Verification',
-      text: `Your verification code is: ${verificationCode}. Please enter this code to verify your email.`
+      subject: "Email Verification",
+      text: `Your verification code is: ${verificationCode}. Please enter this code to verify your email.`,
     };
     await transporter.sendMail(mailOptions);
 
     res.status(201).json({
       success: true,
       message: "Signup successful. Please check your email for verification.",
-      data: newUser,
+      data: { email: newUser.email },
       publicId: profilePicture?.publicId,
-      // Omit sensitive fields like tokens and expiration
     });
   } catch (error) {
     console.error(error);
@@ -119,18 +116,15 @@ const signup = async (req, res) => {
   }
 };
 
+// Other functions remain unchanged
 const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Validate input fields
     if (!email || !password) {
-      return res
-        .status(400)
-        .json({ message: "Email and password are required." });
+      return res.status(400).json({ message: "Email and password are required." });
     }
 
-    // Check if the user exists
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password." });
@@ -140,7 +134,6 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "Email not verified. Please verify your email to log in." });
     }
 
-    // Compare password with the hashed password in the database
     const isPasswordMatch = await bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
       return res.status(400).json({ message: "Invalid email or password." });
@@ -150,20 +143,16 @@ const login = async (req, res) => {
       {
         userId: user._id,
         email: user.email,
-        name : user.firstName + " " + user.lastName,
+        name: user.firstName + " " + user.lastName,
       },
       process.env.JWT_SECRET_KEY,
-      {
-        expiresIn: "2h"
-      }
+      { expiresIn: "2h" }
     );
-    console.log(accessToken);
 
-    // Respond with a success message
     res.status(200).json({
       message: "Login successful.",
       userId: user._id,
-      token : accessToken,
+      token: accessToken,
     });
   } catch (error) {
     console.error(error);
@@ -174,16 +163,14 @@ const login = async (req, res) => {
 const changePassword = async (req, res) => {
   try {
     const { email, oldPassword, newPassword } = req.body;
-    console.log("Received data:", { email, oldPassword, newPassword });
-    // find current user
-    const user = await User.findOne({email});
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({
         success: false,
         message: "User does not exist!",
       });
     }
-    // check if old password is correct or not
+
     const isPasswordCorrect = await bcrypt.compare(oldPassword, user.password);
     if (!isPasswordCorrect) {
       return res.status(400).json({
@@ -192,19 +179,16 @@ const changePassword = async (req, res) => {
       });
     }
 
-    // hash the new password
     const salt = await bcrypt.genSalt(10);
     const newHashedPassword = await bcrypt.hash(newPassword, salt);
 
-    // update user password
     user.password = newHashedPassword;
     await user.save();
 
     res.status(200).json({
       success: true,
-      message: "Password changed successfully"
+      message: "Password changed successfully",
     });
-
   } catch (error) {
     console.log(error);
     res.status(500).json({
@@ -212,12 +196,14 @@ const changePassword = async (req, res) => {
       message: "Something went wrong! Please try again",
     });
   }
-}
+};
 
 const verifyEmail = async (req, res) => {
   try {
     const { email, verificationCode } = req.body;
-    const user = await User.findOne({ email }).select('+emailVerificationToken +emailVerificationTokenExpires');
+    const user = await User.findOne({ email }).select(
+      "+emailVerificationToken +emailVerificationTokenExpires"
+    );
 
     if (!user) return res.status(400).json({ success: false, message: "User not found." });
     if (user.isEmailVerified) return res.status(400).json({ success: false, message: "Email already verified." });
