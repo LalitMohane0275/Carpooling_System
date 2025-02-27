@@ -17,9 +17,9 @@ import {
   Wind,
   Droplet,
   Fuel,
-  Calendar, // For Age
-  Users, // For Gender (substitute for GenderMale if unavailable)
-  Info, // For About
+  Calendar,
+  Users,
+  Info,
 } from "lucide-react";
 import { getProfile } from "../api/profileApi";
 import { logout } from "../store/authSlice";
@@ -115,15 +115,15 @@ const ProfilePage = () => {
       try {
         setIsLoading(true);
         const response = await getProfile(userId);
-        console.log("Profile response:", response); // Debugging log
+        console.log("Profile response:", response);
         if (response.success) {
           setUser((prevUser) => ({
             ...prevUser,
             ...response.data,
             name: `${response.data.firstName} ${response.data.lastName || ""}`,
-            rating: 4.8, // Static for now
-            ridesGiven: 87, // Static for now
-            ridesTaken: 52, // Static for now
+            rating: 4.8,
+            ridesGiven: 87,
+            ridesTaken: 52,
           }));
         }
       } catch (err) {
@@ -151,7 +151,7 @@ const ProfilePage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500"></div>
       </div>
     );
@@ -159,7 +159,7 @@ const ProfilePage = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-red-500 text-base">
           Error loading profile: {error}
         </div>
@@ -168,12 +168,12 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white py-8 px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white shadow-xl rounded-2xl overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-6 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-3xl mx-auto">
+        <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-100">
           {/* Header */}
-          <div className="relative h-40 bg-blue-600">
-            <div className="absolute bottom-0 left-0 right-0 flex justify-center">
+          <div className="relative h-32 sm:h-40 bg-gradient-to-r from-blue-600 to-blue-800">
+            <div className="absolute bottom-0 left-0 right-0 flex justify-center transform translate-y-1/2">
               <div className="relative">
                 <img
                   src={
@@ -181,24 +181,26 @@ const ProfilePage = () => {
                     "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=400&h=400&fit=crop"
                   }
                   alt={user.name}
-                  className="w-24 h-24 rounded-full border-4 border-white shadow-lg object-cover"
+                  className="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-white shadow-md object-cover"
                 />
-                <button className="absolute bottom-0 right-0 bg-blue-500 text-white p-1.5 rounded-full hover:bg-blue-600 transition-colors">
-                  <Camera size={16} />
+                <button className="absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition-colors shadow-sm">
+                  <Camera size={14} />
                 </button>
               </div>
             </div>
           </div>
 
           {/* Profile Content */}
-          <div className="p-6 pt-12">
+          <div className="p-4 sm:p-6 pt-12 sm:pt-16">
             <div className="text-center mb-6">
-              <h1 className="text-2xl font-bold text-gray-800">{user.name}</h1>
-              <p className="text-gray-600 text-sm">
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-800">
+                {user.name}
+              </h1>
+              <p className="text-gray-600 text-sm sm:text-base">
                 {user.firstName ? `@${user.firstName}` : ""}
               </p>
-              <div className="flex items-center justify-center mt-2">
-                <Star className="text-yellow-400 mr-1" size={16} />
+              <div className="flex items-center justify-center mt-2 space-x-1">
+                <Star className="text-yellow-400" size={16} />
                 <span className="text-gray-600 text-sm">
                   {user.rating} • {user.ridesGiven} rides given •{" "}
                   {user.ridesTaken} rides taken
@@ -208,25 +210,29 @@ const ProfilePage = () => {
 
             <div className="space-y-6">
               {/* User Details */}
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <div className="flex items-center space-x-2">
                   <Phone className="text-blue-500" size={16} />
-                  <span className="text-gray-700 text-sm">
+                  <span className="text-gray-700 text-sm sm:text-base">
                     {user.phoneNumber}
                   </span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <MapPin className="text-blue-500" size={16} />
-                  <span className="text-gray-700 text-sm">{user.address}</span>
+                  <span className="text-gray-700 text-sm sm:text-base">
+                    {user.address}
+                  </span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Calendar className="text-blue-500" size={16} />
-                  <span className="text-gray-700 text-sm">Age: {user.age}</span>
+                  <span className="text-gray-700 text-sm sm:text-base">
+                    Age: {user.age || "N/A"}
+                  </span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Users className="text-blue-500" size={16} />
-                  <span className="text-gray-700 text-sm">
-                    Gender: {user.gender}
+                  <span className="text-gray-700 text-sm sm:text-base">
+                    Gender: {user.gender || "N/A"}
                   </span>
                 </div>
                 {/* About Section */}
@@ -235,7 +241,7 @@ const ProfilePage = () => {
                     <Info className="text-blue-500" size={16} />
                     About Me
                   </h3>
-                  <p className="text-gray-700 text-sm leading-relaxed bg-gray-50 p-3 rounded-lg">
+                  <p className="text-gray-700 text-sm sm:text-base leading-relaxed bg-gray-50 p-3 rounded-lg">
                     {user.about || "This user hasn’t added a bio yet."}
                   </p>
                 </div>
@@ -244,7 +250,7 @@ const ProfilePage = () => {
                   <h3 className="text-base font-semibold text-gray-800 mb-2">
                     Ride Preferences
                   </h3>
-                  <div className="flex flex-wrap gap-3">
+                  <div className="flex flex-wrap gap-3 sm:gap-4">
                     <div
                       className={`flex items-center space-x-2 ${
                         user.preferences.musicAllowed
@@ -253,7 +259,7 @@ const ProfilePage = () => {
                       }`}
                     >
                       <Music size={16} />
-                      <span className="text-sm">
+                      <span className="text-sm sm:text-base">
                         {user.preferences.musicAllowed
                           ? "Music allowed"
                           : "No music"}
@@ -267,7 +273,7 @@ const ProfilePage = () => {
                       }`}
                     >
                       <Smoking size={16} />
-                      <span className="text-sm">
+                      <span className="text-sm sm:text-base">
                         {user.preferences.smokingAllowed
                           ? "Smoking allowed"
                           : "No smoking"}
@@ -281,7 +287,7 @@ const ProfilePage = () => {
                       }`}
                     >
                       <Dog size={16} />
-                      <span className="text-sm">
+                      <span className="text-sm sm:text-base">
                         {user.preferences.petsAllowed
                           ? "Pets allowed"
                           : "No pets"}
@@ -299,7 +305,7 @@ const ProfilePage = () => {
                       Vehicle Details
                     </h2>
                     <div
-                      className={`flex items-center gap-2 px-3 py-1 rounded-full border ${getVehicleTypeColor(
+                      className={`flex items-center gap-2 px-2 py-1 rounded-full border ${getVehicleTypeColor(
                         user.vehicleDetails.type
                       )}`}
                     >
@@ -311,18 +317,18 @@ const ProfilePage = () => {
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <p className="text-gray-600 text-sm">
+                      <p className="text-gray-600 text-sm sm:text-base">
                         Make: {user.vehicleDetails.make}
                       </p>
-                      <p className="text-gray-600 text-sm">
+                      <p className="text-gray-600 text-sm sm:text-base">
                         Model: {user.vehicleDetails.model}
                       </p>
                     </div>
                     <div>
-                      <p className="text-gray-600 text-sm">
+                      <p className="text-gray-600 text-sm sm:text-base">
                         Year: {user.vehicleDetails.year}
                       </p>
-                      <p className="text-gray-600 text-sm">
+                      <p className="text-gray-600 text-sm sm:text-base">
                         License Plate: {user.vehicleDetails.licensePlate}
                       </p>
                     </div>
@@ -334,20 +340,20 @@ const ProfilePage = () => {
               <div className="space-y-3">
                 <button
                   onClick={handleEdit}
-                  className="w-full flex items-center justify-center space-x-2 bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 transition-all duration-200 transform hover:-translate-y-0.5"
+                  className="w-full flex items-center justify-center space-x-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                 >
                   <Edit2 size={16} />
-                  <span className="text-sm">Edit Profile</span>
+                  <span className="text-sm sm:text-base">Edit Profile</span>
                 </button>
 
-                <div className="space-y-3">
+                <div className="flex flex-col sm:flex-row gap-3">
                   <button
                     onClick={handleRidesOffered}
-                    className="w-full flex items-center justify-between px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 group"
+                    className="w-full sm:w-1/2 flex items-center justify-between px-3 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 group"
                   >
                     <div className="flex items-center space-x-2">
                       <Car size={16} />
-                      <span className="text-sm font-semibold">
+                      <span className="text-sm sm:text-base font-medium">
                         Rides Offered
                       </span>
                     </div>
@@ -359,11 +365,13 @@ const ProfilePage = () => {
 
                   <button
                     onClick={handleRidesTaken}
-                    className="w-full flex items-center justify-between px-4 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 group"
+                    className="w-full sm:w-1/2 flex items-center justify-between px-3 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5 group"
                   >
                     <div className="flex items-center space-x-2">
                       <User size={16} />
-                      <span className="text-sm font-semibold">Rides Taken</span>
+                      <span className="text-sm sm:text-base font-medium">
+                        Rides Taken
+                      </span>
                     </div>
                     <ArrowRight
                       size={16}
@@ -376,10 +384,10 @@ const ProfilePage = () => {
           </div>
 
           {/* Footer */}
-          <div className="bg-gray-50 px-6 py-3 mt-6 flex flex-col sm:flex-row justify-between items-center gap-2">
+          <div className="bg-gray-50 px-4 py-3 sm:px-6 mt-6 flex flex-col sm:flex-row justify-between items-center gap-2 border-t border-gray-200">
             <div className="flex items-center space-x-2">
               <Car className="text-blue-500" size={16} />
-              <span className="text-gray-600 text-sm font-medium">
+              <span className="text-gray-600 text-sm sm:text-base font-medium">
                 RideBuddy Member since {new Date(user.createdAt).getFullYear()}
               </span>
             </div>
@@ -388,7 +396,7 @@ const ProfilePage = () => {
               onClick={handleLogout}
             >
               <LogOut size={16} />
-              <span className="text-sm">Log Out</span>
+              <span className="text-sm sm:text-base">Log Out</span>
             </button>
           </div>
         </div>
