@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Car,
   Search,
@@ -23,29 +23,26 @@ function Navbar() {
   const [notifications, setNotifications] = useState([]);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const navigate = useNavigate();
-  const notificationRef = useRef(null); // Ref for outside click detection
 
   const handleLogInNavigation = () => {
     navigate("/login");
-    setIsMenuOpen(false); // Close hamburger menu on login click
+    setIsMenuOpen(false);
   };
 
   const handleSignUpNavigation = () => {
     navigate("/signup");
-    setIsMenuOpen(false); // Close hamburger menu on signup click
+    setIsMenuOpen(false);
   };
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
-
   const toggleNotifications = () =>
     setIsNotificationsOpen(!isNotificationsOpen);
-
   const closeNotifications = () => setIsNotificationsOpen(false);
 
   const handleLogout = () => {
     dispatch(logout());
     navigate("/");
-    setIsMenuOpen(false); // Close menu on logout
+    setIsMenuOpen(false);
   };
 
   let userId = null;
@@ -65,8 +62,14 @@ function Navbar() {
       const fetchNotifications = async () => {
         try {
           const response = await fetch(
-            `https://carpoolingsystem-production.up.railway.app/api/v1/notifications/${userId}`
+            `https://carpoolingsystem-production.up.railway.app/api/v1/notifications/${userId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
           );
+          if (!response.ok) throw new Error("Failed to fetch notifications");
           const data = await response.json();
           setNotifications(data);
         } catch (error) {
@@ -79,28 +82,18 @@ function Navbar() {
     }
   }, [isLoggedIn, userId]);
 
-  // Close notifications when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        notificationRef.current &&
-        !notificationRef.current.contains(event.target)
-      ) {
-        setIsNotificationsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   const markAsRead = async (id) => {
     try {
-      await fetch(
+      const response = await fetch(
         `https://carpoolingsystem-production.up.railway.app/api/v1/notifications/read/${id}`,
         {
           method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
+      if (!response.ok) throw new Error("Failed to mark notification as read");
       setNotifications(notifications.filter((n) => n._id !== id));
     } catch (error) {
       console.error("Error marking notification as read:", error);
@@ -145,7 +138,7 @@ function Navbar() {
                     <span>Create a Ride</span>
                   </a>
                   {/* Notifications Dropdown */}
-                  <div className="relative" ref={notificationRef}>
+                  <div className="relative">
                     <button
                       onClick={toggleNotifications}
                       className="p-2 rounded-full bg-blue-50 hover:bg-blue-100 transition-colors relative focus:outline-none focus:ring-2 focus:ring-blue-300"
@@ -295,7 +288,7 @@ function Navbar() {
             {/* Mobile Navigation */}
             <div className="md:hidden flex items-center space-x-4">
               {isLoggedIn && (
-                <div className="relative" ref={notificationRef}>
+                <div className="relative">
                   <button
                     onClick={toggleNotifications}
                     className="p-2 rounded-full bg-blue-50 hover:bg-blue-100 transition-colors relative focus:outline-none focus:ring-2 focus:ring-blue-300"
