@@ -6,6 +6,8 @@ const path = require("path");
 const reviews = require("./routes/reviews");
 const notificationRoutes = require("./routes/notifications");
 const communityRoutes = require("./routes/community");
+const reviewRoutes = require('./routes/reviews');
+
 
 const cors = require("cors");
 const dbConnect = require("./config/database");
@@ -27,6 +29,7 @@ app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 app.use("/api/v1/reviews", reviews);
 app.use("/api/v1/notifications", notificationRoutes);
 app.use("/api/v1/community", communityRoutes);
+app.use('/api/v1/reviews', reviewRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'Carpooling Backend API is live', status: 'ok' });

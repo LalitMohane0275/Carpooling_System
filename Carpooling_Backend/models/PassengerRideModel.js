@@ -34,7 +34,7 @@ const PassengerRideSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ["upcoming", "completed", "cancelled"],
-    default: "upcoming", // Add status field for frontend filtering
+    default: "upcoming", 
   },
 }, { timestamps: true });
 

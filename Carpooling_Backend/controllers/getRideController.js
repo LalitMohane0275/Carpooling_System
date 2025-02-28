@@ -1,4 +1,5 @@
 // getRideController.js
+const mongoose = require("mongoose");
 const Ride = require("../models/RideModel");
 const PassengerRide = require("../models/PassengerRideModel");
 
@@ -102,32 +103,96 @@ exports.getRidesByDriverId = async (req, res) => {
     }
 };
 
-// Controller to get details of a specific ride by ID   
-// getRideController.js
-exports.getPassengerRidesByPassengerId = async (req, res) => {
-  try {
-    const { passenger } = req.params; // Change 'driver' to 'passenger'
 
-    // Fetch passenger rides and populate the ride's driver details
-    const rides = await PassengerRide.find({ passenger })
+
+exports.getPassengerRidesByPassengerId = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const { passenger } = req.params;
+
+    // Validate passenger ID
+    if (!mongoose.Types.ObjectId.isValid(passenger)) {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(400).json({ message: "Invalid passenger ID" });
+    }
+
+    // Fetch passenger rides with populated ride and driver details
+    const passengerRides = await PassengerRide.find({ passenger })
       .populate({
         path: "ride",
         populate: {
           path: "driver",
-          select: "name photo", // Assuming User model has these fields
+          select: "firstName lastName photo", // Adjust fields based on your User model
         },
-      });
+      })
+      .session(session);
 
-    if (!rides || rides.length === 0) {
+    if (!passengerRides || passengerRides.length === 0) {
+      await session.abortTransaction();
+      session.endSession();
       return res.status(404).json({ message: "No rides found for this passenger" });
     }
 
+    const now = new Date();
+
+    // Update each passenger ride's status based on the linked ride
+    for (const passengerRide of passengerRides) {
+      const ride = passengerRide.ride;
+
+      if (!ride) {
+        console.warn(`Ride not found for PassengerRide ${passengerRide._id}`);
+        continue; // Skip if ride is not populated (shouldn't happen due to ref integrity)
+      }
+
+      let newStatus = ride.status;
+
+      // Update ride status based on current time
+      if (ride.status === "upcoming" && new Date(ride.time) <= now) {
+        newStatus = "ongoing";
+      } else if (ride.status === "ongoing" && new Date(ride.completionTime) <= now) {
+        newStatus = "completed";
+      }
+
+      // If ride status has changed, update both Ride and PassengerRide
+      if (newStatus !== ride.status) {
+        ride.status = newStatus;
+        await ride.save({ session });
+      }
+
+      // Sync PassengerRide status with Ride status
+      if (passengerRide.status !== newStatus) {
+        passengerRide.status = newStatus;
+        await passengerRide.save({ session });
+      }
+    }
+
+    // Commit the transaction
+    await session.commitTransaction();
+    session.endSession();
+
+    // Fetch updated rides for response (without session, as transaction is complete)
+    const updatedRides = await PassengerRide.find({ passenger })
+      .populate({
+        path: "ride",
+        populate: {
+          path: "driver",
+          select: "firstName lastName photo",
+        },
+      });
+
     res.status(200).json({
       message: "Passenger rides fetched successfully",
-      rides: rides,
+      rides: updatedRides,
     });
   } catch (err) {
-    console.error(err);
+    await session.abortTransaction();
+    session.endSession();
+
+    console.error("Error in getPassengerRidesByPassengerId:", err);
+
     if (err.kind === "ObjectId") {
       return res.status(400).json({ message: "Invalid passenger ID" });
     }

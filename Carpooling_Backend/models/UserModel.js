@@ -40,6 +40,10 @@ const userSchema = new mongoose.Schema({
   isEmailVerified: { type: Boolean, default: false },
   emailVerificationToken: { type: String },
   emailVerificationTokenExpires: { type: Date },
+  reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
+  averageRating: { type: Number, default: 0 },
+  ridesOffered: { type: Number, default: 0 }, 
+  ridesTaken: { type: Number, default: 0 },
 }, { timestamps: true });
 
 const User = mongoose.model("User", userSchema);
